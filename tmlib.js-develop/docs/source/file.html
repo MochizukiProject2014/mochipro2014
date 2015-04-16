@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * file.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+<span id='tm-util-File'>    /**
+</span>     * @class tm.util.File
+     * ファイルクラス
+     */
+    tm.define(&quot;tm.util.File&quot;, {
+        superClass: &quot;tm.event.EventDispatcher&quot;,
+
+<span id='tm-util-File-property-data'>        /** deta */
+</span>        data: null,
+<span id='tm-util-File-property-loaded'>        /** deta */
+</span>        loaded: false,
+
+<span id='tm-util-File-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(params) {
+            this.superInit();
+
+            this.loaded = false;
+            if (arguments.length == 1) {
+                this.load(params);
+            }
+        },
+        
+<span id='tm-util-File-method-load'>        /**
+</span>         * ロード
+         */
+        load: function(params) {
+            if (typeof params == &quot;string&quot;) {
+                var url = params;
+                params = { url: url, };
+            }
+            
+            var self = this;
+            params.success = function(data) {
+                self.setData(data);
+                var e = tm.event.Event(&quot;load&quot;);
+                self.dispatchEvent( e );
+            };
+            tm.util.Ajax.load(params);
+        },
+
+<span id='tm-util-File-method-setData'>        /**
+</span>         * setData
+         */
+        setData: function(data) {
+            this.data = data;
+            this.loaded = true;
+        },
+        
+<span id='tm-util-File-method-loadLocalStorage'>        /**
+</span>         * ローカルストレージからロード
+         */
+        loadLocalStorage: function() {
+            
+        },
+        
+
+    });
+    
+    
+})();
+
+
+</pre>
+</body>
+</html>

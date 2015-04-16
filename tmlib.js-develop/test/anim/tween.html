@@ -1,0 +1,213 @@
+<!DOCTYPE html> 
+<html lang="ja"> 
+    <head> 
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Tween Test | TM Lib</title>
+        
+        <!-- prettify -->
+        <link type="text/css" rel="stylesheet" href="../../plugins/prettify/prettify.css" />
+        <script src="../../plugins/prettify/prettify.js"></script>
+        
+        <style>
+            body { font-family: "Meiryo", "メイリオ", "ヒラギノ角ゴ Pro W3", sans-serif; }
+            
+            #content {
+                display: -webkit-box;
+                display: -moz-box;
+                display: -o-box;
+                display: box;
+            }
+            
+            #content>* {
+                padding: 10px 20px;
+                width: 50%;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -o-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+        </style>
+        
+        <script src="../../src/tmlib.js"></script>
+        
+        <script src="../../src/core/object.js"></script>
+        <script src="../../src/core/string.js"></script>
+        <script src="../../src/core/number.js"></script>
+        <script src="../../src/core/array.js"></script>
+        <script src="../../src/core/function.js"></script>
+        <script src="../../src/core/date.js"></script>
+        <script src="../../src/core/math.js"></script>
+        
+        <script src="../../src/geom/vector2.js"></script>
+        <script src="../../src/geom/vector3.js"></script>
+        <script src="../../src/geom/matrix33.js"></script>
+        
+        <script src="../../src/event/event.js"></script>
+        <script src="../../src/event/eventdispatcher.js"></script>
+        
+        <script src="../../src/dom/element.js"></script>
+        <script src="../../src/dom/style.js"></script>
+        <script src="../../src/dom/event.js"></script>
+        
+        <script src="../../src/input/mouse.js"></script>
+        <script src="../../src/input/keyboard.js"></script>
+        <script src="../../src/input/touch.js"></script>
+        
+        <script src="../../src/graphics/canvas.js"></script>
+        
+        <script src="../../src/app/element.js"></script>
+        <script src="../../src/display/canvaselement.js"></script>
+        <script src="../../src/app/scene.js"></script>
+        <script src="../../src/display/canvasapp.js"></script>
+        <script src="../../src/app/collision.js"></script>
+        
+        <script src="../../src/anim/tween.js"></script>
+        
+        <script src="../../plugins/console.tm.js"></script>
+
+        <script id="test-script">
+            
+            /*
+             * Test
+             */
+            window.onload = function()
+            {
+                var c = tm.Console("#console");
+                
+                var canvas = document.getElementById("world");
+                var context= canvas.getContext("2d");
+                
+                var obj = {
+                    x: 10,
+                    y: 10,
+                    alpha: 0.5,
+                };
+                
+                var tween = tm.anim.Tween(obj, {x:500, y:100, alpha:1.0}, 1000);
+                /*
+                tween.to(obj, {x:500, y:100, alpha:1.0}, 1000);
+                tween.from(obj, {x:500, y:100, alpha:1.0}, 1000);
+                tween.fromTo(obj, {x:10, y:10, alpha:0}, {x:500, y:100, alpha:1.0}, 1000);
+                tween.to(obj, {"x":500}, 100, 1000);
+                */
+                tween.start();
+
+                tm.setLoop(function() {
+                    context.fillStyle = "black";
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    context.fillStyle = "white";
+                    context.globalAlpha = obj.alpha;
+                    context.fillRect(obj.x, obj.y, 100, 100);
+                }, 1000/30);
+                
+                tween.onchange = function() {
+                    c.log(obj.x);
+                }
+                tween.onfinish = function() {
+                    var elm = tm.dom.Element("#transition");
+                    elm.element.selectedIndex += 1;
+                    if (!elm.value) elm.element.selectedIndex = 0;
+                    tween.setTransition(elm.value);
+                    tween.start();
+                    c.clear();
+//                    this.yoyo();
+                };
+                
+                var fn = function() {
+                    c.clear();
+                    tween[this.html]();
+                };
+                
+                tm.dom.Element("#start").event.click(fn);
+                tm.dom.Element("#rewind").event.click(fn);
+                tm.dom.Element("#stop").event.click(fn);
+                tm.dom.Element("#resume").event.click(fn);
+                tm.dom.Element("#fforward").event.click(fn);
+                
+                tm.dom.Element("#transition").event.add("change", function() {
+                    tween.setTransition(this.value);
+                    c.clear();
+                    tween.start();
+                });
+            };
+            
+        </script>
+        
+        <script>
+            tm.dom.Element(window).event.add("load", function() {
+                tm.dom.Element("#code").text = tm.dom.Element("#test-script").text;
+                prettyPrint();
+            });
+        </script>
+        
+    </head>
+    
+    <body>
+         
+        <h1>Tween Test | TM Lib</h1>
+        
+        <div id="content">
+            <section>
+                <h2>Canvas</h2>
+                <canvas id="world" width="640" height="200"></canvas><br />
+                <button id="start">start</button>
+                <button id="stop">stop</button>
+                <button id="resume">resume</button>
+                <button id="rewind">rewind</button>
+                <button id="fforward">fforward</button>
+                <select id="transition">
+                    <option value="linear">linear</options>
+                    <option value="easeInQuad">easeInQuad</options>
+                    <option value="easeOutQuad">easeOutQuad</options>
+                    <option value="easeInOutQuad">easeInOutQuad</options>
+                    <option value="easeInCubic">easeInCubic</options>
+                    <option value="easeOutCubic">easeOutCubic</options>
+                    <option value="easeInOutCubic">easeInOutCubic</options>
+                    <option value="easeOutInCubic">easeOutInCubic</options>
+                    <option value="easeInQuart">easeInQuart</options>
+                    <option value="easeOutQuart">easeOutQuart</options>
+                    <option value="easeInOutQuart">easeInOutQuart</options>
+                    <option value="easeOutInQuart">easeOutInQuart</options>
+                    <option value="easeInQuint">easeInQuint</options>
+                    <option value="easeOutQuint">easeOutQuint</options>
+                    <option value="easeInOutQuint">easeInOutQuint</options>
+                    <option value="easeOutInQuint">easeOutInQuint</options>
+                    <option value="easeInSine">easeInSine</options>
+                    <option value="easeOutSine">easeOutSine</options>
+                    <option value="easeInOutSine">easeInOutSine</options>
+                    <option value="easeOutInSine">easeOutInSine</options>
+                    <option value="easeInExpo">easeInExpo</options>
+                    <option value="easeOutExpo">easeOutExpo</options>
+                    <option value="easeInOutExpo">easeInOutExpo</options>
+                    <option value="easeOutInExpo">easeOutInExpo</options>
+                    <option value="easeInCirc">easeInCirc</options>
+                    <option value="easeOutCirc">easeOutCirc</options>
+                    <option value="easeInOutCirc">easeInOutCirc</options>
+                    <option value="easeOutInCirc">easeOutInCirc</options>
+                    <option value="easeInElastic">easeInElastic</options>
+                    <option value="easeOutElastic">easeOutElastic</options>
+                    <option value="easeInOutElastic">easeInOutElastic</options>
+                    <option value="easeOutInElastic">easeOutInElastic</options>
+                    <option value="easeInBack">easeInBack</options>
+                    <option value="easeOutBack">easeOutBack</options>
+                    <option value="easeInOutBack">easeInOutBack</options>
+                    <option value="easeOutInBack">easeOutInBack</options>
+                    <option value="easeInBounce">easeInBounce</options>
+                    <option value="easeOutBounce">easeOutBounce</options>
+                    <option value="easeInOutBounce">easeInOutBounce</options>
+                    <option value="easeOutInBounce">easeOutInBounce</options>
+                </select>
+                <h2>Console</h2>
+                <pre id="console" class="prettyprint"></pre>
+            </section>
+            <section>
+                <h2>Code</h2>
+                <pre id="code" class="prettyprint"></pre>
+            </section>
+        </div>
+        
+        
+    </body>
+</html>

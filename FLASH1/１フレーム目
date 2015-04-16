@@ -1,0 +1,151 @@
+import flash.events.MouseEvent;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.Font;
+
+stop();
+
+var txta_1:String=""
+var txta_2:String=""
+var txta_3:String=""
+var txta_4:String=""
+var txta_5:String=""
+var txta_6:String=""
+var txta_7:String=""
+
+var txt0:TextField = new TextField();
+txt0.type = TextFieldType.DYNAMIC;
+txt0.width=500;
+txt0.height=30;
+txt0.x=15;
+txt0.y=490;
+txt0.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt0);
+txt0.text="";//人名
+
+var txt1:TextField = new TextField();
+txt1.type = TextFieldType.DYNAMIC;
+txt1.width=txta_1.length*25;
+txt1.height=30;
+txt1.x=15;
+txt1.y=520;
+
+var txt2:TextField = new TextField();
+txt2.type = TextFieldType.DYNAMIC;
+txt2.width=txta_2.length*25;
+txt2.height=30;
+txt2.x=txta_1.length*25;
+txt2.y=520;
+
+var txt3:TextField = new TextField();
+txt3.type = TextFieldType.DYNAMIC;
+txt3.width=txta_3.length*25;
+txt3.height=30;
+txt3.x=txta_1.length*25+txta_2.length*25-10;
+txt3.y=520;
+
+var txt4:TextField = new TextField();
+txt4.type = TextFieldType.DYNAMIC;
+txt4.width=txta_4.length*25;
+txt4.height=30;
+txt4.x=15;
+txt4.y=550;
+
+var txt5:TextField = new TextField();
+txt5.type = TextFieldType.DYNAMIC;
+txt5.width=txta_5.length*25;
+txt5.height=30;
+txt5.x=txta_4.length*25+10;
+txt5.y=550;
+
+var txt6:TextField = new TextField();
+txt6.type = TextFieldType.DYNAMIC;
+txt6.width=txta_6.length*25;
+txt6.height=30;
+txt6.x=txta_4.length*25+txta_5.length*25-5;
+txt6.y=550;
+
+var txt7:TextField = new TextField();
+txt7.type = TextFieldType.DYNAMIC;
+txt7.width=txta_7.length*25+10;
+txt7.height=30;
+txt7.x=15;
+txt7.y=580;
+
+txt1.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt1);
+txt2.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0xFF0000, true);
+addChild(txt2);
+txt3.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt3);
+txt4.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt4);
+txt5.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0xFF0000, true);
+addChild(txt5);
+txt6.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt6);
+txt7.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt7);
+
+function onClick1(e:MouseEvent){
+	gotoAndPlay();  //PlayかStop
+	removeChild(txt1);
+	removeChild(txt2);
+	removeChild(txt3);
+	removeChild(txt4);
+	removeChild(txt5);
+	removeChild(txt6);
+	removeChild(txt7);
+	stage.removeEventListener(MouseEvent.CLICK,onClick1);
+	stage.removeEventListener(MouseEvent.CLICK,tClick1);
+}
+
+this.addEventListener(Event.ENTER_FRAME,setEnter1);
+function setEnter1(evt:Event):void{
+	sampleFunc1();
+}
+function tClick1(e:MouseEvent){
+	txt1.appendText(txta_1.substr(0,txta_1.length));
+	txt2.appendText(txta_2.substr(0,txta_2.length));
+	txt3.appendText(txta_3.substr(0,txta_3.length));
+	txt4.appendText(txta_4.substr(0,txta_4.length));
+	txt5.appendText(txta_5.substr(0,txta_5.length));
+	txt6.appendText(txta_6.substr(0,txta_6.length));
+	txt7.appendText(txta_7.substr(0,txta_7.length));
+	this.removeEventListener(Event.ENTER_FRAME,setEnter1);
+	stage.addEventListener(MouseEvent.CLICK,onClick1);
+}
+function sampleFunc1():void{
+	if(txta_1.length>0){
+		txt1.appendText(txta_1.substr(0,1));
+		txta_1 = txta_1.slice(1,txta_1.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick1);
+	}else if(txta_2.length>0){
+		txt2.appendText(txta_2.substr(0,1));
+		txta_2 = txta_2.slice(1,txta_2.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick1);
+	}else if(txta_3.length>0){
+		txt3.appendText(txta_3.substr(0,1));
+		txta_3 = txta_3.slice(1,txta_3.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick1);
+	}else if(txta_4.length>0){
+		txt4.appendText(txta_4.substr(0,1));
+		txta_4 = txta_4.slice(1,txta_4.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick1);
+	}else if(txta_5.length>0){
+		txt5.appendText(txta_5.substr(0,1));
+		txta_5 = txta_5.slice(1,txta_5.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick1);
+	}else if(txta_6.length>0){
+		txt6.appendText(txta_6.substr(0,1));
+		txta_6 = txta_6.slice(1,txta_6.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick1);
+	}else if(txta_7.length>0){
+		txt7.appendText(txta_7.substr(0,1));
+		txta_7 = txta_7.slice(1,txta_7.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick1);
+	}else{
+		this.removeEventListener(Event.ENTER_FRAME,setEnter1);
+		stage.addEventListener(MouseEvent.CLICK,onClick1);
+	}
+}

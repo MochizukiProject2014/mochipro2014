@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * spritesheet.js
+ */
+
+(function() {
+    
+<span id='tm-asset-SpriteSheet'>    /**
+</span>     * @class tm.asset.SpriteSheet
+     * マップシート
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define(&quot;tm.asset.SpriteSheet&quot;, {
+        superClass: &quot;tm.event.EventDispatcher&quot;,
+
+<span id='tm-asset-SpriteSheet-property-loaded'>        /** ロード済みかどうか */
+</span>        loaded: false,
+
+<span id='tm-asset-SpriteSheet-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(src) {
+            this.superInit();
+
+            this.loaded = false;
+
+            if (typeof src == &quot;string&quot;) {
+            	this.load(src);
+            }
+            else {
+	            this.parse(src);
+    			this.loaded = true;
+    			this.dispatchEvent(tm.event.Event(&quot;load&quot;));
+            }
+
+        },
+
+<span id='tm-asset-SpriteSheet-method-load'>        /**
+</span>         * ロード
+         */
+        load: function(path) {
+        	tm.util.Ajax.load({
+        		url: path,
+        		dataType: &quot;json&quot;,
+        		success: function(d) {
+        			this.parse(d);
+        			this.loaded = true;
+        		}.bind(this),
+        	});
+        },
+
+<span id='tm-asset-SpriteSheet-method-parse'>        /**
+</span>         * パース
+         */
+        parse: function(param) {
+            this.frame = param.frame;
+
+            if (typeof param.image == &quot;string&quot;) {
+                if (!tm.asset.Manager.contains(param.image)) {
+                    var loader = tm.asset.Loader();
+                    loader.load(param.image);
+                }
+                this.image = tm.asset.Manager.get(param.image);
+            }
+            else {
+                this.image = param.image;
+            }
+
+            if (this.image.loaded === false) {
+                this.image.addEventListener(&quot;load&quot;, function() {
+                    this._calcFrames(param.frame);
+                    var e = tm.event.Event(&quot;load&quot;);
+                    this.dispatchEvent(e);
+                }.bind(this), false);
+            }
+            else {
+                this._calcFrames(param.frame);
+                var e = tm.event.Event(&quot;load&quot;);
+                this.dispatchEvent(e);
+            }
+
+            this._calcAnim(param.animations);
+        },
+
+<span id='tm-asset-SpriteSheet-method-getFrame'>        /**
+</span>         * フレームを取得
+         */
+        getFrame: function(index) {
+            return this.frames[index];
+        },
+        
+<span id='tm-asset-SpriteSheet-method-getAnimation'>        /**
+</span>         * アニメーションを取得
+         */
+        getAnimation: function(name) {
+            return this.animations[name];
+        },
+        
+<span id='tm-asset-SpriteSheet-method-_calcFrames'>        /**
+</span>         * @private
+         */
+        _calcFrames: function(frame) {
+            var frames = this.frames = [];
+            
+            var w = frame.width;
+            var h = frame.height;
+            var row = ~~(this.image.width / w);
+            var col = ~~(this.image.height/ h);
+            
+            if (!frame.count) frame.count = row*col;
+
+            for (var i=0,len=frame.count; i&lt;len; ++i) {
+                var x   = i%row;
+                var y   = (i/row)|0;
+                var rect = {
+                    x:x*w,
+                    y:y*h,
+                    width: w,
+                    height: h
+                };
+                frames.push(rect);
+            }
+        },
+
+<span id='tm-asset-SpriteSheet-method-_calcAnim'>        /**
+</span>         * @private
+         */
+        _calcAnim: function(animations) {
+            this.animations = {};
+            for (var key in animations) {
+                var anim = animations[key];
+
+                if (anim instanceof Array) {
+                    this.animations[key] = {
+                        frames: [].range(anim[0], anim[1]),
+                        next: anim[2],
+                        frequency: anim[3] || 1
+                    };
+                }
+                else if (typeof anim == &quot;number&quot;) {
+                    this.animations[key] = {
+                        frames: [anim],
+                        next: null,
+                        frequency: 1
+                    };
+                }
+                else {
+                    this.animations[key] = {
+                        frames: anim.frames,
+                        next: anim.next,
+                        frequency: anim.frequency || 1
+                    };
+                }
+            }
+            
+            // デフォルトアニメーション
+            this.animations[&quot;default&quot;] = {
+                frames: [].range(0, this.frame.count),
+                next: &quot;default&quot;,
+                frequency: 1,
+            };
+        }
+
+    });
+
+})();
+</pre>
+</body>
+</html>

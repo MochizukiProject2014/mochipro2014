@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * ajax.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+
+    /*
+     * @enum
+     * @private
+     */
+    var AJAX_DEFAULT_SETTINGS = {
+        /* @property type */
+        type :&quot;GET&quot;,
+        /* @property async */
+        async: true,
+        /* @property data */
+        data: null,
+        /* @property contentType */
+        contentType: 'application/x-www-form-urlencoded',
+        /* @property dataType */
+        dataType: 'text',
+        /* @property dataType */
+        responseType: '', // or 'arraybuffer'
+        /* @property username */
+        username: null,
+        /* @property password */
+        password: null,
+        /* @property success */
+        success : function(data){ alert(&quot;success!!\n&quot;+data); },
+        /* @property error */
+        error   : function(data){ alert(&quot;error!!&quot;); },
+        /* @property beforeSend */
+        beforeSend: null,
+    };
+
+<span id='tm-util-Ajax'>    /**
+</span>     * @class tm.util.Ajax
+     * Ajax クラス
+     */
+    tm.util.Ajax = {
+<span id='tm-util-Ajax-method-load'>        /**
+</span>         * load
+         */
+        load: function(params) {
+            for (var key in AJAX_DEFAULT_SETTINGS) {
+                params[key] = params[key] || AJAX_DEFAULT_SETTINGS[key];
+            }
+
+            var httpRequest = new XMLHttpRequest();
+            var ajax_params = &quot;&quot;;
+            var conv_func = tm.util.Ajax.DATA_CONVERTE_TABLE[params.dataType];
+
+            var url = params.url;
+            if (params.data) {
+                var query = &quot;&quot;;
+                if (typeof params.data == 'string') {
+                    query = params.data;
+                    // query = encodeURIComponent(params.data);
+                }
+                else {
+                    query = tm.util.QueryString.stringify(params.data);
+                }
+
+                if (params.type == 'GET') {
+                    params.url += '?' + query;
+                    params.data = null;
+                }
+                else if (params.type == 'POST') {
+                    params.data = query;
+                }
+            }
+
+            // httpRequest.withCredentials = true;
+
+            // コールバック
+            httpRequest.onreadystatechange = function() {
+                if (httpRequest.readyState == 4) {
+                    // 成功(status === 0 はローカルファイル用)
+                    if (httpRequest.status === 200 || httpRequest.status === 201 || httpRequest.status === 0) {
+                        if (params.responseType !== &quot;arraybuffer&quot;) {
+                            // タイプ別に変換をかける
+                            var data = conv_func(httpRequest.responseText);
+                            params.success(data);
+                        }
+                        else {
+                            // バイナリデータ
+                            params.success(this.response);
+                        }
+                    }
+                    else {
+                        params.error(httpRequest.responseText);
+                    }
+                }
+                else {
+                    //console.log(&quot;通信中&quot;);
+                }
+            };
+
+
+            httpRequest.open(params.type, params.url, params.async, params.username, params.password);   // オープン
+            if (params.type === &quot;POST&quot;) {
+                httpRequest.setRequestHeader('Content-Type', params.contentType);        // ヘッダをセット
+            }
+
+            if (params.responseType) {
+                httpRequest.responseType = params.responseType;
+            }
+
+            if (params.beforeSend) {
+                params.beforeSend(httpRequest);
+            }
+
+            if (params.password) {
+                httpRequest.withCredentials = true;
+            }
+
+            httpRequest.send(params.data);
+        },
+
+<span id='tm-util-Ajax-method-loadJSONP'>        /**
+</span>         * loadJSONP
+         */
+        loadJSONP: function(url, callback) {
+            var g = tm.global;
+            g.tmlib_js_dummy_func_count = tm.global.tmlib_js_dummy_func || 0;
+            var dummy_func_name = &quot;tmlib_js_dummy_func&quot; + (g.tmlib_js_dummy_func_count++);
+            g[dummy_func_name]  = callback;
+
+            var elm = document.createElement(&quot;script&quot;);
+            elm.type = &quot;text/javascript&quot;;
+            elm.charset = &quot;UTF-8&quot;;
+            elm.src = url + (url.indexOf(&quot;?&quot;) &lt; 0 ? &quot;?&quot; : &quot;&amp;&quot;) + &quot;callback=&quot; + dummy_func_name;
+            elm.setAttribute(&quot;defer&quot;, true);
+            document.getElementsByTagName(&quot;head&quot;)[0].appendChild(elm);
+        }
+    };
+
+    /*
+     * @enum tm.util.Ajax.DATA_CONVERTE_TABLE
+     * データコンバータテーブル
+     */
+    tm.util.Ajax.DATA_CONVERTE_TABLE = {
+        /* @method */
+        undefined: function(data) {
+            return data;
+        },
+
+        /* @method */
+        text: function(data) {
+            return data;
+        },
+
+        /* @method */
+        xml: function(data) {
+            var parser = new DOMParser();
+            var xml = parser.parseFromString(data, 'text/xml');
+
+            return xml;
+        },
+
+        /* @method */
+        dom: function(data) {
+            var div = document.createElement(&quot;div&quot;);
+            div.innerHTML = data;
+            return tm.dom.Element(div);
+        },
+
+        /* @method */
+        json: function(data) {
+            try {
+                return JSON.parse(data);
+            }
+            catch(e) {
+                console.dir(e);
+                console.dir(data);
+            }
+        },
+
+        /* @method */
+        script: function(data) {
+            eval(data);
+            return data;
+        },
+
+        /*
+         * @method
+         * ### Reference
+         * - &lt;http://efcl.info/adiary/Javascript/treat-binary&gt;
+         * @param {Object} data
+         */
+        bin: function(data) {
+            var bytearray = [];
+            for (var i=0, len=data.length; i&lt;len; ++i) {
+                bytearray[i] = data.charCodeAt(i) &amp; 0xff;
+            }
+            return bytearray;
+        },
+
+    };
+
+
+    tm.util.Ajax.DEFAULT_SETTINGS = AJAX_DEFAULT_SETTINGS;
+
+})();
+</pre>
+</body>
+</html>

@@ -1,0 +1,426 @@
+*{
+	margin:0;
+	padding: 0;
+}
+/*
+横幅：1400px
+縦幅：820px
+*/
+
+body#c1{
+	width: 1400px;	
+	margin:auto;
+	background-image: url("img/background/background01.png");
+	background-repeat: no-repeat;            /* 背景を繰り返さない */
+	background-position: 50% 0%;
+}
+
+body#c2{
+	width: 1400px;	
+	margin:auto;
+	background-image: url("img/background/background02.png");
+	background-repeat: no-repeat;            /* 背景を繰り返さない */
+	background-position: 50% 0%;
+}
+
+.menu-box {
+	/*background-color: #f0f8ff;*/
+	background-color: rgba(255,255,255,0.6);
+	height:30px;
+	width: 1380px;
+	float:left;
+	font-size: 80%;
+	padding:10px;
+	border: 1px solid #000000;
+	filter: alpha(opacity=90);
+	-moz-opacity: 0.9;
+	opacity: 0.9;
+
+}
+
+.help-box{
+	background-color: rgba(255,255,255,0.6);
+	width: 397px;
+	float:left;
+	border: 1px solid #000000;
+	border-left: none;
+	filter: alpha(opacity=90);
+	-moz-opacity: 0.9;
+	opacity: 0.9;
+	
+	
+}
+
+.code-box{
+	/*background-color: #f0fff0;*/
+	background-color: rgba(255,255,255,0.4);
+	width: 646px;
+	height: 480px;
+	float: left;
+	border: 1px solid #000000;
+	border-right: none;
+	border-bottom: none;
+	filter: alpha(opacity=90);
+	-moz-opacity: 0.9;
+	opacity: 0.9;
+}
+
+.anime-box{
+	/*background-color: #e6e6fa;*/
+	background-color: rgba(255,255,255,0.4);
+	width: 748px;
+	height: 560px;
+	float: right;
+	border: 1px solid #000000;
+	border-bottom: none;
+	filter: alpha(opacity=90);
+	-moz-opacity: 0.9;
+	opacity: 0.9;
+}
+
+.hint-box{
+	/*background-color: #fff890;*/
+	background-color: rgba(255,255,255,0.4);
+	width: 646px;
+	height: 260px;
+	float:left;
+	border: 1px solid #000000;
+	border-top: none;
+	border-right: none;
+	filter: alpha(opacity=90);
+	-moz-opacity: 0.9;
+	opacity: 0.9;
+}
+
+.console-box{
+	/*background-color: #ffb2cc;*/
+	background-color: rgba(255,255,255,0.4);
+	width: 748px;
+	height: 180px;
+	float:right;
+	border: 1px solid #000000;
+	border-top: none;
+	filter: alpha(opacity=90);
+	-moz-opacity: 0.9;
+	opacity: 0.9;
+}
+
+.console{
+	font-size:130%;
+	margin:0px 10px;
+	float:left;
+}
+
+#button2{
+	float:right;
+	margin:80px 10px 0px;
+}
+
+h4{
+	font-size: 80%;
+}
+
+p.question{
+	height: 130px;
+	width:380px;
+	font-size: "3";
+	padding:20px 25px 0px 25px;
+	margin:5px;
+	float:left;
+	line-height: 120%;
+	background-image: url("./img/roll.png");
+	background-repeat: no-repeat; 
+}
+
+p.code{
+	clear:both;
+	float:left;
+	margin:0px 5px 5px 5px;
+}
+
+p.title{
+	float:left;
+	margin: 10px;
+}
+
+.tab{
+	overflow: auto;
+}
+
+.tab li{
+	background:#ccc; 
+	padding:5px 20px;
+	float:left; 
+	margin-right:1px;
+	cursor: pointer;
+}
+
+.tab li.select{
+	background:#eee;
+}
+.content li{
+	background:#eee; 
+	padding:3px;
+}
+
+
+.hide {
+	display:none;
+	overflow: scroll; 
+	height:465px; 
+	overflow: auto;
+}
+
+ul{
+	list-style:none;
+}
+
+#button{
+	float:right;
+	width:150px;
+	height:50px;
+	margin:20px;
+	margin-right: 100px;
+	padding: 10px;
+}
+
+.resetbut{
+	float:right;
+	margin:25px 10px 25px 0px;
+}
+
+.code{
+	margin:10px;
+	float:left;
+}
+
+.toolbar{
+	padding:5px 10px;
+	margin: 0px;
+	background-color: #ffffff;
+	width: 720px;
+	height:50px;
+}
+
+#movenext{
+	float:right;
+}
+
+/*input#hint{
+	float:left;
+	top:100px;
+	left:30px;
+}*/
+
+input.hintb{
+	float:left;
+	margin-left:20px;
+	padding:10px 20px;
+	border:0;
+}
+
+.chara{
+	both:clear;
+	float:left;
+	width:100px;
+	height:120px;
+	margin:100px 15px 0px 15px;
+}
+
+.hint{
+	float:right;
+	margin:10px 230px 0px 0px;
+}
+
+.hinttable{
+	padding:10px 0px;
+	
+}
+
+.com {
+	position: relative;
+	background: #ffffff;
+	border: 1px solid #000000;
+	height: 150px;
+	width: 480px;
+	margin: 25px 5px 0px 5px;
+	float: right;
+	padding:10px;
+}
+.com:after, .com:before {
+	right: 100%;
+	top: 80%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.com:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-right-color: #ffffff;
+	border-width: 9px;
+	margin-top: -9px;
+}
+.com:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-right-color: #000000;
+	border-width: 11px;
+	margin-top: -11px;
+}
+
+.dic-text{
+	font-family: "851fontzatsu";
+}
+
+a:link{
+  color: #191970;
+}
+a:visited{
+  color: #708090;
+}
+a:hover{
+  color: #ffffff;
+}
+
+#menubar{
+	position:relative;
+}
+
+/*　ex1-1-1用　*/
+
+
+.kengo{
+	position:relative;
+	top:50px;
+	left:550px;	
+	height:500px;
+	width:375px;
+	
+	
+}
+
+.grand{
+	position:relative;
+	top:50px;
+	left:160px;
+	height:500px;
+	width:375px;
+	
+}
+
+.program{
+	position:relative;
+	height:200px;
+	width:500px;
+	right:280px;
+	top:-250px;
+}
+
+#cont{
+	position:relative;
+	top:-200px;
+	width:500px;
+	height:200px;
+	left:480px;
+	line-height: 25px;
+	
+}
+
+#words{
+	position:relative;
+	bottom:-250px;
+	width:1050px;
+	height:250px;
+	background-color:#ffffff;
+	border: 3px solid #000000;
+	margin:auto;
+	margin-top:-500px;
+}
+
+.space{
+	width:1000px;
+	position:absolute;
+}
+
+.bottom{
+	width:100px;
+	height:250px;
+	position:absolute;
+	right:0px;
+}
+
+#prev{
+	position:absolute;
+	top:20px;
+	background:none;
+    border:0;
+    width: auto;
+    overflow:visible;
+    cursor:pointer;
+}
+
+#next{
+	position:absolute;
+	bottom:20px;
+	background:none;
+    border:0;
+    width: auto;
+    overflow:visible;
+    cursor:pointer;
+}
+
+
+.movenext{
+	position:absolute;
+	width:150px;
+	height:50px;
+	right:100px;
+	bottom:0px;
+
+}
+
+.space{
+	font-size:150%;
+	font-weight:bold;	
+}
+
+p{
+	line-height: 25px;	
+}
+
+
+
+/*プルダウンメニュー装飾*/
+.select-box {
+  background: #FFFFFF;
+  border: 2px solid #87CEEB;
+  border-radius: 5px;
+  color: #000000;
+  font-size: 14px;
+  height: 30px;
+  line-height: 30px;
+  text-align: left;
+  text-indent: 5px;
+  vertical-align: middle;
+  width: 140px;
+}
+
+input{
+	overflow: hidden;
+	outline: none;
+}
+
+
+/*Codemirror*/
+      .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
+      .CodeMirror-selected  { background-color: (200,200,200,0.2) !important; }
+      .CodeMirror-selectedtext { color: white; }
+      .styled-background { background-color: rgba(0,20,255,0.2); }
+      .styled-background-null { background-color: rgba(255,255,255,0); }
+      .styled-background-red { 
+      		background-color:  rgba(255,0,0,0.3); }
+      .styled-background-white { background-color:  rgba(255,255,255,255); }
+      .styled-background-g { background-color: rgba(20,160,70,0.2); }

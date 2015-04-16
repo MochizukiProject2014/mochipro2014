@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+(function() { &quot;use strict&quot;; })();
+
+/*
+ * tm namespace
+ */
+var tm = tm || {};
+tm.global = window || global || this;
+
+// node.js
+if (typeof module !== 'undefined' &amp;&amp; module.exports) {
+    module.exports = tm;
+}
+
+
+(function() {
+
+<span id='tm-VERSION'>    /**
+</span>     * バージョン
+     */
+    tm.VERSION = '&lt;%= pkg.version %&gt;';
+
+<span id='tm-LIB_ROOT'>    /**
+</span>     * tmlib.js のルートパス
+     */
+    tm.LIB_ROOT = (function(){
+        if (!window.document) return ;
+
+        var scripts = document.getElementsByTagName(&quot;script&quot;);
+        for (var i=0, len=scripts.length; i&lt;len; ++i) {
+
+        }
+    })();
+
+<span id='tm-BROWSER'>    /**
+</span>     * ブラウザ
+     */
+    tm.BROWSER = (function() {
+        if (!window.navigator) return ;
+
+        if      (/chrome/i.test(navigator.userAgent))   { return &quot;Chrome&quot;;  }
+        else if (/safari/i.test(navigator.userAgent))   { return &quot;Safari&quot;;  }
+        else if (/firefox/i.test(navigator.userAgent))  { return &quot;Firefox&quot;; }
+        else if (/opera/i.test(navigator.userAgent))    { return &quot;Opera&quot;;   }
+        else if (/getcko/i.test(navigator.userAgent))   { return &quot;Getcko&quot;;  }
+        else if (/msie/i.test(navigator.userAgent))     { return &quot;IE&quot;;      }
+        else { return null; }
+    })();
+
+<span id='tm-VENDER_PREFIX'>    /**
+</span>     * ベンダープレフィックス
+     */
+    tm.VENDER_PREFIX = (function() {
+        if (!window) return ;
+
+        var map = {
+            &quot;Chrome&quot;    : &quot;webkit&quot;,
+            &quot;Safari&quot;    : &quot;webkit&quot;,
+            &quot;Firefox&quot;   : &quot;moz&quot;,
+            &quot;Opera&quot;     : &quot;o&quot;,
+            &quot;IE&quot;        : &quot;ms&quot;
+        };
+
+        return map[tm.BROWSER] || &quot;&quot;;
+    })();
+
+
+<span id='tm-VENDER_PREFIX-property-isMobile'>    /**
+</span>     * モバイルかどうかの判定フラグ
+     */
+    tm.isMobile = (function() {
+        if (!window.navigator) return ;
+
+        var ua = navigator.userAgent;
+        return (ua.indexOf(&quot;iPhone&quot;) &gt; 0 || ua.indexOf(&quot;iPad&quot;) &gt; 0 || ua.indexOf(&quot;Android&quot;) &gt; 0);
+    })();
+    
+    tm.isLocal = (function() {
+        var flag = (location.protocol == &quot;file:&quot;);
+        return function() { return flag; };
+    })();
+    
+<span id='tm-VENDER_PREFIX-method-createClass'>    /**
+</span>     * クラス定義
+     */
+    tm.createClass = function(prop) {
+        // デフォルト値
+        prop.init = prop.init || function() {};
+        prop.superClass = prop.superClass || null;
+
+        // クラス作成
+        var tm_class = function() {
+            var temp = new tm_class.prototype.creator();
+            tm_class.prototype.init.apply(temp, arguments);
+            return temp
+        };
+
+        // 継承
+        if (prop.superClass) {
+            prop.init.owner = tm_class;
+            tm_class.prototype = Object.create(prop.superClass.prototype);
+            tm_class.prototype.superInit = function() {
+                var caller    = this.superInit.caller; // 呼び出しもと
+                var subclass  = caller.owner; // 呼び出しもとを持っているクラス
+                var superclass= subclass.prototype.superClass; // 呼び出しもとクラスの親クラス
+                var superInit = superclass.prototype.init; // 呼び出しもとクラスの親クラスの init
+//                var superMethod = this.superInit.caller.owner.prototype.superClass.prototype.init;
+
+                superInit.apply(this, arguments);
+            };
+            tm_class.prototype.constructor = tm_class;
+        }
+
+        tm_class.prototype.selfClass = tm_class;
+
+        // プロパティを追加
+        for (var key in prop) {
+            tm_class.prototype[key] = prop[key];
+        }
+
+        // クリエイタの生成
+        tm_class.prototype.creator = function() { return this; };
+        // クリエイタの継承
+        tm_class.prototype.creator.prototype = tm_class.prototype;
+
+        tm_class._class = true;
+
+        return tm_class;
+    };
+
+    tm.classes = {};
+    var _calssDefinedCallback = {};
+
+<span id='tm-VENDER_PREFIX-method-define'>    /**
+</span>     * クラス定義
+     * phi クラス定義 &lt;http://jsdo.it/phi/eEmj&gt;
+     * new と apply を同時に使う &lt;http://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible&gt;
+     */
+    tm.define = function(path, prop) {
+        var index       = path.lastIndexOf(&quot;.&quot;);
+        var nsName      = path.substring(0, index);
+        var ns          = (nsName) ? tm.using(nsName) : tm.global;
+        var className   = (nsName) ? path.substring(index+1) : path;
+        var bind        = Function.prototype.bind;
+        var unshift     = Array.prototype.unshift;
+
+        prop._path      = path;
+        prop._className = className;
+
+        var _class = null;
+        var superClass = prop.superClass;
+
+        if (superClass &amp;&amp; typeof superClass == &quot;string&quot;) {
+            var superClassName = superClass;
+            superClass = tm.using(superClass);
+
+            if (superClass._class) {
+                prop.superClass = superClass;
+                _class = tm.createClass(prop);
+            }
+            else {
+                // 親クラスが呼ばれた際に再度実行する
+                if (!_calssDefinedCallback[superClassName]) {
+                    _calssDefinedCallback[superClassName] = [];
+                }
+
+                _calssDefinedCallback[superClassName].push(function() {
+                    tm.define(path, prop);
+                });
+
+                return ;
+            }
+        }
+        else {
+            _class = tm.createClass(prop);
+        }
+
+        // キャッシュしておく
+        ns[className] = tm.classes[path] = _class;
+
+        if (_calssDefinedCallback[path]) {
+            var list = _calssDefinedCallback[path];
+            for (var i=0,len=list.length; i&lt;len; ++i) {
+                list[i]();
+            }
+            delete _calssDefinedCallback[path];
+        }
+
+        return _class;
+    };
+
+
+<span id='tm-VENDER_PREFIX-method-namespace'>    /**
+</span>     * 名前空間
+     * typescript の mudle 機能を参考
+     * https://sites.google.com/site/jun1sboardgames/programming/typescript
+     */
+    tm.namespace = function(ns, fn) {
+        var ns = tm.using(ns);
+
+        fn.call(ns, ns);
+    };
+
+<span id='tm-VENDER_PREFIX-method-using'>    /**
+</span>     * 使用
+     */
+    tm.using = function(ns) {
+        if (tm.classes[ns]) return tm.classes[ns];
+
+        var path = ns.split(/[,.\/ ]|::/);
+        var current = tm.global;
+
+        for (var i=0,len=path.length; i&lt;len; ++i) {
+            var dir = path[i];
+            current = current[dir] || (current[dir]={});
+        }
+
+        // キャッシュ
+        tm.classes[ns] = current;
+
+        return current;
+    };
+    
+    tm.globalize = function(obj) {
+        tm.global.$strict(obj);
+        
+        return this;
+    };
+    
+    tm.import = function(namespace) {
+        var target = tm[namespace];
+        tm.global.$strict(target);
+        
+        return this;
+    };
+
+<span id='tm-VENDER_PREFIX-method-setLoop'>    /**
+</span>     * ループ
+     */
+    tm.setLoop = function(fn, delay) {
+        var temp = function() {
+            // 開始時間
+            var start = (new Date()).getTime();
+
+            // 実行
+            fn();
+
+            // 経過時間
+            var progress = (new Date()).getTime() - start;
+            // 次回までの待ち時間を計算
+            var newDelay = delay-progress;
+            newDelay = (newDelay &gt; 0) ? newDelay : 0;
+
+            // 次回呼び出し登録
+            setTimeout(arguments.callee, newDelay);
+        };
+        setTimeout(temp, delay);
+    };
+
+    tm.inform = function(parent){
+        parent = parent || document.body;
+
+        var eInfo = document.createElement(&quot;div&quot;);
+        eInfo.setAttribute(&quot;class&quot;, &quot;tm-info&quot;);
+        eInfo.addEventListener(&quot;mouseover&quot;, function(){
+            this.style.opacity = 0.9;
+        }, false);
+        eInfo.addEventListener(&quot;mouseout&quot;, function(){
+            this.style.opacity = 0.25;
+        }, false);
+
+        with(eInfo.style) {
+            position    = &quot;absolute&quot;;
+            width       = &quot;100%&quot;;
+            // top         = &quot;0px&quot;;
+            bottom      = &quot;0px&quot;;
+            left        = &quot;0px&quot;;
+            right       = &quot;0px&quot;;
+            margin      = &quot;0px&quot;;
+            padding     = &quot;10px 0px&quot;;
+            zIndex      = &quot;0&quot;;
+            textAlign   = &quot;center&quot;;
+            fontFamily  = '&quot;Meiryo&quot;, &quot;メイリオ&quot;, &quot;ヒラギノ角ゴ Pro W3&quot;, sans-serif';
+            fontSize    = &quot;13px&quot;;
+            opacity     = &quot;0.25&quot;;
+            backgroundColor = &quot;rgb(230,230,255)&quot;;
+            background  = &quot;-webkit-linear-gradient(top, hsla(0, 100%, 100%, 0.8) 0%, hsla(0, 100%, 100%, 0.3) 50%, hsla(0, 100%, 100%, 0.1) 51%, hsla(0, 100%, 100%, 0.2) 100%), rgb(190,190,210)&quot;;
+            background  = &quot;-moz-linear-gradient(top, hsla(0, 100%, 100%, 0.8) 0%, hsla(0, 100%, 100%, 0.3) 50%, hsla(0, 100%, 100%, 0.1) 51%, hsla(0, 100%, 100%, 0.2) 100%), rgb(190,190,210)&quot;;
+            WebkitTransition = &quot;1s&quot;;
+            MozTransition = &quot;1s&quot;;
+        }
+
+        /*
+        eInfo.innerHTML = &quot;このプログラムで利用している JavaScript ライブラリ 『tmlib.js』 は&lt;a href='{tmlibLink}'&gt;こちら&lt;/a&gt;からダウンロードできます. 詳しくは&lt;a href='{blogLink}'&gt;Blog&lt;/a&gt;に書いています.&quot;.format({
+            &quot;tmlibLink&quot;: &quot;http://code.google.com/p/tmlib-js/downloads/list&quot;,
+            &quot;blogLink&quot; : &quot;http://tmlife.net/tmlib&quot;
+        });
+        */
+        eInfo.innerHTML = &quot;このプログラムで利用している JavaScript ライブラリ 『tmlib.js』 については&lt;a href='{projectLink}'&gt;こちら&lt;/a&gt;.&quot;.format({
+            &quot;projectLink&quot; : &quot;https://github.com/phi1618/tmlib.js&quot;
+        });
+        parent.appendChild(eInfo);
+    };
+
+})();
+
+
+(function() {
+
+    if (!window) return ;
+
+    if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window[tm.VENDER_PREFIX + &quot;RequestAnimationFrame&quot;] || function(callback) {
+            window.setTimeout(callback, 1000/60);
+        };
+    }
+
+    if (!window.cancelRequestAnimationFrame) {
+        window.cancelRequestAnimationFrame = window[tm.VENDER_PREFIX + &quot;CancelRequestAnimationFrame&quot;] || window.clearTimeout;
+    }
+
+})();
+
+
+
+(function() {
+    if (!window.document) return ;
+
+    _loadCheckList = [];
+    tm.addLoadCheckList = function(obj) {
+        console.assert(obj.isLoaded !== undefined, &quot;isLoaded が定義されていません!!&quot;);
+
+        _loadCheckList.push(obj);
+    };
+
+    _preloadListners = [];
+    _mainListners = [];
+
+    tm.preload = function(fn) { _preloadListners.push(fn); };
+    tm.main    = function(fn) { _mainListners.push(fn); };
+
+    var _preload = function() {
+
+        for (var i=0,len=_preloadListners.length; i&lt;len; ++i) {
+            _preloadListners[i]();
+        }
+        _preloadListners = [];
+    };
+
+    var _main = function() {
+        for (var i=0,len=_loadCheckList.length; i&lt;len; ++i) {
+            var c = _loadCheckList[i];
+            if (c.isLoaded() == false) {
+                setTimeout(arguments.callee, 0);
+                return ;
+            }
+        }
+
+        for (var i=0,len=_mainListners.length; i&lt;len; ++i) {
+            _mainListners[i]();
+        }
+
+        _mainListners = [];
+    };
+
+    window.addEventListener(&quot;load&quot;, function() {
+
+        _preload();
+
+        _main();
+
+    }, false);
+
+})();</pre>
+</body>
+</html>

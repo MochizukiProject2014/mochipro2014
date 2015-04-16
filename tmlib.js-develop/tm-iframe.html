@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <title>tmlib.js Examples</title>
+   
+      <!-- My custom components -->
+      <script type="text/javascript" src="./../build/tmlib.js"></script>
+      
+      <style>
+      html, body {
+        height: 200px;
+      }
+      </style>
+
+      <script type="text/javascript">
+          function loadInlineExample(code, options, callback) {
+              try {
+                  console.log(code, options, callback);
+                  document.body.innerHTML = '';
+                  
+                  runDisplayExample(code);
+                  callback && callback(true);
+              } catch (e) {
+                  document.body.innerHTML = e;
+                  callback && callback(false, e);
+              }
+          };
+          
+          var runDisplayExample = function(code) {
+            var canvas = document.createElement('canvas');
+            canvas.setAttribute("id", "world");
+            document.body.appendChild(canvas);
+            
+            var app = tm.app.CanvasApp(canvas);
+            
+            tm.define("MainScene", {
+              superClass: "tm.app.Scene",
+              
+              init: function() {
+                this.superInit();
+                eval(code);
+              }
+            });
+            
+            app.replaceScene(MainScene());
+            
+            app.run();
+          };
+      </script>
+  </head>
+  <body>
+    <canvas></canvas>
+  </body>
+  </html>

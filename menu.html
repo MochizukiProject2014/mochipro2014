@@ -1,0 +1,45 @@
+<html>
+
+ <head>
+  <title>章選択画面</title>
+  <meta charset="UTF-8">
+
+
+    <link rel="stylesheet" href="js/jquery-ui-1.11.1.custom/jquery-ui.css">
+    <script type="text/javascript" src="js/jquery-ui-1.11.1.custom/external/jquery/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.11.1.custom/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/cookiemenu.js"></script>
+    <link href="./style.css" rel="stylesheet" type="text/css">
+ </head>
+
+ <body>
+ <div class = "menu-box">
+        <a href="./index.html">TOP</a> <span id="divider">&nbsp;>&nbsp;</span> 
+        <a href="./menu.html">MENU</a> 
+</div>
+<br>
+<div id="chapmenu">
+    <input type="image" value="　第一章　導入　" onclick="location.href='./FLASH1/story1_1.html'"  src = "img/menubtn/c1btn_on.png" id = "c1" ><div id = "chapter1" style="display:inline;"></div><br><br>
+    <input type="image" value="　第二章　変数　" onclick="location.href='./FLASH2/story2_1.html'" src = "img/menubtn/c2btn_off.png" id = "c2" disabled><div id = "chapter2" style="display:inline;"></div><br><br>
+    <input type="image" value="第三章　条件分岐" onclick="location.href='./FLASH3/story3_1.html'" src = "img/menubtn/c3btn_off.png" id = "c3" disabled><div id = "chapter3" style="display:inline;"></div><br><br>
+    <input type="image" value="第四章　繰り返し" onclick="location.href='./FLASH4/story4_1.html'" src = "img/menubtn/c4btn_off.png" id = "c4" disabled><br><br>
+    <input type="image" value="　第五章　配列　" onclick="location.href='./FLASH5/story5_1.html'" src = "img/menubtn/c5btn_off.png" id = "c5" disabled><br><br>
+    <input type="image" value="　フリーモード　" onclick="location.href='./free.html'" src = "img/menubtn/freebtn_on.png" id = "freemode" >
+<!--     <input type="button" value="ギャラリー" onclick="location.href='./gallery.html'"><br><br> -->
+</div>
+
+
+<div class = "guide-box">
+  <img src="img/guide.png"/">
+  <img src="img/character/littlecat_2.png">
+  <p id="guide_menu"><b>よくきたにゃ～<br>やりたい章を選ぶにゃ</p>
+</div>
+
+
+
+
+ </body>
+
+</html>

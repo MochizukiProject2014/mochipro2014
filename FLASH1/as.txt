@@ -1,0 +1,123 @@
+//通常fla
+import flash.events.MouseEvent;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.Font;
+
+stop();
+
+var txt1:TextField = new TextField();
+txt1.type = TextFieldType.DYNAMIC;
+txt1.width=750;
+txt1.height=90;
+txt1.x=15;
+txt1.y=490;
+
+
+
+
+var txt1_1:String="テキストサンプルを一文字ずつ表示することに成功いたしました。"
+txt1.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt1);
+
+function onClick1(e:MouseEvent){
+	gotoAndPlay(2);
+	removeChild(txt1);
+	stage.removeEventListener(MouseEvent.CLICK,onClick1);
+	stage.removeEventListener(MouseEvent.CLICK,tClick);
+}
+
+this.addEventListener(Event.ENTER_FRAME,setEnter);
+function setEnter(evt:Event):void{
+	sampleFunc();
+}
+function tClick(e:MouseEvent){
+	txt1.appendText(txt1_1.substr(0,txt1_1.length));
+	this.removeEventListener(Event.ENTER_FRAME,setEnter);
+	stage.addEventListener(MouseEvent.CLICK,onClick1);
+}
+function sampleFunc():void{
+	if(txt1_1.length>0){
+		txt1.appendText(txt1_1.substr(0,1));
+		txt1_1 = txt1_1.slice(1,txt1_1.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick);
+	}else{
+		this.removeEventListener(Event.ENTER_FRAME,setEnter);
+		stage.addEventListener(MouseEvent.CLICK,onClick1);
+
+	}
+}
+
+
+//赤文字用fla
+import flash.events.MouseEvent;
+
+import flash.text.TextField;
+
+import flash.text.TextFormat;
+
+import flash.text.Font;
+
+
+stop();
+
+var txt1_1:String="テキストサンプルを"
+
+var txt1:TextField = new TextField();
+txt1.type = TextFieldType.DYNAMIC;
+txt1.width=txt1_1.length*25;
+txt1.height=30;
+txt1.x=15;
+txt1.y=490;
+
+var txt1_2:String="表示することに"
+
+var txt2:TextField = new TextField();
+txt2.type = TextFieldType.DYNAMIC;
+txt2.width=txt1_2.length*25;
+txt2.height=30;
+txt2.x=txt1_1.length*25;
+txt2.y=490;
+
+txt1.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0x0, true);
+addChild(txt1);
+txt2.defaultTextFormat = new TextFormat("_HGPGothicE", 25, 0xFF0000, true);
+addChild(txt2);
+
+function onClick1(e:MouseEvent){
+	gotoAndPlay(2);
+	removeChild(txt1);
+	removeChild(txt2);
+	stage.removeEventListener(MouseEvent.CLICK,onClick1);
+	stage.removeEventListener(MouseEvent.CLICK,tClick);
+}
+
+this.addEventListener(Event.ENTER_FRAME,setEnter);
+function setEnter(evt:Event):void{
+	sampleFunc();
+}
+function tClick(e:MouseEvent){
+	txt1.appendText(txt1_1.substr(0,txt1_1.length));
+	txt2.appendText(txt1_2.substr(0,txt1_2.length));
+	this.removeEventListener(Event.ENTER_FRAME,setEnter);
+	stage.addEventListener(MouseEvent.CLICK,onClick1);
+}
+function sampleFunc():void{
+	if(txt1_1.length>0){
+		txt1.appendText(txt1_1.substr(0,1));
+		txt1_1 = txt1_1.slice(1,txt1_1.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick);
+	}else if(txt1_2.length>0){
+		txt2.appendText(txt1_2.substr(0,1));
+		txt1_2 = txt1_2.slice(1,txt1_2.length);
+		stage.addEventListener(MouseEvent.CLICK,tClick);
+	}else{
+		this.removeEventListener(Event.ENTER_FRAME,setEnter);
+		stage.addEventListener(MouseEvent.CLICK,onClick1);
+
+	}
+}
+
+
+
+

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * texture.js
+ */
+
+(function() {
+    
+<span id='tm-asset-Texture'>    /**
+</span>     * @class tm.asset.Texture
+     * テクスチャクラス
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define(&quot;tm.asset.Texture&quot;, {
+        superClass: &quot;tm.event.EventDispatcher&quot;,
+        
+<span id='tm-asset-Texture-property-element'>        /** window.document.Image */
+</span>        element: null,
+
+<span id='tm-asset-Texture-property-loaded'>        /** ロード済みかどうか */
+</span>        loaded: false,
+        
+<span id='tm-asset-Texture-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(src) {
+            this.superInit();
+            
+            this.element = new Image();
+            if ( !tm.isLocal() &amp;&amp; !(/^data:/.test(src)) ) {
+                this.element.crossOrigin = &quot;anonymous&quot;;
+            }
+            this.element.src = src;
+            
+            var self = this;
+            this.element.onload = function() {
+                self.loaded = true;
+                var e = tm.event.Event(&quot;load&quot;);
+                self.dispatchEvent( e );
+            };
+
+            this.element.onerror = function(e) {
+                console.error(&quot;[tmlib] {0}の読み込みに失敗!&quot;.format(src));
+                
+                var key = src.split('/').last.replace('.png', '').split('?').first.split('#').first;
+                var elm = e.target;
+                
+                elm.src = &quot;http://dummyimage.com/128x128/444444/eeeeee&amp;text=&quot; + key;
+                elm.onerror = null;
+            };
+        },
+        
+<span id='tm-asset-Texture-method-getElement'>        /**
+</span>         * window.document.Image クラスのインスタンスを返す
+         */
+        getElement: function() {
+            return this.element;
+        },
+    });
+    
+<span id='tm-asset-Texture-property-width'>    /**
+</span>     * @property    width
+     * 幅
+     */
+    tm.asset.Texture.prototype.getter(&quot;width&quot;, function() {
+        return this.element.width;
+    });
+    
+<span id='tm-asset-Texture-property-height'>    /**
+</span>     * @property    height
+     * 高さ
+     */
+    tm.asset.Texture.prototype.getter(&quot;height&quot;, function() {
+        return this.element.height;
+    });
+    
+})();
+
+(function(){
+
+    /*
+     * @static
+     * @method
+     * ### ref
+     * http://dummyimage.com/
+     */
+    /*
+    tm.graphics.TextureManager.loadDummy = function(key, param) {
+        param = param || {};
+
+        var paths = [&quot;http://dummyimage.com&quot;];
+        paths.push(param.size || 256);
+        paths.push(param.bgColor || &quot;aaa&quot;);
+        paths.push(param.color || &quot;000&quot;);
+        paths.push(param.format || &quot;png&quot;);
+
+        var src = paths.join('/');
+        if (param.text) {
+            src += '&amp;text=' + param.text;
+        }
+
+        this.textures[key] = tm.graphics.Texture(src);
+        this.loaded = false;
+    };
+    */
+
+})();
+
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+    
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>Juggling | tmlib.js</title>
+        
+        <link rel="apple-touch-icon-precomposed" href="icon.png" />
+        
+        <script src="../../build/tmlib.js"></script>
+        <script src="http://dat-gui.googlecode.com/git/build/dat.gui.js"></script>
+        <script src="http://rawgithub.com/mrdoob/stats.js/master/src/Stats.js"></script>
+        
+        <script>
+            
+            // 定数
+            var CIRCLE_RADIUS   = 30;
+            
+            var Circle = tm.createClass({
+                superClass: tm.app.CanvasElement,
+                
+                init: function(color) {
+                    this.superInit();
+                    
+                    this.radius     = CIRCLE_RADIUS;
+                    this.color      = color;
+                    this.blendMode  = "lighter";
+                    this.alpha      = 0.75;
+                    this.v = tm.geom.Vector2();
+                    this.v.setRandom(270-20, 270+20, 12);
+                    this.setInteractive(true);
+                },
+                
+                update: function() {
+                    this.v.y += 0.25;
+                    
+                    this.position.add(this.v);
+                    
+                    var bottom = app.canvas.height - this.height/2;
+                    if (this.y > bottom) {
+                        this.y = bottom;
+                        this.v.y *= -0.99;
+                    }
+                    
+                    if (this.x < this.radius) {
+                        this.x = this.radius;
+                        this.v.x *= -1;
+                    }
+                    if (this.x > app.canvas.width-this.radius) {
+                        this.x = app.canvas.width-this.radius;
+                        this.v.x *= -1;
+                    }
+                },
+                
+                draw: function(c) {
+                    c.fillStyle = this.color;
+                    //c.fillRect(0, 0, this.width, this.height);
+                    c.fillCircle(0, 0, this.radius);
+                },
+                
+                onpointingstart: function() {
+                    this.v.setRandom(270-20, 270+20, 12);
+                    var se = tm.sound.SoundManager.get("bound")
+                    se.volume = 0.5;
+                    se.play();
+                },
+                
+                onmouseover: function() {
+                    this.alpha = 1.0;
+                },
+                
+                onmouseout: function() {
+                    this.alpha = 0.75;
+                },
+                
+                isHitPoint: function(x, y) {
+                    var o = {x:x, y:y};
+                    var d = tm.geom.Vector2.distanceSquared(this, o);
+                    return d <= Math.pow(this.radius, 2);
+                }
+            });
+            
+            var app = null;
+            
+            tm.preload(function() {
+                tm.sound.SoundManager.add("bound", "../../resource/se/puu89");
+            });
+            
+            tm.main(function() {
+                app = tm.app.CanvasApp("#c");
+                app.fitWindow();
+                app.enableStats();
+                
+                app.currentScene.update = function(app) {
+                    if (app.frame % 300 == 0) {
+                        var c = Circle(
+                            "hsla({0}, 75%, 50%, 0.75)".format(Math.rand(0, 360))
+                        );
+                        app.currentScene.addChild(c);
+                        c.y = 300;
+                        c.x = 320;
+                    }
+                };
+                
+                app.run();
+            });
+            
+            
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="c" width="640" height="480"></canvas>
+    </body>
+    
+</html>

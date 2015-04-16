@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * button.js
+ */
+
+tm.ui = tm.ui || {};
+
+
+(function() {
+    
+<span id='tm-ui-LabelButton'>    /**
+</span>     * @class tm.ui.LabelButton
+     * LabelButton
+     * @extends tm.display.Label
+     */
+    tm.ui.LabelButton = tm.createClass({
+        superClass: tm.display.Label,
+
+<span id='tm-ui-LabelButton-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(text) {
+            this.superInit(text);
+            
+            this.alpha = tm.ui.LabelButton.DEFAULT_ALPHA;
+            this.setAlign(&quot;center&quot;).setBaseline(&quot;middle&quot;);
+            
+            this.setInteractive(true);
+            this.boundingType = &quot;rect&quot;;
+            
+            this.addEventListener(&quot;pointingover&quot;, function() {
+                this.tweener.clear();
+                this.tweener.fadeIn(250);
+            }.bind(this));
+            this.addEventListener(&quot;pointingout&quot;, function() {
+                this.tweener.clear();
+                this.tweener.fade(tm.ui.LabelButton.DEFAULT_ALPHA, 250);
+            }.bind(this));
+            
+            /*
+            var d = this.draw;
+            this.draw = function(canvas) {
+                d.call(this, canvas);
+                this.drawBoundingRect(canvas);
+            }
+            /*
+            */
+        }
+    });
+    
+<span id='tm-ui-LabelButton-static-property-DEFAULT_ALPHA'>    /**
+</span>     * @static
+     * @property
+     * デフォルトとなるアルファ値
+     */
+    tm.ui.LabelButton.DEFAULT_ALPHA = 0.5;
+    
+})();
+
+
+(function() {
+    
+<span id='tm-ui-IconButton'>    /**
+</span>     * @class tm.ui.IconButton
+     * IconButton
+     * @extends tm.display.Sprite
+     */
+    tm.ui.IconButton = tm.createClass({
+        superClass: tm.display.Sprite,
+        
+<span id='tm-ui-IconButton-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(texture) {
+            if (texture) {
+                this.superInit(texture, texture.width, texture.height);
+            }
+            else {
+                this.superInit();
+            }
+            
+            this.alpha = tm.ui.IconButton.DEFAULT_ALPHA;
+            
+            this.setInteractive(true);
+            this.boundingType = &quot;rect&quot;;
+            this.addEventListener(&quot;pointingover&quot;, function() {
+                this.tweener.clear();
+                this.tweener.fade(1, 250);
+            });
+            this.addEventListener(&quot;pointingout&quot;, function() {
+                this.tweener.clear();
+                this.tweener.fade(tm.ui.LabelButton.DEFAULT_ALPHA, 250);
+            });
+        },
+    });
+    
+<span id='tm-ui-IconButton-static-property-DEFAULT_ALPHA'>    /**
+</span>     * @static
+     * @property
+     * デフォルトとなるアルファ値
+     */
+    tm.ui.IconButton.DEFAULT_ALPHA = 0.5;
+    
+})();
+
+
+(function() {
+    
+<span id='tm-ui-GlossyButton'>    /**
+</span>     * @class tm.ui.GlossyButton
+     * glossy button
+     * @extends tm.display.Shape
+     */
+    tm.ui.GlossyButton = tm.createClass({
+        superClass: tm.display.Shape,
+
+<span id='tm-ui-GlossyButton-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(width, height, backgroundColor, text) {
+            this.superInit(width, height);
+            
+            text  = text  || &quot;Button&quot;;
+            this.backgroundColor = backgroundColor || &quot;black&quot;;
+            this.alpha = tm.ui.GlossyButton.DEFAULT_ALPHA;
+            
+            this.setInteractive(true);
+            this.boundingType = &quot;rect&quot;;
+            this.addEventListener(&quot;pointingover&quot;, function() {
+                this.tweener.clear();
+                this.tweener.fade(1.0, 250);
+            });
+            this.addEventListener(&quot;pointingout&quot;, function() {
+                this.tweener.clear();
+                this.tweener.fade(tm.ui.GlossyButton.DEFAULT_ALPHA, 250);
+            });
+            
+            // ラベル
+            this.label = tm.display.Label(text || &quot;&quot;).addChildTo(this);
+            this.label.setAlign(&quot;center&quot;).setBaseline(&quot;middle&quot;);
+            
+            this._refresh();
+        },
+
+<span id='tm-ui-GlossyButton-method-setBackgroundColor'>        /**
+</span>         * 背景色をセット
+         */
+        setBackgroundColor: function(backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            
+            this._refresh();
+            
+            return this;
+        },
+
+<span id='tm-ui-GlossyButton-method-_refresh'>        /**
+</span>         * リフレッシュ
+         * @private
+         */
+        _refresh: function() {
+            // ボタン描画
+            var c = this.canvas;
+            c.resize(this.width, this.height);
+            c.fillStyle = this.backgroundColor;
+            c.fillRoundRect(2, 2, this.width-4, this.height-4, 10);
+            c.strokeStyle   = &quot;rgba(100,100,100,0.75)&quot;;
+            c.lineWidth     = 2;
+            c.strokeRoundRect(2, 2, this.width-4, this.height-4, 10);
+            
+            // テカリ
+            c.roundRect(2, 2, this.width-4, this.height-4, 10);
+            c.clip();
+            
+            var grad = tm.graphics.LinearGradient(0, 0, 0, this.height);
+            
+            // grad.addColorStop(0.0, &quot;hsl(  0, 75%, 50%)&quot;);
+            // grad.addColorStop(0.5, &quot;hsl(120, 75%, 50%)&quot;);
+            // grad.addColorStop(1.0, &quot;hsl(240, 75%, 50%)&quot;);
+            grad.addColorStop(0.0, &quot;rgba(255,255,255,0.9)&quot;);
+            grad.addColorStop(0.5, &quot;rgba(255,255,255,0.5)&quot;);
+            grad.addColorStop(0.51, &quot;rgba(255,255,255,0.2)&quot;);
+            grad.addColorStop(1.0, &quot;rgba(255,255,255,0.0)&quot;);
+            c.setGradient(grad);
+            c.fillRect(2, 2, this.width-4, this.height-4, 10);
+            
+            // ラベルのサイズをリセット
+            this.label.setSize(this.width, this.height);
+        },
+    });
+
+<span id='tm-ui-GlossyButton-static-property-DEFAULT_ALPHA'>    /**
+</span>     * @static
+     * @property
+     * デフォルトとなるアルファ値
+     */
+    tm.ui.GlossyButton.DEFAULT_ALPHA = 0.5;
+    
+    
+})();
+
+
+(function() {
+
+<span id='tm-ui-FlatButton'>    /**
+</span>     * @class tm.ui.FlatButton
+     * フラットデザインのボタン
+     * @extends tm.display.Shape
+     */
+    tm.define(&quot;tm.ui.FlatButton&quot;, {
+        superClass: tm.display.Shape,
+
+<span id='tm-ui-FlatButton-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(param) {
+            param.$safe({
+                width: 300,
+                height: 100,
+                bgColor: &quot;rgb(180, 180, 180)&quot;,
+                text: &quot;ABC&quot;,
+                fontSize: 50,
+                fontFamily: &quot;'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif&quot;,
+            });
+
+            this.superInit(param.width, param.height);
+
+            this.canvas.clearColor(param.bgColor);
+
+            this.setInteractive(true);
+            this.setBoundingType(&quot;rect&quot;);
+
+            this.label = tm.display.Label(param.text).addChildTo(this);
+            this.label.setFontSize(param.fontSize).setFontFamily(param.fontFamily).setAlign(&quot;center&quot;).setBaseline(&quot;middle&quot;);
+        },
+    });
+
+
+
+})();
+
+
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * renderer.js
+ */
+
+ 
+(function() {
+    
+<span id='tm-display-CanvasRenderer'>    /**
+</span>     * @class tm.display.CanvasRenderer
+     * キャンバス描画クラス
+     */
+    tm.define(&quot;tm.display.CanvasRenderer&quot;, {
+<span id='tm-display-CanvasRenderer-property-canvas'>        /** キャンバス */
+</span>        canvas: null,
+
+<span id='tm-display-CanvasRenderer-property-'>        /** @property @private _context     コンテキスト */
+</span>
+<span id='tm-display-CanvasRenderer-method-constructor'>        /**
+</span>         * @constructor
+         * コンストラクタ
+         */
+        init: function(canvas) {
+            this.canvas = canvas;
+            this._context = this.canvas.context;
+        },
+
+<span id='tm-display-CanvasRenderer-method-render'>        /**
+</span>         * 描画
+         */
+        render: function(root) {
+            this.canvas.save();
+            this.renderObject(root);
+            this.canvas.restore();
+        },
+
+<span id='tm-display-CanvasRenderer-method-renderObject'>        /**
+</span>         * オブジェクトを描画
+         */
+        renderObject: function(obj) {
+            if (obj.visible === false) return ;
+            var context = this._context;
+
+            // TODO: 別の場所で呼ぶよう調整する
+            obj._dirtyCalc &amp;&amp; obj._dirtyCalc();
+
+            // 描画可能かをチェック
+            if (!this._checkRenderable(obj)) {
+                // 子供達のみ描画実行
+                if (obj.children.length &gt; 0) {
+                    var tempChildren = obj.children.slice();
+                    for (var i=0,len=tempChildren.length; i&lt;len; ++i) {
+                        this.renderObject(tempChildren[i]);
+                    }
+                }
+
+                return ;
+            }
+
+            // 
+            if (!obj.draw) {
+                this._setRenderFunction(obj);
+            }
+
+            // 情報をセット
+            if (obj.fillStyle)   context.fillStyle   = obj.fillStyle;
+            if (obj.strokeStyle) context.strokeStyle = obj.strokeStyle;
+            context.globalAlpha    = obj._worldAlpha;
+            context.globalCompositeOperation = obj.blendMode;
+            
+            if (obj.shadowBlur) {
+                context.shadowColor   = obj.shadowColor;
+                context.shadowOffsetX = obj.shadowOffsetX;
+                context.shadowOffsetY = obj.shadowOffsetY;
+                context.shadowBlur    = obj.shadowBlur;
+            }
+            else {
+                context.shadowOffsetX = 0;
+                context.shadowOffsetY = 0;
+                context.shadowColor   = &quot;rgba(0, 0, 0, 0)&quot;;
+            }
+            
+            // 行列をセット
+            var m = obj._worldMatrix.m;
+            context.setTransform( m[0], m[3], m[1], m[4], m[2], m[5] );
+            
+
+            if (obj.clipping) {
+                context.save();
+
+                // クリップ処理を実行
+                if (obj.clip) {
+                    obj.clip();
+                }
+                else {
+                    onclip.call(obj, this.canvas);
+                }
+                context.clip();
+
+                obj.draw(this.canvas);
+                
+                // 子供達も実行
+                if (obj.children.length &gt; 0) {
+                    var tempChildren = obj.children.slice();
+                    for (var i=0,len=tempChildren.length; i&lt;len; ++i) {
+                        this.renderObject(tempChildren[i]);
+                    }
+                }
+
+                context.restore();
+            }
+            else {
+                obj.draw(this.canvas);
+                
+                // 子供達も実行
+                if (obj.children.length &gt; 0) {
+                    var tempChildren = obj.children.slice();
+                    for (var i=0,len=tempChildren.length; i&lt;len; ++i) {
+                        this.renderObject(tempChildren[i]);
+                    }
+                }
+            }
+        },
+
+<span id='tm-display-CanvasRenderer-method-_checkRenderable'>        /**
+</span>         * @private
+         */
+        _checkRenderable: function(obj) {
+            if (obj._renderable === undefined) {
+                obj._renderable = (obj instanceof tm.display.CanvasElement);
+            }
+            return obj._renderable;
+        },
+
+<span id='tm-display-CanvasRenderer-method-_setRenderFunction'>        /**
+</span>         * @private
+         */
+        _setRenderFunction: function(obj) {
+            if (obj instanceof tm.display.Sprite) {
+                obj.draw = renderFuncList[&quot;sprite&quot;];
+            }
+            else if (obj instanceof tm.display.MapSprite) {
+                obj.draw = function() {};
+            }
+            else if (obj instanceof tm.display.Label) {
+                obj.draw = renderFuncList[&quot;label&quot;];
+            }
+            else if (obj instanceof tm.display.Shape) {
+                obj.draw = renderFuncList[&quot;shape&quot;];
+            }
+            else {
+                obj.draw = function() {};
+            }
+        }
+
+    });
+    
+    var renderFuncList = {
+        &quot;sprite&quot;: function(canvas) {
+            var srcRect = this.srcRect;
+            var element = this._image.element;
+            
+            canvas.context.drawImage(element,
+                srcRect.x, srcRect.y, srcRect.width, srcRect.height,
+                -this.width*this.origin.x, -this.height*this.origin.y, this.width, this.height);
+        },
+        &quot;shape&quot;: function(canvas) {
+            var srcRect = this.srcRect;
+            canvas.drawImage(
+                this.canvas.canvas,
+                0, 0, this.canvas.width, this.canvas.height,
+                -this.width*this.origin.x, -this.height*this.origin.y, this.width, this.height);
+        },
+        &quot;label&quot;: function(canvas) {
+            canvas.setText(this.fontStyle, this.align, this.baseline);
+            if (this.fill) {
+                if (this.maxWidth) {
+                    this._lines.each(function(elm, i) {
+                        canvas.fillText(elm, 0, this.textSize*i, this.maxWidth);
+                    }.bind(this));
+                }
+                else {
+                    this._lines.each(function(elm, i) {
+                        canvas.fillText(elm, 0, this.textSize*i);
+                    }.bind(this));
+                }
+            }
+            if (this.stroke) {
+                if (this.maxWidth) {
+                    this._lines.each(function(elm, i) {
+                        canvas.strokeText(elm, 0, this.textSize*i, this.maxWidth);
+                    }.bind(this));
+                }
+                else {
+                    this._lines.each(function(elm, i) {
+                        canvas.strokeText(elm, 0, this.textSize*i);
+                    }.bind(this));
+                }
+            }
+            
+            if (this.debugBox) {
+                canvas.strokeRect(0, 0, this.width, -this.size);
+            }
+        }
+    };
+
+    var onclip = function(c) {
+        c.beginPath();
+        c.rect(
+            -this.width*this.origin.x,
+            -this.height*this.origin.y,
+            this.width,
+            this.height
+            );
+    };
+
+})();
+ 
+
+
+ 
+(function() {
+    
+<span id='tm-display-BoundingRectRenderer'>    /**
+</span>     * @class tm.display.BoundingRectRenderer
+     * バウンディング表示レンダー
+     * @extends tm.display.CanvasRenderer
+     */
+    tm.define(&quot;tm.display.BoundingRectRenderer&quot;, {
+        superClass: &quot;tm.display.CanvasRenderer&quot;,
+
+<span id='tm-display-BoundingRectRenderer-method-constructor'>        /**
+</span>         * @constructor
+         * コンストラクタ
+         */
+        init: function(canvas) {
+            this.superInit(canvas);
+        },
+
+<span id='tm-display-BoundingRectRenderer-method-_setRenderFunction'>        /**
+</span>         * @private
+         */
+        _setRenderFunction: function(obj) {
+            obj.draw = render;
+        }
+    });
+
+    var render = function(canvas) {
+        canvas.save();
+        canvas.lineWidth = 2;
+        canvas.strokeRect(-this.width*this.originX, -this.height*this.originY, this.width, this.height);
+        canvas.restore();
+    };
+
+})();
+ 
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * tmline.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+<span id='tm-util-Timeline'>    /**
+</span>     * @class tm.util.Timeline
+     * タイムラインクラス
+     */
+    tm.util.Timeline = tm.createClass({
+        
+<span id='tm-util-Timeline-property-target'>        /** target */
+</span>        target  : null,
+<span id='tm-util-Timeline-property-tasks'>        /** tasks */
+</span>        tasks   : null,
+<span id='tm-util-Timeline-property-fps'>        /** fps */
+</span>        fps     : 30,
+        
+<span id='tm-util-Timeline-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function() {
+            this.tasks = [];
+            this.time = 0;
+        },
+        
+<span id='tm-util-Timeline-method-at'>        /**
+</span>         * アット
+         */
+        at: function(time, action) {
+            this.tasks.push({
+                time: time,
+                action: action,
+            });
+            return this;
+        },
+
+<span id='tm-util-Timeline-method-after'>        /**
+</span>         * アフター
+         */
+        after: function(time, action) {
+            this.at(this.time + time, action);
+            return this;
+        },
+
+<span id='tm-util-Timeline-method-clear'>        /**
+</span>         * クリア
+         */
+        clear: function() {
+            this.tasks = [];
+            return this;
+        },
+
+<span id='tm-util-Timeline-method-removeTime'>        /**
+</span>         * リムーブタイム
+         */
+        removeTime: function(time) {
+            // TODO: 
+        },
+
+<span id='tm-util-Timeline-method-removeAction'>        /**
+</span>         * リムーブアクション
+         */
+        removeAction: function(action) {
+            // TODO: 
+        },
+        
+<span id='tm-util-Timeline-method-start'>        /**
+</span>         * スタート
+         */
+        start: function() {
+            this.isPlaying = true;
+            this._startTime();
+            this._updateTime();
+        },
+
+<span id='tm-util-Timeline-method-resume'>        /**
+</span>         * レジューム
+         */
+        resume: function() {
+            this.isPlaying = true;
+            this._resumeTime();
+            this._updateTime();
+        },
+
+<span id='tm-util-Timeline-method-stop'>        /**
+</span>         * ストップ
+         */
+        stop: function() {
+            this.isPlaying = false;
+        },
+
+<span id='tm-util-Timeline-method-rewind'>        /**
+</span>         * レウィンド
+         */
+        rewind: function() {
+            this.time = 0;
+        },
+
+<span id='tm-util-Timeline-method-update'>        /**
+</span>         * 更新
+         */
+        update: function() {
+            // タスク更新
+            if (this.tasks.length &gt; 0) {
+                for (var i=0,len=this.tasks.length; i&lt;len; ++i) {
+                    var task = this.tasks[i];
+                    if (this.prev &lt;= task.time &amp;&amp; task.time &lt; this.time) {
+                        task.action();
+                        // this.tasks.erase(task);
+                        // break;
+                    }
+                }
+            }
+        },
+        
+<span id='tm-util-Timeline-method-_startTime'>        /**
+</span>         * @private
+         */
+        _startTime: function() {
+            this.startTime = (new Date()).getTime();
+        },
+
+<span id='tm-util-Timeline-method-_resumeTime'>        /**
+</span>         * @private
+         */
+        _resumeTime: function() {
+            this.startTime = (new Date()).getTime() - this.time;
+        },
+
+<span id='tm-util-Timeline-method-_updateTime'>        /**
+</span>         * @private
+         */
+        _updateTime: function() {
+            if (this.isPlaying) {
+                this._nextTime();
+                setTimeout(arguments.callee.bind(this), 1000/this.fps);
+            }
+        },
+        
+<span id='tm-util-Timeline-method-_nextTime'>        /**
+</span>         * @private
+         */
+        _nextTime: function() {
+            // 前回の時間
+            this.prev = this.time;
+            // 今回の時間
+            this.time = (new Date()).getTime() - this.startTime;
+            // 更新
+            this.update();
+        },
+        
+    });
+    
+})();
+
+</pre>
+</body>
+</html>

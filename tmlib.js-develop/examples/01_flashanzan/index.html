@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>tmlib.js</title>
+        <link rel="apple-touch-icon-precomposed" href="icon.png" />
+        <script src="../../build/tmlib.js"></script>
+    </head>
+    <body>
+        <canvas id="world" width="640" height="960"></canvas>
+    </body>
+</html>
+
+
+<script>
+
+// 定数
+var SCREEN_WIDTH    = 640;
+var SCREEN_HEIGHT   = 960;
+var SCREEN_CENTER_X = SCREEN_WIDTH/2;
+var SCREEN_CENTER_Y = SCREEN_HEIGHT/2;
+
+
+tm.main(function() {
+	var app = tm.app.CanvasApp("#world");
+
+	app.resize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	app.fitWindow();
+	app.replaceScene(MainScene());
+	app.run();
+});
+
+
+tm.define("MainScene", {
+    superClass: "tm.scene.ManagerScene",
+ 
+    init: function() {
+        this.superInit({
+            scenes: [
+                {
+                    className: "tm.scene.LoadingScene",
+                    arguments: {
+                        assets: {
+                            touch: "touch.wav",
+                            decide: "decide.wav",
+                            correct: "correct.mp3",
+                            incorrect: "incorrect.mp3",
+                            question: "question.wav",
+                        },
+                        width: 640,
+                        height: 960,
+                        autopop: true,
+                    },
+                    label: "loading",
+                },
+                {
+                    className: "tm.scene.TitleScene",
+                    arguments: {
+                        title: "Flash",
+                    },
+                    label: "title",
+                },
+                {
+                    className: "GameScene",
+                    arguments: {
+                    },
+                    label: "game",
+                },
+                {
+                    className: "tm.scene.ResultScene",
+                    arguments: {
+                        name: "Result",
+                    },
+                    label: "result",
+                    nextLabel: "title",
+                },
+            ],
+        });
+    },
+
+    onprepare: function() {
+        if (this.getCurrentLabel() == "game") {
+            // スコアをセットする
+            this.setSceneArguments("result", {
+                "score": this.currentScene.score
+            });
+        }
+    },
+});
+
+
+tm.define("GameScene", {
+    superClass: tm.app.Scene,
+    
+    init: function() {
+    	this.superInit();
+
+        this.score = 0;
+
+        this.setupQuestion();
+    },
+
+    setupQuestion: function() {
+        this.count = 0;
+        this.maxCount = 8;
+        this.numbers = Array.range(this.maxCount).map(function() {
+            return tm.util.Random.randint(1, 9);
+        });
+        this.sum = this.numbers.reduce(function(prev, current) {
+            return prev + current;
+        });
+
+        this.startQuestion();
+    },
+
+    startQuestion: function() {
+    	var self = this;
+    	var number = this.numbers[this.count];
+    	var label = tm.display.Label().addChildTo(this);
+
+    	label.text = number;
+    	label.x = SCREEN_CENTER_X;
+    	label.y = SCREEN_CENTER_Y;
+    	label.fontSize = 256;
+    	label.alpha = 0;
+    	label.tweener
+            .wait(100)
+            .call(function() {
+                tm.asset.Manager.get("question").clone().play();
+            })
+    		.fadeIn(50)
+    		.wait(300)
+    		.fadeOut(50)
+    		.wait(100)
+    		.call(function() {
+    			label.remove();
+    			self.flare("numberfinish");
+    		}, label);
+
+    },
+
+    onnumberfinish: function() {
+    	this.count ++;
+
+    	if (this.count >= this.maxCount) {
+            var self = this;
+            // 答え入力
+            var scene = tm.scene.NumericalInputScene();
+
+            scene.onpush = function(e) {
+                tm.asset.Manager.get("touch").clone().play();
+            };
+            scene.ondecided = function(e) {
+                tm.asset.Manager.get("decide").clone().play();
+                self.judge(e.value);
+                self.app.popScene();
+            };
+            this.app.pushScene(scene);
+    	}
+    	else {
+	    	this.startQuestion();
+    	}
+    },
+
+    judge: function(v) {
+        var isCorrect = (v == this.sum);
+
+        this.fromJSON({
+            children: {
+                correctLabel: {
+                    type: "tm.display.Label",
+                    text: (v == this.sum) ? "right!" : "wrong!",
+                    x: SCREEN_CENTER_X,
+                    y: SCREEN_CENTER_Y,
+                    fontSize: 128,
+                    baseline: "bottom",
+                    scaleX: 0.5,
+                    scaleY: 0.5,
+                },
+                answerLabel: {
+                    type: "tm.display.Label",
+                    text: "answer: {0}".format(this.sum),
+                    x: SCREEN_CENTER_X,
+                    y: SCREEN_CENTER_Y+ 30,
+                    fontSize: 80,
+                    baseline: "top",
+                    scaleX: 0.5,
+                    scaleY: 0.5,
+                }
+            },
+        });
+
+        var se = (isCorrect) ? "correct" : "incorrect";
+        tm.asset.Manager.get(se).clone().play();
+
+        this.correctLabel.tweener
+            .scale(1, 256, "easeOutBounce")
+            .wait(1000)
+            .call(function() {
+                this.correctLabel.remove();
+                this.answerLabel.remove();
+
+                if (isCorrect) {
+                    this.score += 100;
+                    this.setupQuestion();
+                }
+                else {
+                    this.app.popScene();
+                }
+            }, this)
+            ;
+    },
+});
+
+
+</script>

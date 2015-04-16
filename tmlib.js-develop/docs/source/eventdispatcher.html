@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * eventdispatcher.js
+ */
+
+tm.event = tm.event || {};
+
+(function() {
+    
+<span id='tm-event-EventDispatcher'>    /**
+</span>     * @class tm.event.EventDispatcher
+     * Event Dispatcher
+     * ### Reference
+     * -(EventDispatcher - ActionScript 3.0 コンポーネントリファレンスガイド)[http://livedocs.adobe.com/flash/9.0_jp/ActionScriptLangRefV3/flash/events/EventDispatcher.html]
+     */
+    tm.define(&quot;tm.event.EventDispatcher&quot;, {
+
+<span id='tm-event-EventDispatcher-property-_listeners'>        /** @private @property _listeners */
+</span>
+<span id='tm-event-EventDispatcher-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function() {
+            this._listeners = {};
+        },
+
+<span id='tm-event-EventDispatcher-method-on'>        /**
+</span>         * イベントリスナー追加
+         */
+        on: function(type, listener) {
+            if (this._listeners[type] === undefined) {
+                this._listeners[type] = [];
+            }
+            
+            this._listeners[type].push(listener);
+            return this;
+        },
+        
+<span id='tm-event-EventDispatcher-method-off'>        /**
+</span>         * リスナーを削除
+         */
+        off: function(type, listener) {
+            var listeners = this._listeners[type];
+            var index = listeners.indexOf(listener);
+            if (index != -1) {
+                listeners.splice(index,1);
+            }
+            return this;
+        },
+        
+<span id='tm-event-EventDispatcher-method-fire'>        /**
+</span>         * イベント発火
+         */
+        fire: function(e) {
+            e.target = this;
+            var oldEventName = 'on' + e.type;
+            if (this[oldEventName]) this[oldEventName](e);
+            
+            var listeners = this._listeners[e.type];
+            if (listeners) {
+                var temp = listeners.clone();
+                for (var i=0,len=temp.length; i&lt;len; ++i) {
+                    temp[i].call(this, e);
+                }
+            }
+            
+            return this;
+        },
+
+        /*
+         * イベント名でイベント発火
+         */
+        flare: function(eventName) {
+            var e = tm.event.Event(eventName);
+            this.fire(e);
+
+            return this;
+        },
+        
+        one: function(type, listener) {
+            var self = this;
+            
+            var func = function() {
+                var result = listener.apply(self, arguments);
+                self.off(type, func);
+                return result;
+            };
+            
+            this.on(type, func);
+            
+            return this;
+        },
+        
+<span id='tm-event-EventDispatcher-method-hasEventListener'>        /**
+</span>         * type に登録されたイベントがあるかをチェック
+         */
+        hasEventListener: function(type) {
+            if (this._listeners[type] === undefined &amp;&amp; !this[&quot;on&quot; + type]) return false;
+            return true;
+        },
+        
+<span id='tm-event-EventDispatcher-method-clearEventListener'>        /**
+</span>         * type に登録されているリスナーを全てクリア
+         */
+        clearEventListener: function(type) {
+            var oldEventName = 'on' + type;
+            if (this[oldEventName]) delete this[oldEventName];
+
+            this._listeners[type] = [];
+            return this;
+        },
+    });
+
+    var proto = tm.event.EventDispatcher.prototype;
+    
+<span id='tm-event-EventDispatcher-method-addEventListener'>    /**
+</span>     * @member  tm.event.EventDispatcher
+     * @method  addEventListener
+     * on と同じ
+     */
+    proto.addEventListener      = proto.on;
+    
+<span id='tm-event-EventDispatcher-method-removeEventListener'>    /**
+</span>     * @member  tm.event.EventDispatcher
+     * @method  removeEventListener
+     * off と同じ
+     */
+    proto.removeEventListener   = proto.off;
+    
+<span id='tm-event-EventDispatcher-method-dispatchEvent'>    /**
+</span>     * @member  tm.event.EventDispatcher
+     * @method  dispatchEvent
+     * fire と同じ
+     */
+    proto.dispatchEvent         = proto.fire;
+    
+})();
+</pre>
+</body>
+</html>

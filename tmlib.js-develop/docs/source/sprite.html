@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * sprite.js
+ */
+
+
+tm.display = tm.display || {};
+
+
+(function() {
+    
+<span id='tm-display-Sprite'>    /**
+</span>     * @class tm.display.Sprite
+     * 画像の描画を行うクラス
+     * @extends tm.display.CanvasElement
+     */
+    tm.display.Sprite = tm.createClass({
+        superClass: tm.display.CanvasElement,
+        
+<span id='tm-display-Sprite-property-srcRect'>        /** @property srcRect          */
+</span><span id='tm-display-Sprite-property-width'>        /** @property width            width */
+</span><span id='tm-display-Sprite-property-height'>        /** @property height           height */
+</span><span id='tm-display-Sprite-property-'>        /** @property @private _image  表示しているアセット(画像) */
+</span>
+<span id='tm-display-Sprite-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(image, width, height) {
+            this.superInit();
+            
+            console.assert(typeof image != 'number', &quot;Sprite の第一引数はテクスチャもしくはテクスチャ名に変わりました&quot;);
+            
+            this._frameIndex = 0;
+            this.srcRect = tm.geom.Rect(0, 0, 64, 64);
+            
+            // 引数あり
+            if (arguments.length &gt;= 1) {
+                this.setImage(image).fitImage();
+
+                if (width !== undefined) this.width = width;
+                if (height !== undefined) this.height = height;
+            }
+        },
+
+<span id='tm-display-Sprite-method-setImage'>        /**
+</span>         * 表示するアセット(画像)をセット
+         */
+        setImage: function(image, width, height) {
+            if (typeof image == &quot;string&quot;) {
+                var key = image;
+                image = tm.asset.Manager.get(key);
+                console.assert(image != null, &quot;don't find '&quot; + key + &quot;' as image.&quot;);
+            }
+            
+            this._image = image;
+            this.srcRect.x = 0;
+            this.srcRect.y = 0;
+            this.srcRect.width  = image.element.width;
+            this.srcRect.height = image.element.height;
+
+            if (width  !== undefined) this.width  = width;
+            if (height !== undefined) this.height = height;
+            // this.width  = (width !== undefined)  ? width  : image.element.width;
+            // this.height = (height !== undefined) ? height : image.element.height;
+
+            return this;
+        },
+
+<span id='tm-display-Sprite-method-getImage'>        /**
+</span>         * 表示しているアセット(画像)を取得
+         */
+        getImage: function() {
+            return this._image;
+        },
+
+<span id='tm-display-Sprite-method-fitImage'>        /**
+</span>         * 自分自信を画像サイズと同じサイズにする
+         */
+        fitImage: function() {
+            this.width  = this.image.width;
+            this.height = this.image.height;
+
+            return this;
+        },
+        
+<span id='tm-display-Sprite-method-setFrameIndex'>        /**
+</span>         * フレームインデックスをセット
+         */
+        setFrameIndex: function(index, width, height) {
+            var tw  = width || this.width;      // tw
+            var th  = height || this.height;    // th
+            var row = ~~(this.image.width / tw);
+            var col = ~~(this.image.height / th);
+            var maxIndex = row*col;
+            index = index%maxIndex;
+            
+            var x   = index%row;
+            var y   = ~~(index/row);
+            this.srcRect.x = x*tw;
+            this.srcRect.y = y*th;
+            this.srcRect.width  = tw;
+            this.srcRect.height = th;
+
+            this._frameIndex = index;
+
+            return this;
+        },
+        
+<span id='tm-display-Sprite-method-_refreshSize'>        /**
+</span>         * @private
+         */
+        _refreshSize: function() {},
+    });
+    
+<span id='tm-display-Sprite-property-image'>    /**
+</span>     * @property    image
+     * 画像
+     */
+    tm.display.Sprite.prototype.accessor(&quot;image&quot;, {
+        &quot;get&quot;: function()   {
+            return this._image;
+        },
+        &quot;set&quot;: function(image)  {
+            this.setImage(image);
+        }
+    });
+
+<span id='tm-display-Sprite-property-frameIndex'>    /**
+</span>     * @property    frameIndex
+     * フレームインデックス
+     */
+    tm.display.Sprite.prototype.accessor(&quot;frameIndex&quot;, {
+        &quot;get&quot;: function()   {
+            return this._frameIndex;
+        },
+        &quot;set&quot;: function(value)  {
+            this.setFrameIndex(value);
+        }
+    });
+    
+})();
+</pre>
+</body>
+</html>

@@ -1,0 +1,348 @@
+/*
+ * Classic example grammar, which recognizes simple arithmetic expressions like
+ * "2*(3+4)". The parser generated from this grammar then computes their value.
+ */
+
+start
+  =space "#include" [\x20]* "<stdio.h>" space coment* "int" [\x20]* "main" [\x20]* "(void)" block:block space {return block;}
+
+block
+  = space "{" space script:script* space "}" space {return script;}
+
+script
+  = divergence_if
+  / divergence
+  / statement
+  / substitution
+  / repetition
+  / scanf
+  / printf
+  / break
+  / return
+  / coment
+
+//------------------------------------------------------------
+
+//宣言
+statement
+  = statement_int
+  / statement_double
+  / statement_array_int
+  / statement_char
+
+statement_int
+  =  "int " [\x20]* variable:variable [\x20]* ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("int","' + variable + '", null );' ;}
+  /  "int " [\x20]* variable1:variable [\x20]* [,] [\x20]* variable2:variable [\x20]* ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("int","' + variable1 + '", null ); duplication_judge("int","' + variable2 + '", null );' ;}
+  /  "int " [\x20]* left:variable [\x20]* "=" [\x20]* right:additive ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("int","' + left + '","' + right + '");' ;}
+  /  "int " [\x20]* contents:(statement_plural* (initialization/variable)) space  ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');plural_declaration("int"' + ',"' + contents + '");' ;} 
+	
+statement_char
+  =  "char " [\x20]* variable:variable [\x20]* ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("char","' + variable + '", null );' ;}
+  /  "char " [\x20]* left:variable [\x20]* "=" [\x20]* ["] [\x20]* right:[a-zA-Z] [\x20]* ["] [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("char","' + left + '","' + right + '");' ;}
+//  "char " [\x20]* contents:(statement_plural* (initialization/variable)) space  ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');plural_declaration("char"' + ',"' + contents + '");' ;} 
+
+statement_double
+  =  "double " [\x20]* variable:variable [\x20]* ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("double","' + variable + '", null );' ;} 
+  /  "double " [\x20]* left:variable [\x20]* "=" [\x20]* right:additive ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("double","' + left + '","' + right + '");' ;}
+  /  "double " [\x20]* contents:(statement_plural* (initialization/variable)) space  ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');plural_declaration("double"' + ',"' + contents + '");' ;} 
+
+//複数宣言
+statement_plural
+ = space contents:(initialization/variable) space "," space {return contents;}
+
+//初期化
+initialization
+ =  left:(variable/array) [\x20]* "=" [\x20]* right:additive [\x20]* space { return left + "=" + right ; } 
+
+//配列宣言
+//配列（int）
+statement_array_int
+  =  "int " [\x20]* variable:variable "[" [\x20]* contents:additive [\x20]* "]"  ";" space { return "var array " + variable + " = new Array(" + contents + ');'  }
+  /  "int " [\x20]* variable:variable "[" [\x20]* additive [\x20]* "]" [\x20]* "=" space "{" space contents:minus/decimal space "}" space  ";" space { return "var " + variable + " = new Array(" + contents + ');'  }
+  /  "int " [\x20]* variable:variable "[" [\x20]* additive [\x20]* "]" [\x20]* "=" space "{" space contents:(array_contents* additive) space "}" space  ";" space { return "var " + variable + " = new Array(" + contents + ');'  }
+
+//配列
+array
+ =  variable "[" [\x20]* additive [\x20]* "]"
+
+//配列の初期化{1,2,3,4}みたいなやつ
+array_contents
+ =  contents:additive space "," space {return contents;}
+
+//------------------------------------------------------------
+
+//繰り返し
+repetition
+ = repetition_for
+ /repetition_while
+
+repetition_for
+  =  "for" [\x20]* "(" [\x20]* left:(variable/array) [\x20]* "=" [\x20]* right:additive [\x20]* ";" [\x20]* comparison:logical [\x20]* ";" [\x20]*  substitution:substitution_for [\x20]*  ")" [\x20]* block:block space {
+    var a = block[0];
+    for(var k=1; k < block.length; k++){
+          a = a + block[k];
+    }
+    return 'substitute("' + left + '","' + right + '");' + "for(" + left + "=" + right + " " + comparison +  "; " + substitution + ") {" + block  + "}"; 
+  }
+  
+  /  "for" [\x20]* "(" [\x20]* "int" [\x20]* left:(variable/array) [\x20]* "=" [\x20]* right:additive [\x20]* ";" [\x20]* comparison:logical [\x20]* ";" [\x20]*  substitution:substitution_for [\x20]*  ")" [\x20]* block:block space {
+     var a = block[0];
+     for(var k=1; k < block.length; k++){
+        a = a + block[k];
+     }
+    return 'substitute("' + left + '","' + right + '");' + "for(" + left + "=" + right + " " + comparison +  "; " + substitution + ") {" + block  + "}"; 
+    }
+  
+repetition_while
+ =  "while"  [\x20]* "(" [\x20]* comparison:(logical/additive) [\x20]* ")" [\x20]* block:block space { return "while(" + comparison + "){" + block + "}"; }
+
+
+break
+ =  "break" space ";" space {return "break" ;}
+
+//------------------------------------------------------------
+  
+//分岐
+divergence_if
+= result:divergence_else { return result + 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');end_of_if();' ;  }
+
+divergence_else
+= left:divergence_else_if space "else" space block:block {
+     var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+       for(var k=1; k < block.length; k++){
+         a = a + block[k];
+       }
+     return left + 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');else_js();' + a;}
+/  divergence_else_if
+
+divergence_else_if
+= left:divergence space "else" space "if" [\x20]* "(" [\x20]* comparison:logical [\x20]* ")" space block:block right:divergence_else_if {
+        var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+        for(var k=1; k < block.length; k++){
+          a = a + block[k];
+        }
+        comparison = comparison.replace(/:/g,"");
+        return left + 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');else_if_js("' + comparison + '");' + a;}
+/ "else" space "if" [\x20]* "(" [\x20]* comparison:logical [\x20]* ")" space block:block {
+        var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+        for(var k=1; k < block.length; k++){
+          a = a + block[k];
+        }
+        comparison = comparison.replace(/:/g,"");
+        return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');else_if_js("' + comparison + '");' + a;}
+/ divergence
+
+divergence
+= "if" [\x20]* "(" [\x20]* comparison:logical [\x20]* ")" space block:block space {
+         var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+        for(var k=1; k < block.length; k++){
+          a = a + block[k];
+        }
+        comparison = comparison.replace(/:/g,"");
+        return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');if_js("' + comparison + '");' + a ;}
+
+
+//------------------------------------------------------------
+
+//代入  
+substitution
+  =  left:(variable/array) [\x20]* "=" [\x20]* right:(variable/minus/decimal) [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  /   left:(variable/array) [\x20]* "=" [\x20]* right:additive [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  /   left:(variable/array) space "++" [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:1'+ '");' ; }
+  /   left:(variable/array) space "--" [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:1' + '");' ; }
+  /  left:(variable/array) space "+=" [\x20]* right:additive [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:' + right + '");' ; }
+  /   left:(variable/array) space "-=" [\x20]* right:additive [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:' + right + '");' ; }
+  /   left:(variable/array) [\x20]* "=" [\x20]* "'" right:[a-zA-Z] "'" [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+
+//for文で用いる代入・演算
+substitution_for
+  = left:(variable/array) [\x20]* "=" [\x20]* right:additive space { return left + " = " + right ; } 
+  /   left:(variable/array) "++" space { return left + "++" ; }
+  /   left:(variable/array) "--" space { return left + "--" ; }
+  /   left:(variable/array) "+=" right:additive [\x20]* space { return left + "+=" + right ; }
+  /   left:(variable/array) "-=" right:additive [\x20]* space { return left + "-=" + right ; }
+
+//------------------------------------------------------------
+
+//論理演算子
+logical
+ = logical_and
+ / logical_or
+ / logical_not
+ / comparison
+ 
+logical_and
+ = left:comparison [\x20]* "&&" [\x20]* right:logical [\x20]* space { return left + " && " + right ; }
+
+logical_or
+ = left:comparison [\x20]* "||" [\x20]* right:logical [\x20]* space {return left + " || " + right ; }
+ 
+logical_not
+ = [\x20]* "!" [\x20]* comparison_same:logical [\x20]* space { return "!" + comparison_same ;}
+
+//比較
+comparison
+  = comparison_same
+  / comparison_greater_than
+  / comparison_less_than
+  / comparison_greater_than_or_equal
+  / comparison_less_than_or_equal
+  / comparison_not_equal
+
+comparison_same
+  = left:additive [\x20]* "==" [\x20]* right:additive space  { return left + " == " + right ; }
+  
+comparison_greater_than
+  = left:additive [\x20]* ">" [\x20]* right:additive  space  { return left + " > " + right ; }
+  
+comparison_less_than
+  = left:additive [\x20]* "<" [\x20]* right:additive space  { return left + " < " + right ; }
+  
+comparison_greater_than_or_equal
+  = left:additive [\x20]* ">=" [\x20]* right:additive space  { return left + " >= " + right ; }
+  
+comparison_less_than_or_equal
+  = left:additive [\x20]* "<=" [\x20]* right:additive space  { return left + " <= " + right ; }
+  
+comparison_not_equal
+  = left:additive [\x20]* "!=" [\x20]* right:additive space  { return left + " != " + right ; }
+
+
+//------------------------------------------------------------
+
+//スキャン
+scanf
+  =  "scanf" [\x20]* "("  [\x20]* ["] type:scan_type ["] [\x20]* "," [\x20]* "&" [\x20]* variable:variable [\x20]* ")" [\n]* ";" space{ return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + type + '");' ;  }
+  // "scanf" [\x20]* "("  [\x20]* ["] type1:scan_type[\x20]* type2:scan_type ["] [\x20]* "," [\x20]* "&" [\x20]* variable1:variable [\x20]* "," [\x20]* "&" [\x20]* variable2:variable [\x20]* ")" [\n]* ";" space{ return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable1 + '","' + type1 + '");scanf_js("' + variable2 + '","' + type1 + '");' ;  }
+  /  "scanf" [\x20]* "(" [\x20]* ["] [\x20]*   contents:scan_val [\x20]* ["]   [\x20]* "," [\x20]* variable:additive_plural_scan [\x20]* ")" [\x20]* ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + contents + '");' ; }
+
+scan_val
+  =left:letter type:scan_type right:scan_val { return left + "::" + type + "::" + right; }
+  /  letter
+
+scan_type
+  = "%" type:("d"/"o"/"x"/"X"/"c"/"s"/"f"/"lf")  {return "%" + type;}
+  
+additive_plural_scan
+ = space "&" left:additive space "," space right:additive_plural_scan {return left + ":" + right;}
+ /  "&" add:additive {return add}
+  
+//プリント
+printf
+  =  "printf" [\x20]* "(" [\x20]* ["] [\x20]* type:print_type [\x20]*  ["] [\x20]* "," [\x20]* variable:variable [\x20]* ")" [\n]* ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_js("' + variable + '","' + type + '");' ;  }
+  
+  /  "printf" [\x20]* "(" [\x20]* ["] [\x20]*   contents:print_val [\x20]* ["]   [\x20]* "," [\x20]* variable:additive_plural [\x20]* ")" [\x20]* ";" space {
+    if(contents.indexOf("\\") != -1){
+  	contents = contents.replace(/\\/g,"\\\\");
+  }
+   return 'printf_js("' + variable + '","' + contents + '");push_line(' + peg$computePosDetails(peg$reportedPos).line +');' ; }
+  
+  /  "printf" [\x20]* "(" [\x20]* ["] contents:letter_2 ["] [\x20]* ")" [\x20]* ";" space {    
+if(contents.indexOf("\\") != -1){
+  	contents = contents.replace(/\\/g,"\\\\");
+  }  return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_djs("' + contents + '");' ; }
+
+print_val
+  =left:letter type:print_type right:print_val { return left + "::" + type + "::" + right; }
+  /  letter
+  
+print_type
+  ="%" type:("d"/"o"/"x"/"X"/"u"/"s"/"f"/"e"/"E"/"g"/"G"/"c") {return "%" + type;}
+
+//なんでもいい文字列
+letter
+ =letter:[^"%,+]* { return letter.join("").replace(/,/g,""); }
+ 
+letter_2
+ =letter:[^"]* { return letter.join("").replace(/,/g,""); }
+
+ 
+additive_plural
+ = space left:additive space "," space right:additive_plural {return left + ":" + right;}
+ /  additive
+ 
+ //------------------------------------------------------------
+ 
+ //リターン
+ return
+  =  "return" space result:additive space ";" space {return "push_line(" + peg$computePosDetails(peg$reportedPos).line +");return_js(" + result + ");" ;}
+
+//------------------------------------------------------------
+
+//四則演算
+additive
+  = left:multiplicative [\x20]* "+" [\x20]* right:additive { return left + ":" + "+" + ":" + right; }
+  / multiplicative
+
+multiplicative
+  = left:subtraction [\x20]* "*" [\x20]* right:multiplicative { return left + ":" + "*" + ":" + right; }
+  / subtraction
+
+subtraction
+  = left:division [\x20]* "-" [\x20]* right:subtraction {  return left + ":" + "-" + ":" + right;  }
+  / division
+
+division
+  = left:primary [\x20]* "/" [\x20]* right:division {  return left + ":" + "/" + ":" + right;  }
+  / remainder
+  
+remainder
+   = left:primary [\x20]* "%" [\x20]* right:division {  return left + ":" + "%" + ":" + right;  }
+  / primary
+
+primary
+  = minus
+  / decimal
+  / variable
+  / "(" additive:additive ")" { return "(" + ":" + additive + ":" + ")"; }
+
+//マイナス
+minus
+ = "-" result:decimal {return "-" + result}
+
+//少数
+decimal
+ = left:integer "." right:decimal_places { return parseFloat(left + "." + right) }
+ / integer
+
+//整数
+integer "integer"
+  = digits:[0-9]+ { return parseInt(digits.join(""), 10); }
+ 
+
+
+//小数点以下
+decimal_places
+ = digits:[0-9]+ { return digits.join("").replace(/,/g,""); }
+
+//文字列
+character
+ = char:([a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
+ 
+ //変数命名規約
+variable
+  = variable:([a-zA-Z][a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
+
+
+
+//改行・コメント
+space
+  = [\x20\n\t]*
+  / coment
+
+coment
+  = "//" [^\n]* [\n] space {return  "push_line(" + peg$computePosDetails(peg$reportedPos).line +");"}
+
+//------------------------------------------------------------

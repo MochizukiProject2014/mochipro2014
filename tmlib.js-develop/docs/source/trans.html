@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    
+<span id='tm-dom-Trans'>    /**
+</span>     * @class tm.dom.Trans
+     * トランス
+     */
+    tm.dom.Trans = tm.createClass({
+        
+<span id='tm-dom-Trans-property-element'>        /** エレメント */
+</span>        element: null,
+        
+<span id='tm-dom-Trans-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(element) {
+            this.element = element;
+        },
+        
+<span id='tm-dom-Trans-method-to'>        /**
+</span>         * 変換開始
+         */
+        to: function(props, t) {
+            this.set(props).duration(t||1000);
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-set'>        /**
+</span>         * セット
+         */
+        set: function(props) {
+            var style = this.element.style;
+            var names = [];
+            
+            for (var key in props) {
+                var name = _checkStyleProperty(key);
+                names.push( name.toDash() );
+                style[name] = props[key] + &quot;&quot;;
+            }
+            
+            style[tm.dom.Trans.PROPERTY] = names.join(', ');   // none;
+            
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-duration'>        /**
+</span>         * 間関
+         */
+        duration: function(t) {
+            var style = this.element.style;
+            if (typeof t == &quot;number&quot;) t = t + &quot;ms&quot;;
+            style[tm.dom.Trans.DURATION] = t;
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-easing'>        /**
+</span>         * イージング
+         */
+        easing: function(ease) {
+            var style = this.element.style;
+            style[tm.dom.Trans.TIMING_FUNCTION] = func;
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-end'>        /**
+</span>         * 終了
+         */
+        end: function(fn) {
+            var elm  = tm.dom.Element(this.element);
+            elm.event.add(tm.dom.Trans.END_EVENT, fn);
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-reset'>        /**
+</span>         * リセット
+         */
+        reset: function() {
+            var style = this.element.style;
+            style[tm.dom.Trans.PROPERTY] = &quot;none&quot;;
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-translate'>        /**
+</span>         * 移動
+         */
+        translate: function(x, y, t) {
+            this.to({&quot;transform&quot;: &quot;translate({0}px,{1}px)&quot;.format(x, y)}, t);
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-translate3d'>        /**
+</span>         * 移動3D
+         */
+        translate3d: function(x, y, z, t) {
+            this.to({&quot;transform&quot;: &quot;translate3d({0}px,{1}px,{2}px)&quot;.format(x, y, z)}, t);
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-rotate'>        /**
+</span>         * 回転
+         */
+        rotate: function(deg, t) {
+            this.to({&quot;transform&quot;: &quot;rotate({0}deg)&quot;.format(deg)}, t);
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-rotate3d'>        /**
+</span>         * 回転3D
+         */
+        rotate3d: function(x, y, z, deg, t) {
+            this.to({&quot;transform&quot;: &quot;rotate3d({0},{1},{2},{3}deg)&quot;.format(x, y, z, deg)}, t);
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-scale'>        /**
+</span>         * スケール
+         */
+        scale: function(x, y, t) {
+            this.to({&quot;transform&quot;: &quot;scale({0},{1})&quot;.format(x, y)}, t);
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-transform'>        /**
+</span>         * 行列変換
+         */
+        transform: function() {
+            // TODO: 実装する
+        },
+        
+        // -------------------------------------
+        
+<span id='tm-dom-Trans-method-setProp'>        /**
+</span>         * プロパティをセット
+         */
+        setProp: function(prop) {
+            var style = this.element.style;
+            var prop_list = [];
+            
+            for (var key in prop) {
+                var name = _checkStyleProperty(key);
+                prop_list.push( name.toDash() );
+                style[name] = prop[key];
+            }
+            
+            style[tm.dom.Trans.PROPERTY] = prop_list.join(', ');   // none;
+            
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-setDuration'>        /**
+</span>         * 間関をセット
+         */
+        setDuration: function(t) {
+            var style = this.element.style;
+            style[tm.dom.Trans.DURATION] = t;
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-setTimingFunction'>        /**
+</span>         * タイミングファンクをセット
+         */
+        setTimingFunction: function(func) {
+            var style = this.element.style;
+            style[tm.dom.Trans.TIMING_FUNCTION] = func;
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-resetProp'>        /**
+</span>         * リセット
+         */
+        resetProp: function() {
+            var style = this.element.style;
+            style[tm.dom.Trans.PROPERTY] = &quot;none&quot;;
+            return this;
+        },
+
+<span id='tm-dom-Trans-method-setEndFunction'>        /**
+</span>         * 終了時関数を登録
+         */
+        setEndFunction: function(fn) {
+            var elm  = tm.dom.Element(this.element);
+            elm.event.add(tm.dom.Trans.END_EVENT, fn);
+            return this;
+        },
+    });
+    
+<span id='tm-dom-Trans-static-property-PROPERTY'>    /** @static @property */
+</span>    tm.dom.Trans.PROPERTY        = tm.VENDER_PREFIX + &quot;TransitionProperty&quot;;
+<span id='tm-dom-Trans-static-property-DURATION'>    /** @static @property */
+</span>    tm.dom.Trans.DURATION        = tm.VENDER_PREFIX + &quot;TransitionDuration&quot;;
+<span id='tm-dom-Trans-static-property-TIMING_FUNCTION'>    /** @static @property */
+</span>    tm.dom.Trans.TIMING_FUNCTION = tm.VENDER_PREFIX + &quot;TransitionTimingFunction&quot;;
+<span id='tm-dom-Trans-static-property-DELAY'>    /** @static @property */
+</span>    tm.dom.Trans.DELAY           = tm.VENDER_PREFIX + &quot;TransitionDelay&quot;;
+<span id='tm-dom-Trans-static-method-END_EVENT'>    /** @static @method @member tm.dom.Trans */
+</span>    tm.dom.Trans.END_EVENT       = (function(){
+        return {
+            &quot;webkit&quot;: &quot;webkitTransitionEnd&quot;,
+            &quot;moz&quot;   : &quot;transitionend&quot;,
+            &quot;o&quot;     : &quot;oTransitionEnd&quot;,
+        }[tm.VENDER_PREFIX];
+    })();
+    
+<span id='tm-dom-Trans-property-trans'>    /**
+</span>     * @property    trans
+     */
+    tm.dom.Element.prototype.getter(&quot;trans&quot;, function(){
+        return this._trans || ( this._trans = tm.dom.Trans(this.element) );
+    });
+    
+    var _styleList = {
+        &quot;transform&quot;: true,
+    };
+    var _checkStyleProperty = function(name) {
+        if (_styleList[name] === true) {
+            return '-'+tm.VENDER_PREFIX + name.capitalizeFirstLetter();
+        }
+        return name;
+    };
+})();</pre>
+</body>
+</html>

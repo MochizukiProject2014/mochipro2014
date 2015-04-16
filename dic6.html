@@ -1,0 +1,345 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>辞書</title>
+	<link rel="stylesheet" href="js/jquery-ui-1.11.1.custom/jquery-ui.css">
+	<script type="text/javascript" src="js/jquery-ui-1.11.1.custom/external/jquery/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.11.1.custom/jquery-ui.min.js">
+	</script>
+	<script type="text/javascript" src="js/script.js"></script>
+	<link href="./style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id=dic_body>
+<div class = "dic-text">
+<br>
+<h1>辞書</h1><br />
+<p>〜目次〜</p>
+<dic class="nav">
+<ul>
+	<li>・<a href="#dic1">C言語のルール</a></li>
+	<li>・<a href="#dic2">変数</a></li>
+	<li>・<a href="#dic3">scanf文</a></li>
+	<li>・<a href="#dic4">数式</a></li>
+	<li>・<a href="#dic5">printf文</a></li>
+	<li>・<a href="#dic6">if文</a></li>
+</ul>
+</dic>
+<br>
+<p id="page-top"><a href="#wrap"><b>PAGE TOP</b></a></p>
+<br><HR id="dic1" width="50%" align="left" color="black"><br>
+
+	<img src="./img/dic/c_rule.png">
+
+
+
+<br><HR id="dic2" width="50%" align="left" color="black"><br>
+	
+
+	<h1>『変数』</h1><br />
+	<p>値を記憶するには変数が必要。変数は自由に名前を付けられる。</p>
+	<p>変数を使用するには変数宣言を行わなければならない。</p><br>
+
+	
+	<br>
+
+
+		<h2>データ型</h2>
+		<p>
+			int　　　整数型　　　ex)1, 5<br />
+			double　浮動小数点型　ex)2.2, 3.0<br />
+			char　　文字型　　　　ex)a, A　※1文字しか入らない　　etc…<br />
+			<br /></p>
+
+
+			<h2>変数宣言</h2>
+			<p>変数を使用するために行うこと、宣言を行うことで変数を使用することができる。<br />
+				変数に記憶する値によって型を適切に選択する必要がある。<br /><br />
+
+				【形式】データ型 変数名;　<I id=cm>//データ型と変数名の間には半角スペースを入れる</I><br /><br />
+
+				【使用例①】double weight;　<I id=cm>//double型の変数weightを宣言している</I><br />
+				【使用例②】int x,y;　<I id=cm>//int型の変数xとyを同時に宣言している</I><br /><br />
+			</p>
+
+	<p>----変数に名前を付けるときのルール----</p>
+	<p>・使える文字はa~z,A~Z,_,0~9</p>
+	<p>・最初の一文字目は数字から始められない</p>
+	<p>・C言語の文法で使う言葉は使えない（printf,intなど）</p>
+	<p>・原則として小文字を使う</p>
+	<p>・スペースはいれられない、_は使える	</p><br>
+
+		<h2>代入</h2>
+		<p>変数に値を格納することを代入という。<br><br>
+				【形式】変数名 = 値;　<br /><br />
+
+				【使用例①】x = 3;　<br>
+				【使用例②】x = y;　<br>
+		</p><br>
+
+		<h2>初期化</h2>
+		<p>変数宣言と代入を同時に行うことを初期化という。<br><br>
+				【形式】データ型 変数名 = 値;　<br /><br />
+
+				【使用例①】int x = 3;　<br>
+				【使用例②】char x = 'a';　<br>
+
+		</p><br>
+
+
+
+<HR id="dic3" width="50%" align="left" color="black"><br>
+
+			<h1>『scanf文』</h1><br />
+			<p>キーボードから入力するために使用する関数</p><br>
+
+			<p>【形式】scanf("変換指定文字",&入力先の変数名);</p>
+			<p>入力先の変数は既に宣言されているものを使う。</p><br>
+
+			<p>【使用例①】scanf("%d",&x);</p>
+			<p>【使用例②】scanf("%d %d",&x,&y);　<I id=cm>//複数入力するときは、入力した値が順番に変数に入る</I></p><br>
+				
+	<h2>scanfの変換指定文字</h2>
+	<table border="1" cellspacing=0 cellpadding=2 id=keycenter>
+		<tr>
+			<td>%c</td>
+			<td>char型の変数に入力</td>
+		</tr>
+		<tr>
+			<td>%d</td>
+			<td>int型の変数を入力</td>
+		</tr>
+		<tr>
+			<td>%lf</td>
+			<td>double型の変数を入力</td>
+		</tr>
+	</table>
+	<p>double型の変換指定文字はprintfとscanfで少し違う。printfは%f、scanfは%lfを使う。</p>
+	<p>「i(アイ)」と「l(エル)」の違いに注意！ここでは「l(エル)」。</p>
+	<br>
+
+	<img src="./img/dic/scanf.png">
+	<br>
+	
+
+				<br>
+<HR id="dic4" width="50%" align="left" color="black"><br>
+
+
+				<h1>『数式』</h1><br />
+
+
+	<img src="./img/dic/math.png">
+	<br>
+
+				<p>・算術演算子<br />
+				<table border="1" cellspacing=0 cellpadding=2 id=keycenter>
+					<tr>
+						<th>演算子</th>
+						<th>使用例</th>
+						<th>意味</th>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>x + y</td>
+						<td>xにyを加える</td>
+					</tr>
+					<tr>
+						<td>-</td>
+						<td>x - y</td>
+						<td>xからyを引く</td>
+					</tr>
+					<tr>
+						<td>*</td>
+						<td>x * y</td>
+						<td>xにyをかける</td>
+					</tr>
+					<tr>
+						<td>/</td>
+						<td>x / y</td>
+						<td>xをyで割る</td>
+					</tr>
+					<tr>
+						<td>%</td>
+						<td>x % y</td>
+						<td>xをyで割った余りを求める</td>
+					</tr>
+				</table><br>
+
+				<p>・代入演算子<br />
+				<table border="1" cellspacing=0 cellpadding=2 id=keycenter>
+
+					<tr>
+						<th>演算子</th>
+						<th>使用例</th>
+						<th>意味</th>
+					</tr>
+					<tr>
+						<td>=</td>
+						<td>x = y</td>
+						<td>xにyを代入する</td>
+					</tr>
+				</table><br>
+
+						
+
+				<br>
+
+<HR id="dic5" width="50%" align="left" color="black"><br>
+
+	<h1>『printf文』</h1><br />
+	<p>コンソールに出力するためにprintf関数を用いる。</p><br>
+
+	<p>【形式】printf("書式文字列",出力する変数名);</p>
+	<p>出力する変数は既に宣言されているものを使う。</p>
+	<p>書式文字列内に<font face="Comic Sans MS">\</font>nを書くと改行ができる。</p><br>
+
+	<p>【使用例①】printf("Hello World!");　<I id=cm>//変数を出力しないから文字だけでいい</I></p>
+	<p>【使用例②】printf("xは%dです",x); 
+	<I id=cm>//変数を出力する場合、<br>
+		　　　　　　　　　　　　　　　　書式文字列の出力したい場所に変換指定文字を書く</I><br>
+		<p>【使用例③】printf("xは%d、yは%dです",x,y);　<I id=cm>//変数は順番に変換指定文字の場所に入る</I></p><br>
+
+	<h2>printfの変換指定文字</h2>
+	<table border="1" cellspacing=0 cellpadding=2 id=keycenter>
+		<tr>
+			<td>%c</td>
+			<td>char型の値を出力</td>
+		</tr>
+		<tr>
+			<td>%d</td>
+			<td>int型の値を出力</td>
+		</tr>
+		<tr>
+			<td>%f</td>
+			<td>double型の値を出力</td>
+		</tr>
+	</table>
+	<br>
+
+<img src="./img/dic/printf.png">
+
+
+<HR id="dic6" width="50%" align="left" color="black"><br>
+
+				<h1>『if文』</h1><br />
+				<h2>if</h2>
+				<p>条件によって実行文を変える関数。</p>
+				<p>ifの中に別のifを入れることもできる。</p><br>
+				<p>【形式】</p>
+				<p>if(条件式){</p>
+				<p>　文;</p>
+				<p>}</p><br>
+
+				<p>【使用例】</p>
+				<p>if(x == 0){　<I id=cm>//もしxが0なら</I></p>
+				<p>　x = x + 1;</p>
+				<p>}</p><br>
+
+
+				<h2>else</h2>
+				<p>ifの（）内に書いた条件式に当てはまらない場合の実行文を指定する関数。</p>
+				<p>ifの中に別のifを入れることもできる。</p><br>
+				<p>【形式】</p>
+				<p>if(条件式){</p>
+				<p>　文;</p>
+				<p>}else{</p>
+				<p>　文;</p>
+				<p>}</p><br>
+				<p>【使用例】</p>
+				<p>if(x == 0){　<I id=cm>//もしxが0なら</I></p>
+				<p>　printf("xは0です。");</p>
+				<p>}else{　<I id=cm>//そうでない場合</I></p>
+				<p>　printf("xは0ではありません");</p>
+				<p>}</p><br>
+
+				<h2>else if</h2>
+				<p>条件が複数ある場合に使う関数。elseとifの間には半角スペースが入る。</p><br>
+				<p>【形式】</p>
+				<p>if(条件式１){</p>
+				<p>　文;</p>
+				<p>}else if(条件式２){</p>
+				<p>　文;</p>
+				<p>}else{</p>
+				<p>　文;</p>
+				<p>}</p><br>
+
+				<p>【使用例】</p>
+				<p>if(x > 100){　<I id=cm>//もしxが100より大きいなら</I></p>
+				<p>　printf("xは100より大きいです。");</p>
+				<p>}else if(x > 50){　<I id=cm>//もしxが50より大きいなら</I></p>
+				<p>　printf("xは100以下で50より大きいです。");</p>
+				<p>}else{　<I id=cm>//いずれでもない場合</I></p>	
+				<p>　printf("xは50以下です。");</p>
+				<p>}</p>
+				<br>
+
+				<p>・論理演算子<br />
+				<table border="1" cellspacing=0 cellpadding=2 id=keycenter>
+					<tr>
+						<th>演算子</th>
+						<th>使用例</th>
+						<th>意味</th>
+					</tr>
+					<tr>
+						<td>&&</td>
+						<td>x && y</td>
+						<td>xとyが共に真の場合「真」</td>
+					</tr>
+					<tr>
+						<td>||</td>
+						<td>x || y</td>
+						<td>xかyが少なくとも１つは真の場合「真」</td>
+					</tr>
+					<tr>
+						<td>!</td>
+						<td>!x</td>
+						<td>aが偽の場合「真」、aが真の場合「偽」</td>
+					</tr>
+				</table><br>
+
+				<p>・比較演算子<br />
+				<table border="1" cellspacing=0 cellpadding=2 id=keycenter>
+					<tr>
+						<th>演算子</th>
+						<th>使用例</th>
+						<th>意味</th>
+					</tr>
+					<tr>
+						<td><</td>
+						<td>x < y</td>
+						<td>xはyより小さい</td>
+					</tr>
+					<tr>
+						<td><=</td>
+						<td>x <= y</td>
+						<td>xはy以下</td>
+					</tr>
+					<tr>
+						<td>></td>
+						<td>x > y</td>
+						<td>xはyより大きい</td>
+					</tr>
+					<tr>
+						<td>>=</td>
+						<td>x >= y</td>
+						<td>xはy以上</td>
+					</tr>
+					<tr>
+						<td>==</td>
+						<td>x == y</td>
+						<td>xとyは等しい</td>
+					</tr>
+					<tr>
+						<td>!=</td>
+						<td>x != y</td>
+						<td>xとyは異なる</td>
+					</tr>
+				</table><br>			
+
+
+
+				<br>
+</body>	
+		
+		

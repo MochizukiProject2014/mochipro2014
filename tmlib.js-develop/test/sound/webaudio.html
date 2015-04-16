@@ -1,0 +1,337 @@
+<!DOCTYPE html> 
+<html lang="ja"> 
+    <head> 
+        <meta charset="utf-8"> 
+        <title>WebAudio Test | TM Lib</title>
+
+
+        <!-- prettify -->
+        <link type="text/css" rel="stylesheet" href="../../plugins/prettify/prettify.css" />
+        <script src="../../plugins/prettify/prettify.js"></script>
+
+
+        <style>
+            body { font-family: "Meiryo", "メイリオ", "ヒラギノ角ゴ Pro W3", sans-serif; }
+
+            #content {
+                display: -webkit-box;
+                display: -moz-box;
+                display: -o-box;
+                display: box;
+            }
+
+            #content>* {
+                padding: 10px 20px;
+                width: 50%;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -o-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            canvas {
+                box-shadow: 0px 0px 4px 0px #aaa;
+            }
+
+        </style>
+
+        <script src="../../src/tmlib.js"></script>
+
+        <script src="../../src/core/object.js"></script>
+        <script src="../../src/core/string.js"></script>
+        <script src="../../src/core/number.js"></script>
+        <script src="../../src/core/array.js"></script>
+        <script src="../../src/core/function.js"></script>
+        <script src="../../src/core/date.js"></script>
+        <script src="../../src/core/math.js"></script>
+
+        <script src="../../src/util/querystring.js"></script>
+        <script src="../../src/util/type.js"></script>
+        <script src="../../src/util/flow.js"></script>
+        <script src="../../src/util/ajax.js"></script>
+        
+        <script src="../../src/event/event.js"></script>
+        <script src="../../src/event/eventdispatcher.js"></script>
+        
+        <script src="../../src/dom/element.js"></script>
+        <script src="../../src/dom/style.js"></script>
+        <script src="../../src/dom/event.js"></script>
+        <script src="../../src/dom/attr.js"></script>
+        
+        <script src="../../src/asset/manager.js"></script>
+        <script src="../../src/asset/loader.js"></script>
+
+        <script src="../../plugins/console.tm.js"></script>
+
+
+        <script src="../../src/sound/webaudio.js"></script>
+        <!--
+        <script src="../../src/sound/webaudio2.js"></script>
+    -->
+
+        <script id="test-script">
+
+            tm.preload(function() {
+                tm.asset.Loader().load("sample", "sample.mp3");
+            });
+
+            var query = null;
+
+            tm.main(function() {
+                query = tm.util.QueryString.parse(location.search.substr(1));
+                var testFuncName = query["test"] || "playTest";
+                tests[testFuncName]();
+
+                var testsElm = tm.dom.Element("#tests");
+                for (var key in tests) {
+                    var li = testsElm.create("li");
+                    var a  = li.create("a");
+
+                    var value = tests[key];
+
+                    a.html = key;
+                    a.attr.set("href", "?test=" + key);
+                }
+            });
+
+
+            var tests = {
+                playTest: function() {
+                    // コンソール
+                    var c = tm.Console("#console");
+                    //var c = console; // コンソールの方に出力
+
+                    var play = tm.dom.Element("#play");
+                    var stop = tm.dom.Element("#stop");
+                    var volume = tm.dom.Element("#volume");
+                    var position = tm.dom.Element("#position");
+                    var webaudio = null;
+
+                    play.event.click(function() {
+                        webaudio = tm.asset.Manager.get("sample").clone();
+                        webaudio.volume = parseFloat(volume.value);
+                        webaudio.setPosition( parseFloat(position.value), 0, 0 );
+                        webaudio.play();
+                        webaudio.onended = function() {
+                            // alert();
+                        };
+                    });
+
+                    stop.event.click(function() {
+                        webaudio.stop();
+                    });
+                },
+
+                f1Test: function() {
+                    // コンソール
+                    var c = tm.Console("#console");
+                    //var c = console; // コンソールの方に出力
+
+                    var play = tm.dom.Element("#play");
+                    var stop = tm.dom.Element("#stop");
+                    var volume = tm.dom.Element("#volume");
+
+                    play.event.click(function() {
+                        var position = 10;
+                        webaudio = tm.sound.Manager.get("sample");
+                        webaudio.volume = parseFloat(volume.value);
+                        webaudio.setPosition(position, 0, 0 );
+                        webaudio.play();
+
+                        var id = setInterval(function() {
+                            position -= 1;
+                            webaudio.setPosition( parseFloat(position), 0, 0 );
+
+                            if (webaudio.source.playbackState == 3) {
+                                clearInterval(id);
+                            }
+                        }, 60);
+                    });
+
+                    stop.event.click(function() {
+                        webaudio.stop();
+                    });
+
+                },
+
+                analyserTest: function() {
+                    // コンソール
+                    var c = tm.Console("#console");
+                    //var c = console; // コンソールの方に出力
+
+                    var play = tm.dom.Element("#play");
+                    var stop = tm.dom.Element("#stop");
+                    var volume = tm.dom.Element("#volume");
+                    var position = tm.dom.Element("#position");
+                    var webaudio = null;
+
+                    play.event.click(function() {
+                        webaudio = tm.sound.WebAudioManager.get("sample");
+                        webaudio.volume = parseFloat(volume.value);
+                        webaudio.setPosition( parseFloat(position.value), 0, 0 );
+                        webaudio.play();
+
+                        var analyzedData = new Uint8Array(webaudio.analyser.frequencyBinCount);
+                        c.clear();
+                        var id = setInterval(function() {
+                            webaudio.analyser.getByteFrequencyData(analyzedData);
+                            c.log(analyzedData[0]);
+
+                            if (webaudio.source.playbackState == 3) {
+                                clearInterval(id);
+                            }
+                        }, 60);
+                    });
+
+                    stop.event.click(function() {
+                        webaudio.stop();
+                    });
+                },
+
+                toneTest: function() {
+                    // コンソール
+                    var c = tm.Console("#console");
+                    //var c = console; // コンソールの方に出力
+
+                    var play = tm.dom.Element("#play");
+                    var stop = tm.dom.Element("#stop");
+                    var volume = tm.dom.Element("#volume");
+                    var position = tm.dom.Element("#position");
+                    var webaudio = null;
+
+                    play.event.click(function() {
+                        var webaudio = tm.sound.WebAudio();
+                        webaudio.tone();
+                        webaudio.volume = parseFloat(volume.value);
+                        webaudio.setPosition( parseFloat(position.value), 0, 0 );
+                        webaudio.play();
+                    });
+
+                    stop.event.click(function() {
+                        webaudio.stop();
+                    });
+                },
+
+                oscillatorTest: function() {
+                    var types = {
+                        "0": 0,
+                        "1": 1,
+                        "2": 2,
+                        "3": 3,
+                        "sine": 0,
+                        "square": 1,
+                        "sawtooth": 2,
+                        "triangle": 3,
+                    };
+                    var context = new webkitAudioContext();
+                    var source = context.createOscillator(2);
+                    console.log(types[query.type || 0]);
+                    source.type = types[query.type || 0];
+                    source.frequency.value = 261;
+
+                    source.connect(context.destination);
+
+                    source.noteOn(0);
+                    source.noteOff(1);
+                },
+
+                oscillatorTest2: function() {
+                    var types = {
+                        "0": 0,
+                        "1": 1,
+                        "2": 2,
+                        "3": 3,
+                        "sine": 0,
+                        "square": 1,
+                        "sawtooth": 2,
+                        "triangle": 3,
+                    };
+                    var context = new webkitAudioContext();
+                    var source = context.createOscillator(2);
+                    console.log(types[query.type || 0]);
+                    source.type = types[query.type || 0];
+                    source.frequency.value = 261;
+
+                    var gainNode = context.createGainNode();
+                    var now = context.currentTime;
+                    gainNode.gain.setValueAtTime(0.5, now);
+                    gainNode.gain.linearRampToValueAtTime(0, now+0.8);
+
+                    source.connect(gainNode);
+                    gainNode.connect(context.destination);
+
+                    source.noteOn(0);
+                },
+
+                /*
+                 * ## ref
+                 * http://developer.apple.com/library/safari/#documentation/AudioVideo/Conceptual/Using_HTML5_Audio_Video/PlayingandSynthesizingSounds/PlayingandSynthesizingSounds.html
+                 * http://docs.webplatform.org/wiki/apis/webaudio/OscillatorNode/setWaveTable
+                 */
+                waveTableTest: function() {
+                    var context = new webkitAudioContext();
+                    var source = context.createOscillator();
+
+                    source.type = 0;
+                    source.connect(context.destination);
+
+                    var curveLength = 100;
+                    var curve1 = new Float32Array(curveLength);
+                    var curve2 = new Float32Array(curveLength);
+
+                    for (var i=0; i<curveLength; ++i) {
+                        curve1[i] = Math.sin(Math.PI*i/curveLength);
+                    }
+                    for (var i=0; i<curveLength; ++i) {
+                        curve2[i] = Math.cos(Math.PI*i/curveLength);
+                    }
+
+                    var waveTable = context.createWaveTable(curve1, curve2);
+                    source.setWaveTable(waveTable);
+
+                    source.noteOn(0);
+                    source.noteOff(1);
+                },
+            };
+
+
+        </script>
+
+        <script>
+            tm.dom.Element(window).event.add("load", function() {
+                tm.dom.Element("#code").text = tm.dom.Element("#test-script").text;
+                prettyPrint();
+            });
+        </script>
+    </head>
+
+    <body>
+
+        <h1>WebAudio Test | TM Lib</h1>
+
+        <div id="content">
+            <section>
+                <h2>Buttons</h2>
+                <p>
+                    <button id="play">play</button><button id="stop">stop</button><br/>
+                    <span>volume(0.0 - 1.0)</span>:<input type="text" id="volume" value="0.8" /><br />
+                    <span>position(- ←→ +)</span>:<input type="text" id="position" value="0.0" /><br />
+<!--                     <span>echo effect (delay time)</span>:<input type="text" id="echo-delay" value="0.0" /><br />
+                    <span>echo effect (delay level)</span>:<input type="text" id="echo-delay" value="0.0" /><br />
+                    <span>echo effect (feedback)</span>:<input type="text" id="echo-delay" value="0.0" /><br />
+ -->                </p>
+                <h2>Tests</h2>
+                <ul id="tests">
+                </ul>
+                <h2>Console</h2>
+                <pre id="console" class="prettyprint"></pre>
+            </section>
+            <section>
+                <h2>Code</h2>
+                <pre id="code" class="prettyprint"></pre>
+            </section>
+        </div>
+
+
+    </body>
+</html>

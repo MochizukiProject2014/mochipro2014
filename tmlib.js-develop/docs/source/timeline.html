@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * timeline.js
+ */
+
+tm.namespace(&quot;tm.app&quot;, function() {
+
+<span id='tm-app-Timeline'>    /**
+</span>     * @class tm.app.Timeline
+     * タイムラインクラス
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define(&quot;tm.app.Timeline&quot;, {
+        superClass: &quot;tm.app.Element&quot;,
+        
+<span id='tm-app-Timeline-method-constructor'>        /**
+</span>         * @constructor
+         * @param {Object} elm
+         */
+        init: function(elm) {
+            this.superInit();
+            
+            this.setTarget(elm || {});
+            
+            this.currentFrame = 0;
+            this.currentTime = 0;
+            this.prevTime = 0;
+            this.duration = 0;
+            this.isPlay = true;
+            this._tweens  = [];
+            this._actions = [];
+        },
+        
+<span id='tm-app-Timeline-method-update'>        /**
+</span>         * 更新
+         * @param {Object} app
+         */
+        update: function(app) {
+            if (!this.isPlay) return ;
+
+            if (this.prevTime &lt;= this.duration) {
+                this._updateTween();
+                this._updateAction();
+            }
+
+            this.currentFrame++;
+            this.prevTime = this.currentTime;
+            this.currentTime = ((this.currentFrame/app.fps)*1000)|0;
+        },
+        
+<span id='tm-app-Timeline-method-_updateTween'>        /**
+</span>         * トゥイーンを更新
+         * @private
+         */
+        _updateTween: function() {
+            var tweens = this._tweens;
+            for (var i=0,len=tweens.length; i&lt;len; ++i) {
+                var tween = tweens[i];
+                
+                if (tween.delay &gt; this.currentTime) {
+                    continue ;
+                }
+                
+                var time = this.currentTime - tween.delay;
+                tween._setTime(time);
+                if (tween.time &gt;= tween.duration) {
+                }
+                else {
+                    tween.update();
+                }
+            }
+        },
+        
+<span id='tm-app-Timeline-method-_updateAction'>        /**
+</span>         * アクションを更新
+         * @private
+         */
+        _updateAction: function() {
+            var actions = this._actions;
+            
+            for (var i=0,len=actions.length; i&lt;len; ++i) {
+                var action = actions[i];
+                
+                if (this.prevTime &lt;= action.delay &amp;&amp; action.delay &lt; this.currentTime) {
+                    if (action.type == &quot;call&quot;) {
+                        action.func.call(action.self);
+                        // action.func();
+                    }
+                    else if (action.type == &quot;set&quot;) {
+                        var props = action.props;
+                        for (var key in props) {
+                            this.element[key] = props[key];
+                        }
+                    }
+                }
+            }
+        },
+        
+<span id='tm-app-Timeline-method-to'>        /**
+</span>         * 指定した値までアニメーション
+         * @param {Object} delay
+         * @param {Object} props
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        to: function(delay, props, duration, fn) {
+            console.assert(typeof delay == &quot;number&quot;, &quot;to の第一引数はdelayに変わりました&quot;);
+            this._addTween({
+                props: props,
+                duration: duration,
+                fn: fn,
+                delay: delay
+            });
+            
+            return this;
+        },
+
+<span id='tm-app-Timeline-method-by'>        /**
+</span>         * 指定した値を足した値までアニメーション
+         * @param {Object} delay
+         * @param {Object} props
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        by: function(delay, props, duration, fn) {
+            console.assert(typeof delay == &quot;number&quot;, &quot;by の第一引数はdelayに変わりました&quot;);
+            for (var key in props) {
+                props[key] += this.element[key] || 0;
+            }
+            this._addTween({
+                props: props,
+                duration: duration,
+                fn: fn,
+                delay: delay
+            });
+            
+            return this;
+        },
+        
+<span id='tm-app-Timeline-method-call'>        /**
+</span>         * 関数を実行
+         * @param {Object} delay
+         * @param {Function} func
+         */
+        call: function(delay, func, self) {
+            console.assert(typeof delay == &quot;number&quot;, &quot;call の第一引数はdelayに変わりました&quot;);
+            this._addAction({
+                &quot;type&quot;: &quot;call&quot;,
+                func: func,
+                self: self || this,
+                delay: delay,
+            });
+            return this;
+        },
+        
+<span id='tm-app-Timeline-method-set'>        /**
+</span>         * プロパティをセット
+         * @param {Object} delay
+         * @param {Object} props
+         */
+        set: function(delay, props) {
+            console.assert(typeof delay == &quot;number&quot;, &quot;set の第一引数はdelayに変わりました&quot;);
+            this._addAction({
+                &quot;type&quot;: &quot;set&quot;,
+                props: props,
+                delay: delay,
+            });
+            return this;
+        },
+
+
+<span id='tm-app-Timeline-method-setTarget'>        /**
+</span>         * ターゲットのセット
+         * @param {Object} target
+         */
+        setTarget: function(target) {
+            this.element = target;
+
+            return this;
+        },
+
+<span id='tm-app-Timeline-method-getTarget'>        /**
+</span>         * ターゲットをゲット
+         */
+        getTarget: function() {
+            return this.element;
+        },
+        
+<span id='tm-app-Timeline-method-gotoAndPlay'>        /**
+</span>         * アニメーション開始
+         * アニメーションが終了したら再度アニメーションを行う
+         * @param {Number} frame
+         */
+        gotoAndPlay: function(frame) {
+            this.isPlay = true;
+            this.currentFrame = frame;
+            this._updateTween();
+        },
+        
+<span id='tm-app-Timeline-method-gotoAndStop'>        /**
+</span>         * アニメーション開始
+         * アニメーションが終了したらストップする
+         * @param {Number} frame
+         */
+        gotoAndStop: function(frame) {
+            this.currentFrame = frame;
+            this.isPlay = false;
+            this._updateTween();
+        },
+
+<span id='tm-app-Timeline-method-_addTween'>        /**
+</span>         * tween を追加
+         * @private
+         * @param {Object} tween
+         */
+        _addTween: function(tween) {
+            tween.duration = tween.duration || 1000;
+            tween.duration = this._dirty(tween.duration);
+            tween.delay = tween.delay || 0;
+            tween.delay = this._dirty(tween.delay);
+
+            var tweenObj = tm.anim.Tween();
+            tweenObj.to(this.element, tween.props, tween.duration, tween.fn);
+            tweenObj.delay = tween.delay;
+
+            this._tweens.push(tweenObj);
+            this._updateDuration(tweenObj);
+        },
+
+<span id='tm-app-Timeline-method-_addAction'>        /**
+</span>         * アニメーションを追加
+         * @private
+         * @param {Object} action
+         */
+        _addAction: function(action) {
+            action.delay = action.delay || 0;
+            action.delay = this._dirty(action.delay);
+
+            this._actions.push(action);
+            this._updateDuration(action);
+        },
+        
+<span id='tm-app-Timeline-method-_updateDuration'>        /**
+</span>         * 時間を更新
+         * @private
+         * @param {Object} task
+         */
+        _updateDuration: function(task) {
+            var duration = task.delay + (task.duration ? task.duration : 0);
+            if (this.duration &lt; duration) this.duration = duration;
+            return this;
+        },
+
+<span id='tm-app-Timeline-method-_dirty'>        /**
+</span>         * dirty method
+         * @private
+         * @param {Object} t
+         */
+        _dirty: function(t) {
+            return t;
+//            return (t/this.fps).toInt();
+        },
+        
+<span id='tm-app-Timeline-method-load'>        /**
+</span>         * ロード
+         * @param {Object} data
+         */
+        load: function(data) {
+            
+            for (var key in data.timeline) {
+                var value = data.timeline[key];
+            }
+            
+            return this;
+        },
+        
+<span id='tm-app-Timeline-method-clear'>        /**
+</span>         * アニメーションをクリア
+         */
+        clear: function() {
+            this.currentFrame = 0;
+            this.prevTime = 0;
+            this.currentTime = 0;
+            this.duration = 0;
+            this.isPlay = true;
+            this._tweens  = [];
+            this._actions = [];
+            
+            return this;
+        }
+        
+    });
+    
+    
+    
+<span id='tm-app-Element-property-timeline'>    /**
+</span>     * @member      tm.app.Element
+     * @property    timeline
+     * タイムラインアニメーション
+     */
+    tm.app.Element.prototype.getter(&quot;timeline&quot;, function() {
+        if (!this._timeline) {
+            this._timeline = tm.app.Timeline(this);
+            this.on(&quot;enterframe&quot;, function(e) {
+                this._timeline.update(e.app);
+            });
+        }
+
+        return this._timeline;
+    });
+    
+});
+</pre>
+</body>
+</html>

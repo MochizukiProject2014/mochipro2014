@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">;(function() {
+    
+<span id='tm-app-Element-property-interaction'>    /**
+</span>     * @member      tm.app.Element
+     * @property    interaction
+     * インタラクション
+     */
+    tm.app.Element.prototype.getter(&quot;interaction&quot;, function() {
+        console.assert(false, &quot;interaction は Object2d に統合されました. obj.setInteractive(true); とすればタッチ判定が有効になります.&quot;);
+    });
+    
+    
+    var dirtyClass = {
+        &quot;display&quot;: [
+            &quot;Sprite&quot;,
+            &quot;Shape&quot;,
+            &quot;CircleShape&quot;,
+            &quot;TriangleShape&quot;,
+            &quot;RectangleShape&quot;,
+            &quot;RoundRectangleShape&quot;,
+            &quot;StarShape&quot;,
+            &quot;PolygonShape&quot;,
+            &quot;HeartShape&quot;,
+            &quot;TextShape&quot;,
+            &quot;CanvasRenderer&quot;,
+            &quot;BoundingRectRenderer&quot;,
+            &quot;Label&quot;,
+            &quot;MapSprite&quot;,
+            &quot;CanvasElement&quot;,
+            &quot;CanvasApp&quot;,
+            &quot;AnimationSprite&quot;,
+            &quot;SpriteSheet&quot;,
+        ],
+        &quot;ui&quot;: [
+            &quot;LabelButton&quot;,
+            &quot;IconButton&quot;,
+            &quot;GlossyButton&quot;,
+            &quot;FlatButton&quot;,
+            &quot;LoadingScene&quot;,
+        ],
+    };
+    
+    for (var key in dirtyClass) {
+        var namespace = dirtyClass[key];
+        namespace.each(function(className) {
+            tm.app[className] = tm[key][className];
+        });
+    }
+    
+    tm.asset.AssetManager = tm.asset.Manager;
+
+})();
+</pre>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html> 
+<html lang="ja"> 
+    <head> 
+        <meta charset="utf-8"> 
+        <title>Gradient Test | TM Lib</title>
+        
+        
+        <!-- prettify -->
+        <link type="text/css" rel="stylesheet" href="../../plugins/prettify/prettify.css" />
+        <script src="../../plugins/prettify/prettify.js"></script>
+        
+        
+        <style>
+            body { font-family: "Meiryo", "メイリオ", "ヒラギノ角ゴ Pro W3", sans-serif; }
+            
+            #content {
+                display: -webkit-box;
+                display: -moz-box;
+                display: -o-box;
+                display: box;
+            }
+            
+            #content>* {
+                padding: 10px 20px;
+                width: 50%;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -o-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+            
+            canvas {
+                box-shadow: 0px 0px 4px 0px #aaa;
+            }
+            
+        </style>
+        
+        <script src="../../src/tmlib.js"></script>
+        
+        <script src="../../src/core/object.js"></script>
+        <script src="../../src/core/string.js"></script>
+        <script src="../../src/core/number.js"></script>
+        <script src="../../src/core/array.js"></script>
+        <script src="../../src/core/function.js"></script>
+        <script src="../../src/core/date.js"></script>
+        <script src="../../src/core/math.js"></script>
+        
+        <script src="../../src/geom/vector2.js"></script>
+        <script src="../../src/geom/vector3.js"></script>
+        <script src="../../src/geom/matrix44.js"></script>
+        <script src="../../src/geom/circle.js"></script>
+        
+        <script src="../../src/dom/element.js"></script>
+        <script src="../../src/dom/style.js"></script>
+        <script src="../../src/dom/event.js"></script>
+        
+        <script src="../../src/event/event.js"></script>
+        <script src="../../src/event/eventdispatcher.js"></script>
+
+        <script src="../../src/graphics/canvas.js"></script>
+        <script src="../../src/graphics/gradient.js"></script>
+        <script src="../../src/graphics/graphics.js"></script>
+        <script src="../../src/asset/assetmanager.js"></script>
+        <script src="../../src/asset/texture.js"></script>
+        
+        <script src="../../plugins/console.tm.js"></script>
+        
+        <script id="test-script">
+            
+            tm.preload(function() {
+//                tm.asset.TextureManager.add("img", "icon.png");
+                tm.asset.AssetManager.load("img", "nehe.gif");
+            });
+            
+            tm.main(function() {
+                var graphics = tm.graphics.Graphics("#world");
+                graphics.resize(640, 480);
+                graphics._pMatrix = tm.geom.Matrix44.perspective(45, 640/480, 0.1, 1000.0);
+                
+                var vbo = graphics.createBuffer([
+                    0.0,  0.25, 0.0,
+                    -0.25, -0.25, 0.0,
+                    0.25, -0.25, 0.0,
+                    
+                    -0.5,  0.25, 0.0,
+                    -0.75, -0.25, 0.0,
+                    -0.25, -0.25, 0.0,
+                    
+                    0.5,  0.25, 0.0,
+                    0.25, -0.25, 0.0,
+                    0.75, -0.25, 0.0
+                ]);
+
+                var colors = graphics.createBuffer([
+                    1.0, 0.0, 0.0, 1.0,
+                    1.0, 1.0, 0.0, 1.0,
+                    1.0, 1.0, 1.0, 1.0,
+
+                    0.0, 1.0, 0.0, 1.0,
+                    1.0, 1.0, 0.0, 1.0,
+                    1.0, 1.0, 1.0, 1.0,
+
+                    0.0, 0.0, 1.0, 1.0,
+                    1.0, 0.0, 1.0, 1.0,
+                    1.0, 1.0, 1.0, 1.0,
+                ]);
+
+                var img = tm.asset.AssetManager.get("img");
+                var tex = graphics.createTexture(img);
+                var gl = graphics.gl;
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, tex);
+                gl.uniform1i(graphics.program.samplerUniform, 0);
+
+                tm.setLoop(function() {
+                    graphics.clear();
+                    
+//                    graphics._mvMatrix.translate(0.01, 0, 0);
+/*
+                    graphics._mvMatrix.rotateY(Math.degToRad(4));
+                    graphics._mvMatrix.rotateX(Math.degToRad(2));
+                    */
+                    graphics.drawArrays(vbo, colors);
+                    
+                    graphics.color4(0.0, 0.0, 1.0, 1.0);
+                    graphics.drawRectangle(-0.25, -0.75, 0.5, 0.5);
+                    graphics.drawRectangle(-1, -1, 2, 2);
+                    graphics.color4(0.0, 1.0, 1.0, 1.0);
+                    graphics.drawCircle(0.0, 0.5, 0.25);
+                    
+//                    graphics.camera.eye.y += 0.1;
+                    graphics.camera.eye.z += 1;
+                    graphics.camera.lookAt();
+
+                    //graphics.drawPyramid();
+                    //graphics.drawCube();
+                }, 1000/30);
+            });
+            
+        </script>
+        
+        <script>
+            tm.dom.Element(window).event.add("load", function() {
+                tm.dom.Element("#code").text = tm.dom.Element("#test-script").text;
+                prettyPrint();
+            });
+        </script>
+    </head>
+    
+    <body>
+         
+        <h1>Gradient Test | TM Lib</h1>
+        
+        <div id="content">
+            <section>
+                <h2>Canvas</h2>
+                <canvas id="world"></canvas>
+                <h2>Console</h2>
+                <pre id="console" class="prettyprint"></pre>
+            </section>
+            <section>
+                <h2>Code</h2>
+                <pre id="code" class="prettyprint"></pre>
+            </section>
+        </div>
+        
+        
+    </body>
+</html>

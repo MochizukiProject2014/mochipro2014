@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+ <meta charset="UTF-8">
+ <title>問題画面</title>
+  
+<link rel="stylesheet" href="js/jquery-ui-1.11.1.custom/jquery-ui.css">
+<script type="text/javascript" src="js/jquery-ui-1.11.1.custom/external/jquery/jquery.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.11.1.custom/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/samplecode.js"></script>
+<script type="text/javascript" src="js/parser.js"></script>
+<script type="text/javascript" src="js/reset.js"></script>
+<script type="text/javascript" src="js/hint.js"></script>
+<script type="text/javascript" src="js/movenext.js"></script>
+<script type="text/javascript"src="tmlib.js-develop/build/tmlib.js"></script>
+<script type="text/javascript" src="js/anime.js"></script>
+<link href="./stylenew.css" rel="stylesheet" type="text/css">
+<script src="js/js/jquery-1.10.2.min.js"></script>
+ <!--CodeMirror-->
+<script src="js/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="js/codemirror/lib/codemirror.css">
+<script src="js/codemirror/mode/clike/clike.js"></script>  
+<script src="js/codemirror/addon/selection/active-line.js"></script> 
+<script src="js/codemirror/addon/selection/mark-selection.js"></script> 
+
+</head>
+
+ 
+ <body id = "c1">
+ 
+
+
+ 	<div class = "menu-box">
+ 		<a href="./index.html">TOP</a> <span id="divider">&nbsp;>&nbsp;</span> 
+    	<a href="./menu.html">MENU</a> <span id="divider">&nbsp;>&nbsp;</span>
+   	    <a href="./chapter1.html">第一章 導入</a> <span id="divider">&nbsp;>&nbsp;</span> 
+    	まとめ問題
+	</div>
+	
+	
+		<div class = "code-box">
+		<p class = "question">問題<br />　Hello World!と出力してみよう。</p>
+		<input class = "resetbut" type="button" value="コードリセット" onclick="reset_matome1();"></br><br />
+		<p class = "code">▼プログラムを入力</p>
+		<textarea style="resize: none;" id="text" rows="20" cols="75"></textarea>
+<input type="button" value="実行" id="button" onclick = "tabplay()">
+	</div>
+	
+	
+	<div class = "anime-box">
+		<ul class = "tab">
+			<li class = "select">アニメ</li>
+			<li>辞書</li>
+		</ul>
+		<ul class = "content">
+			<li><div class = "toolbar"><input type="button" value="サンプル実行" id="sample">
+			<button id="play" value="一時停止" onClick="ANIME_start_or_stop()">play</button>
+	 		<button id="stop" onClick="ANIME_reset()">stop</button>
+	 		<button id="fast" onClick="ANIME_fast_or_default()">fast</button>
+	 		<div id = "movenext"></div>
+	 		</div>
+	 		<canvas id = "world"></canvas></li>
+			<li class = "hide"><div class = "dic"><object data="dic.html" type="text/html" width="730" height="460"></object></div></li>
+		</ul>
+	</div>
+	
+	
+	<div class = "hint-box">
+		<img class = "chara" src = "img/character/littlefa.png"/>
+		<div class = "com" id = "com"></div>
+		<input type="button" value="ヒント" onClick="hintc1_matome()" class = "hintb"></input>
+			</div>
+	
+	
+	<div class = "console-box">
+		▼コンソール</br>
+		<textarea class = "console" style="resize: none; overflow:auto;"id="console" name="code" rows="6" cols="50" onkeydown="if(event.keyCode === 13){newscanfnext();}"/></textarea>
+	</div>
+	
+	
+	<div id="ver" version="c1"></div>
+	
+	<!--　ダイアログ　-->
+	<div id="dialog-message" title="第一章　導入　>　まとめ問題">
+  		<p><br />
+    	<b>Hello World!と出力してみよう。<br />
+		</b><br />
+ 		</p>
+	</div>
+	<!---  ダイヤログここまで   -->
+
+<p>
+</body>
+
+
+</html>

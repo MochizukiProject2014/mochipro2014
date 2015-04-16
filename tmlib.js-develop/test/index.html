@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>tmlib.js test</title>
+        <link rel="stylesheet" href="http://rawgithub.com/visionmedia/mocha/1.20.1/mocha.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="http://rawgithub.com/visionmedia/mocha/1.20.1/mocha.js"></script>
+        <script>
+            mocha.setup('bdd');
+        </script>
+        <script src="../src/tmlib.js"></script>
+        <script src="../src/core/object.js"></script>
+        <script src="../src/core/array.js"></script>
+        <script src="../src/core/number.js"></script>
+        <script src="../src/core/string.js"></script>
+        <script src="../src/core/list.js"></script>
+        <script src="../src/core/math.js"></script>
+
+        <script src="../src/event/event.js"></script>
+        <script src="../src/event/eventdispatcher.js"></script>
+        
+        <script src="../src/geom/vector2.js"></script>
+        <script src="../src/geom/vector3.js"></script>
+        <script src="../src/geom/circle.js"></script>
+        <script src="../src/geom/rect.js"></script>
+
+        <script src="../src/util/ajax.js"></script>
+        <script src="../src/util/file.js"></script>
+        <script src="../src/util/type.js"></script>
+        <script src="../src/util/flow.js"></script>
+        <script src="../src/util/querystring.js"></script>
+        <script src="../src/util/script.js"></script>
+
+        <script src="test.js"></script>
+
+        <script src="core/object.js"></script>
+        <script src="core/array.js"></script>
+        <script src="core/string.js"></script>
+        <script src="core/number.js"></script>
+
+        <script src="event/eventdispatcher.js"></script>
+
+        <script src="util/ajax.js"></script>
+        <!--
+        <script src="util/file.js"></script>
+        <script src="util/type.js"></script>
+        <script src="util/flow.js"></script>
+        <script src="util/querystring.js"></script>
+        <script src="util/script.js"></script>
+    -->
+
+        <script src="geom/vector2.js"></script>
+        <script src="geom/vector3.js"></script>
+        <script src="geom/circle.js"></script>
+        <script src="geom/rect.js"></script>
+
+        <script>
+            
+            var assert = function(expr, msg) {
+                if (!expr) throw new Error(msg || 'failed');
+            };
+            
+            assert.equal = function(a, b, msg) {
+                if (a !== b) throw new Error(msg || ('failed : '+a+','+b));
+            };
+            
+            $(function() {
+                mocha.run();
+            });
+            
+        </script>
+    </head>
+    <body>
+        <div id="mocha"></div>
+    </body>
+</html>

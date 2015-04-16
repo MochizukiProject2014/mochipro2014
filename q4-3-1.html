@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+ <meta charset="UTF-8">
+ <title>問題画面</title>
+  
+<link rel="stylesheet" href="js/jquery-ui-1.11.1.custom/jquery-ui.css">
+<script type="text/javascript" src="js/jquery-ui-1.11.1.custom/external/jquery/jquery.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.11.1.custom/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/parser.js"></script>
+<script type="text/javascript" src="js/hint.js"></script>
+<script type="text/javascript" src="js/reset.js"></script>
+<script type="text/javascript"src="tmlib.js-develop/build/tmlib.js"></script>
+<script type="text/javascript" src="js/anime.js"></script>
+<link href="./style.css" rel="stylesheet" type="text/css">
+<script src="./js/js/jquery-1.10.2.min.js"></script>
+ <!--CodeMirror-->
+<script src="js/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="js/codemirror/lib/codemirror.css">
+<script src="js/codemirror/mode/clike/clike.js"></script>  
+<script src="js/codemirror/addon/selection/active-line.js"></script> 
+<script src="js/codemirror/addon/selection/mark-selection.js"></script> 
+
+</head>
+
+ 
+ <body>
+ 
+
+
+ <div class = "main">
+ 	<div class = "menu-box">
+ 		<a href="./index.html">TOP</a> <span id="divider">/</span> 
+        <a href="./menu.html">MENU</a> <span id="divider">/</span>
+        <a href="./FLASH4/story4_1.html">story4-1</a> <span id="divider">/</span> 
+        <a href="./chapter4.html">第四章 繰り返し</a> <span id="divider">/</span> 
+		第三節 二重ループ 問題１
+	</div>
+	
+	<div class = "title-box">
+		<h4>第四章　繰り返し>第三節　二重ループ>問題１</h4>
+		<p>九九の表を作ろう。</p>
+	</div>
+
+	<div class = "main-box">
+		<div class = "code">
+			<div class ="code-box">
+			▼コードを入力</br>
+			<textarea style="resize: none;" id="text" rows="25" cols="70">
+#include <stdio.h>
+int main(void){
+   int x,i,k;
+   for(  ){
+      for(  ){
+         x = i * k;
+         printf("%d",x);
+      }
+      printf("\n");
+   }   
+   return 0;
+}</textarea>
+			</div>
+			</div>
+	
+	<div class = "anime-box">
+	<ul class = "tab">
+		<li class = "select">アニメ</li>
+		<li>辞書</li>
+	</ul>
+	<ul class = "content">
+		<li><canvas id = "world"></canvas></li>
+		<li class = "hide"><div class = "dic"><object data="dic.html" type="text/html" width="730" height="460"></object></div></li>
+	</ul>
+	</div>
+	<div class = "console-box">
+	<div class = "toolbar">
+	 <button id="play" value="一時停止" onClick="ANIME_start_or_stop()">play</button>
+	 <button id="stop" onClick="ANIME_reset()">stop</button>
+	 <button id="fast" onClick="ANIME_fast_or_default()">fast</button></br>
+	</div>
+		▼コンソール</br>
+	<textarea class = "console" style="resize: none; overflow:auto;"id="console" name="code" rows="5" cols="80"></textarea>
+	</div>
+	<div class = "button">
+
+	<div class = "play-box">
+		<input type="button" value="実行" id="button">
+		<input type="button" value="入力完了" id="button2">
+		<input type="button" value="停止">
+		<input type="button" value="リセット" onclick="resetq4_3_1();">
+		<input type="button" value="サンプル実行" onclick="ANIME_reset();">
+	</div>
+	<div class = "com-box">
+	<div class = "com" id = "com"></div>
+	<img class = "cat" src = "catsample.gif">
+	<input type="button" value="ヒント" onClick="hintq4_3_1()" class = "hint">
+</div>
+
+	</div>
+</div>
+</div>
+<div id="ver" version="431"></div>
+
+
+</body>
+</html>

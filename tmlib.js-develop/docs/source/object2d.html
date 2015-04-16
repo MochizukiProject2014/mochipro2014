@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/*
+ * object2d.js
+ */
+
+(function() {
+    
+<span id='tm-app-Object2D'>    /**
+</span>     * @class tm.app.Object2D
+     * Object2D
+     * @extends tm.app.Element
+     */
+    tm.define(&quot;tm.app.Object2D&quot;, {
+        superClass: &quot;tm.app.Element&quot;,
+        
+<span id='tm-app-Object2D-property-position'>        /** 位置 */
+</span>        position: null,
+<span id='tm-app-Object2D-property-scale'>        /** スケール */
+</span>        scale: null,
+<span id='tm-app-Object2D-property-rotation'>        /** 回転 */
+</span>        rotation: 0,
+<span id='tm-app-Object2D-property-awake'>        /** 起きているフラグ */
+</span>        awake: true,
+<span id='tm-app-Object2D-property-_width'>        /** @private  幅 */
+</span>        _width:  64,
+<span id='tm-app-Object2D-property-_height'>        /** @private  高さ */
+</span>        _height: 64,
+<span id='tm-app-Object2D-property-pointing'>        /** @property pointing      ポインティング */
+</span><span id='tm-app-Object2D-property-origin'>        /** @property origin        中心位置 */
+</span><span id='tm-app-Object2D-property-_matrix'>        /** @property _matrix       マトリックス */
+</span><span id='tm-app-Object2D-property-hitFlags'>        /** @property hitFlags      ヒット判定フラグ */
+</span><span id='tm-app-Object2D-property-downFlags'>        /** @property downFlags     ダウンフラグ */
+</span><span id='tm-app-Object2D-property-_worldMatrix'>        /** @property _worldMatrix  グローバル行列 */
+</span><span id='tm-app-Object2D-property-_worldAlpha'>        /** @property _worldAlpha   グローバルのα値 */
+</span>        
+<span id='tm-app-Object2D-method-constructor'>        /**
+</span>         * @constructor
+         * @param {Object} elm
+         */
+        init: function() {
+            this.superInit();
+            this.position = tm.geom.Vector2(0, 0);
+            this.scale    = tm.geom.Vector2(1, 1);
+            this.pointing = tm.geom.Vector2(0, 0);
+            this.origin   = tm.geom.Vector2(0.5, 0.5);
+            this._matrix  = tm.geom.Matrix33();
+            this._matrix.identity();
+            
+            this.boundingType = &quot;circle&quot;;
+            this.interactive = false;
+            this.hitFlags = [];
+            this.downFlags= [];
+
+            this._worldMatrix = tm.geom.Matrix33();
+            this._worldMatrix.identity();
+            this._worldAlpha = 1.0;
+        },
+        
+<span id='tm-app-Object2D-method-getFinalMatrix'>        /**
+</span>         * 最終的な行列をゲット
+         */
+        getFinalMatrix: function() {
+            var matrix = tm.geom.Matrix33();
+ 
+            if (this.parent) {
+                matrix.multiply(this.parent.getFinalMatrix());
+            }
+            matrix.translate(this.centerX, this.centerY);
+            matrix.rotateZ(this.rotation*Math.DEG_TO_RAD);
+            matrix.scale(this.scaleX, this.scaleY);
+ 
+            return matrix;
+        },
+        
+<span id='tm-app-Object2D-method-isHitPoint'>        /**
+</span>         * 点と衝突しているかを判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPoint: function(x, y) {
+            // 円判定
+            var p = this.globalToLocal(tm.geom.Vector2(x, y));
+            this.pointing.x = p.x;
+            this.pointing.y = p.y;
+            
+            if (((p.x)*(p.x)+(p.y)*(p.y)) &lt; (this.radius*this.radius)) {
+                return true;
+            }
+            return false;
+        },
+ 
+<span id='tm-app-Object2D-method-isHitPointCircle'>        /**
+</span>         * 円として点と衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointCircle: function(x, y) {
+            var lenX = this.x - x;
+            var lenY = this.y - y;
+            if (((lenX)*(lenX)+(lenY)*(lenY)) &lt; (this.radius*this.radius)) {
+                return true;
+            }
+            return false;
+        },
+ 
+<span id='tm-app-Object2D-method-isHitPointRect'>        /**
+</span>         * 矩形として点と衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointRect: function(x, y) {
+            // ここから下のバージョンは四角形
+            
+            var left   = this.x - this.width*this.originX;
+            var right  = this.x + this.width*(1-this.originX);
+            var top    = this.y - this.height*this.originY;
+            var bottom = this.y + this.height*(1-this.originY);
+            
+            if ( left &lt; x &amp;&amp; x &lt; right &amp;&amp; top  &lt; y &amp;&amp; y &lt; bottom ) { return true; }
+            
+            return false;
+        },
+        
+<span id='tm-app-Object2D-method-isHitPointCircleHierarchy'>        /**
+</span>         * 階層を考慮した円衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointCircleHierarchy: function(x, y) {
+            // 円判定
+            var p = this.globalToLocal(tm.geom.Vector2(x, y));
+            this.pointing.x = p.x;
+            this.pointing.y = p.y;
+            
+            if (((p.x)*(p.x)+(p.y)*(p.y)) &lt; (this.radius*this.radius)) {
+                return true;
+            }
+            return false;
+        },
+        
+<span id='tm-app-Object2D-method-isHitPointRectHierarchy'>        /**
+</span>         * 階層を考慮した矩形衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointRectHierarchy: function(x, y) {
+            var p = this.globalToLocal(tm.geom.Vector2(x, y));
+            this.pointing.x = p.x;
+            this.pointing.y = p.y;
+            
+            var left   = -this.width*this.originX;
+            var right  = +this.width*(1-this.originX);
+            var top    = -this.height*this.originY;
+            var bottom = +this.height*(1-this.originY);
+            
+            if ( left &lt; p.x &amp;&amp; p.x &lt; right &amp;&amp; top  &lt; p.y &amp;&amp; p.y &lt; bottom ) { return true; }
+            
+            return false;
+        },
+        
+<span id='tm-app-Object2D-method-isHitElement'>        /**
+</span>         * 要素と衝突しているかを判定
+         * @param {Object} elm
+         */
+        isHitElement: function(elm) {
+            var selfGlobalPos  = this.parent.localToGlobal(this);
+            if (((this.x-elm.x)*(this.x-elm.x)+(this.y-elm.y)*(this.y-elm.y)) &lt; (this.radius+elm.radius)*(this.radius+elm.radius)) {
+                return true;
+            }
+            return false;
+        },
+ 
+<span id='tm-app-Object2D-method-isHitElementCircle'>        /**
+</span>         * 円同士の衝突判定
+         * @param {Object} elm
+         */
+        isHitElementCircle: function(elm) {
+            return tm.collision.testCircleCircle(this.getBoundingCircle(), elm.getBoundingCircle());
+        },
+ 
+<span id='tm-app-Object2D-method-isHitElementRect'>        /**
+</span>         * 円同士の衝突判定
+         * @param {Object} elm
+         */
+        isHitElementRect: function(elm) {
+            return tm.collision.testRectRect(this.getBoundingRect(), elm.getBoundingRect());    
+        },
+ 
+<span id='tm-app-Object2D-method-getBoundingCircle'>        /**
+</span>         * バウンディングサークル
+         * @param {Object} elm
+         */
+        getBoundingCircle: function() {
+            return tm.geom.Circle(this.centerX, this.centerY, this.radius);
+        },
+ 
+<span id='tm-app-Object2D-method-getBoundingRect'>        /**
+</span>         * バウンディングレクト
+         * @param {Object} elm
+         */
+        getBoundingRect: function() {
+            return tm.geom.Rect(this.left, this.top, this.width, this.height);
+        },
+ 
+<span id='tm-app-Object2D-method-localToGlobal'>        /**
+</span>         * ローカル座標をグローバル座標に変換
+         * @param {Object} elm
+         */
+        localToGlobal: function(p) {
+            return this.getFinalMatrix().multiplyVector2(p);
+        },
+        
+<span id='tm-app-Object2D-method-globalToLocal'>        /**
+</span>         * グローバル座標をローカル座標に変換
+         * @param {Object} elm
+         */
+        globalToLocal: function(p) {
+            // var matrix = this.getFinalMatrix();
+            var matrix = this._worldMatrix.clone();
+            matrix.invert();
+            matrix.transpose();
+            
+            return matrix.multiplyVector2(p);
+        },
+        
+<span id='tm-app-Object2D-method-setX'>        /**
+</span>         * X 座標値をセット
+         * @param {Number} x
+         */
+        setX: function(x) {
+            this.position.x = x;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setY'>        /**
+</span>         * Y 座標値をセット
+         * @param {Number} y
+         */
+        setY: function(y) {
+            this.position.y = y;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setPosition'>        /**
+</span>         * XY 座標をセット
+         * @param {Number} x
+         * @param {Number} y
+         */
+        setPosition: function(x, y) {
+            this.position.x = x;
+            this.position.y = y;
+            return this;
+        },
+
+<span id='tm-app-Object2D-method-setRotation'>        /**
+</span>         * 回転をセット
+         * @param {Number} rotation
+         */
+        setRotation: function(rotation) {
+            this.rotation = rotation;
+            return this;
+        },
+
+<span id='tm-app-Object2D-method-setScale'>        /**
+</span>         * スケールをセット
+         * @param {Number} x
+         * @param {Number} y
+         */
+        setScale: function(x, y) {
+            this.scale.x = x;
+            if (arguments.length &lt;= 1) {
+                this.scale.y = x;
+            } else {
+                this.scale.y = y;
+            }
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setOrigin'>        /**
+</span>         * 基準点をセット
+         * @param {Number} x
+         * @param {Number} y
+         */
+        setOrigin: function(x, y) {
+            this.origin.x = x;
+            this.origin.y = y;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setWidth'>        /**
+</span>         * 幅をセット
+         * @param {Number} width
+         */
+        setWidth: function(width) {
+            this.width = width;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setHeight'>        /**
+</span>         * 高さをセット
+         * @param {Number} height
+         */
+        setHeight: function(height) {
+            this.height = height;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setSize'>        /**
+</span>         * サイズ(幅, 高さ)をセット
+         * @param {Number} width
+         * @param {Number} height
+         */
+        setSize: function(width, height) {
+            this.width  = width;
+            this.height = height;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-wakeUp'>        /**
+</span>         * 起動
+         */
+        wakeUp: function() {
+            this.awake = true;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-sleep'>        /**
+</span>         * 停止
+         */
+        sleep: function() {
+            this.awake = false;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setInteractive'>        /**
+</span>         * タッチ判定の有効/無効をセット
+         * @param {Boolean} flag
+         */
+        setInteractive: function(flag) {
+            this.interactive = flag;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-setBoundingType'>        /**
+</span>         * バウンディングタイプをセット(&quot;circle&quot; or &quot;rect&quot;)
+         * @param {Object} type
+         */
+        setBoundingType: function(type) {
+            this.boundingType = type;
+            return this;
+        },
+        
+<span id='tm-app-Object2D-method-_checkPointing'>        /**
+</span>         * ポインティングをチェック
+         * @private
+         * @param {Object} app
+         */
+        _checkPointing: function(app) {
+            console.assert(false);
+        },
+        
+<span id='tm-app-Object2D-method-_checkMouse'>        /**
+</span>         * マウスチェック
+         * @private
+         * @param {Object} app
+         */
+        _checkMouse: function(app) {
+            this.__checkPointing(app, app.pointing, 0);
+        },
+
+<span id='tm-app-Object2D-method-_checkTouch'>        /**
+</span>         * タッチチェック
+         * @private
+         * @param {Object} app
+         */
+        _checkTouch: function(app) {
+            var self = this;
+            this.__checkPointing(app, app.pointing, 0);
+            // app.touches.each(function(touch, i) {
+            //     self.__checkPointing(app, touch, i);
+            // });
+        },
+        
+<span id='tm-app-Object2D-method-__checkPointing'>        /**
+</span>         * チェックポインンティング
+         * @private
+         * @param {Object} app
+         * @param {Object} p
+         * @param {Number} index
+         */
+        __checkPointing: function(app, p, index) {
+            var elm = this.element;
+            
+            var prevHitFlag = this.hitFlags[index];
+            
+            this.hitFlags[index]    = this.isHitPoint(p.x, p.y);
+            
+            if (!prevHitFlag &amp;&amp; this.hitFlags[index]) {
+                this._dispatchPointingEvent(&quot;mouseover&quot;, &quot;touchover&quot;, &quot;pointingover&quot;, app, p);
+            }
+            
+            if (prevHitFlag &amp;&amp; !this.hitFlags[index]) {
+                this._dispatchPointingEvent(&quot;mouseout&quot;, &quot;touchout&quot;, &quot;pointingout&quot;, app, p);
+            }
+            
+            if (this.hitFlags[index]) {
+                if (p.getPointingStart()) {
+                    this._dispatchPointingEvent(&quot;mousedown&quot;, &quot;touchstart&quot;, &quot;pointingstart&quot;, app, p);
+                    this.downFlags[index] = true;
+                }
+            }
+            
+            if (this.downFlags[index]) {
+                this._dispatchPointingEvent(&quot;mousemove&quot;, &quot;touchmove&quot;, &quot;pointingmove&quot;, app, p);
+            }
+            
+            if (this.downFlags[index]==true &amp;&amp; p.getPointingEnd()) {
+                this._dispatchPointingEvent(&quot;mouseup&quot;, &quot;touchend&quot;, &quot;pointingend&quot;, app, p);
+                this.downFlags[index] = false;
+            }
+        },
+        
+<span id='tm-app-Object2D-method-_dispatchPointingEvent'>        /**
+</span>         * ポイントイベントを発火する
+         * @private
+         * @param {Object} mouse
+         * @param {Object} touch
+         * @param {Object} pointing
+         * @param {Object} app
+         * @param {Object} p
+         */
+        _dispatchPointingEvent: function(mouse, touch, pointing, app, p) {
+            this.dispatchEvent( tm.event.MouseEvent(mouse, app, p) );
+            this.dispatchEvent( tm.event.TouchEvent(touch, app, p) );
+            this.dispatchEvent( tm.event.PointingEvent(pointing, app, p) );
+        },
+        
+<span id='tm-app-Object2D-method-_calcWorldMatrix'>        /**
+</span>         * ワールドマトリックスを計算
+         * @private
+         */
+        _calcWorldMatrix: function() {
+            if (!this.parent) {
+                return ;
+            }
+
+            // 行列
+            if(this.rotation != this.rotationCache) {
+                this.rotationCache = this.rotation;
+                var r = this.rotation*Math.DEG_TO_RAD;
+                this._sr =  Math.sin(r);
+                this._cr =  Math.cos(r);
+            }
+
+            var localTransform = this._matrix.m;
+            var parentTransform = this.parent._worldMatrix.m;
+            var worldTransform = this._worldMatrix.m;
+            //console.log(localTransform)
+            localTransform[0] = this._cr * this.scale.x;
+            localTransform[1] =-this._sr * this.scale.y
+            localTransform[3] = this._sr * this.scale.x;
+            localTransform[4] = this._cr * this.scale.y;
+
+            ///AAARR GETTER SETTTER!
+            localTransform[2] = this.position.x;
+            localTransform[5] = this.position.y;
+
+            // Cache the matrix values (makes for huge speed increases!)
+            var a00 = localTransform[0], a01 = localTransform[1], a02 = localTransform[2],
+                a10 = localTransform[3], a11 = localTransform[4], a12 = localTransform[5],
+
+                b00 = parentTransform[0], b01 = parentTransform[1], b02 = parentTransform[2],
+                b10 = parentTransform[3], b11 = parentTransform[4], b12 = parentTransform[5];
+
+            worldTransform[0] = b00 * a00 + b01 * a10;
+            worldTransform[1] = b00 * a01 + b01 * a11;
+            worldTransform[2] = b00 * a02 + b01 * a12 + b02;
+
+            worldTransform[3] = b10 * a00 + b11 * a10;
+            worldTransform[4] = b10 * a01 + b11 * a11;
+            worldTransform[5] = b10 * a02 + b11 * a12 + b12;
+        },
+        
+<span id='tm-app-Object2D-method-_dirtyCalc'>        /**
+</span>         * dirty method
+         * @private
+         */
+        _dirtyCalc: function() {
+            this._calcWorldMatrix();
+        },
+    });
+ 
+<span id='tm-app-Object2D-property-x'>    /**
+</span>     * @property    x
+     * x座標値
+     */
+    tm.app.Object2D.prototype.accessor(&quot;x&quot;, {
+        &quot;get&quot;: function()   { return this.position.x; },
+        &quot;set&quot;: function(v)  { this.position.x = v; }
+    });
+    
+<span id='tm-app-Object2D-property-y'>    /**
+</span>     * @property    y
+     * y座標値
+     */
+    tm.app.Object2D.prototype.accessor(&quot;y&quot;, {
+        &quot;get&quot;: function()   { return this.position.y; },
+        &quot;set&quot;: function(v)  { this.position.y = v; }
+    });
+ 
+<span id='tm-app-Object2D-property-originX'>    /**
+</span>     * @property    originX
+     * x座標値
+     */
+    tm.app.Object2D.prototype.accessor(&quot;originX&quot;, {
+        &quot;get&quot;: function()   { return this.origin.x; },
+        &quot;set&quot;: function(v)  { this.origin.x = v; }
+    });
+    
+<span id='tm-app-Object2D-property-originY'>    /**
+</span>     * @property    originY
+     * y座標値
+     */
+    tm.app.Object2D.prototype.accessor(&quot;originY&quot;, {
+        &quot;get&quot;: function()   { return this.origin.y; },
+        &quot;set&quot;: function(v)  { this.origin.y = v; }
+    });
+    
+<span id='tm-app-Object2D-property-scaleX'>    /**
+</span>     * @property    scaleX
+     * スケールX値
+     */
+    tm.app.Object2D.prototype.accessor(&quot;scaleX&quot;, {
+        &quot;get&quot;: function()   { return this.scale.x; },
+        &quot;set&quot;: function(v)  { this.scale.x = v; }
+    });
+    
+<span id='tm-app-Object2D-property-scaleY'>    /**
+</span>     * @property    scaleY
+     * スケールY値
+     */
+    tm.app.Object2D.prototype.accessor(&quot;scaleY&quot;, {
+        &quot;get&quot;: function()   { return this.scale.y; },
+        &quot;set&quot;: function(v)  { this.scale.y = v; }
+    });
+    
+    
+    
+<span id='tm-app-Object2D-property-width'>    /**
+</span>     * @property    width
+     * width
+     */
+    tm.app.Object2D.prototype.accessor(&quot;width&quot;, {
+        &quot;get&quot;: function()   { return this._width; },
+        &quot;set&quot;: function(v)  { this._width = v; }
+    });
+    
+    
+<span id='tm-app-Object2D-property-height'>    /**
+</span>     * @property    height
+     * height
+     */
+    tm.app.Object2D.prototype.accessor(&quot;height&quot;, {
+        &quot;get&quot;: function()   { return this._height; },
+        &quot;set&quot;: function(v)  { this._height = v; }
+    });
+    
+<span id='tm-app-Object2D-property-radius'>    /**
+</span>     * @property    radius
+     * 半径
+     */
+    tm.app.Object2D.prototype.accessor(&quot;radius&quot;, {
+        &quot;get&quot;: function()   {
+            return (this._radius !== undefined) ? this._radius : (this.width+this.height)/4;
+        },
+        &quot;set&quot;: function(v)  { this._radius = v; }
+    });
+    
+<span id='tm-app-Object2D-property-top'>    /**
+</span>     * @property    top
+     * 左
+     */
+    tm.app.Object2D.prototype.getter(&quot;top&quot;, function() {
+        return this.y - this.height*this.originY;
+    });
+ 
+<span id='tm-app-Object2D-property-right'>    /**
+</span>     * @property    right
+     * 左
+     */
+    tm.app.Object2D.prototype.getter(&quot;right&quot;, function() {
+        return this.x + this.width*(1-this.originX);
+    });
+ 
+<span id='tm-app-Object2D-property-bottom'>    /**
+</span>     * @property    bottom
+     * 左
+     */
+    tm.app.Object2D.prototype.getter(&quot;bottom&quot;, function() {
+        return this.y + this.height*(1-this.originY);
+    });
+ 
+<span id='tm-app-Object2D-property-left'>    /**
+</span>     * @property    left
+     * 左
+     */
+    tm.app.Object2D.prototype.getter(&quot;left&quot;, function() {
+        return this.x - this.width*this.originX;
+    });
+ 
+<span id='tm-app-Object2D-property-centerX'>    /**
+</span>     * @property    centerX
+     * centerX
+     */
+    tm.app.Object2D.prototype.accessor(&quot;centerX&quot;, {
+        &quot;get&quot;: function()   { return this.x + this.width/2 - this.width*this.originX; },
+        &quot;set&quot;: function(v)  {
+            // TODO: どうしようかな??
+        }
+    });
+ 
+<span id='tm-app-Object2D-property-centerY'>    /**
+</span>     * @property    centerY
+     * centerY
+     */
+    tm.app.Object2D.prototype.accessor(&quot;centerY&quot;, {
+        &quot;get&quot;: function()   { return this.y + this.height/2 - this.height*this.originY; },
+        &quot;set&quot;: function(v)  {
+            // TODO: どうしようかな??
+        }
+    });
+ 
+<span id='tm-app-Object2D-property-boundingType'>    /**
+</span>     * @property    boundingType
+     * boundingType
+     */
+    tm.app.Object2D.prototype.accessor(&quot;boundingType&quot;, {
+        &quot;get&quot;: function() {
+            return this._boundingType;
+        },
+        &quot;set&quot;: function(v) {
+            this._boundingType = v;
+            this._setIsHitFunc();
+        },
+    });
+ 
+<span id='tm-app-Object2D-property-checkHierarchy'>    /**
+</span>     * @property    checkHierarchy
+     * checkHierarchy
+     */
+    tm.app.Object2D.prototype.accessor(&quot;checkHierarchy&quot;, {
+        &quot;get&quot;: function()   { return this._checkHierarchy; },
+        &quot;set&quot;: function(v)  {
+            this._checkHierarchy = v;
+            this._setIsHitFunc();
+        }
+    });
+ 
+ 
+    var _isHitFuncMap = {
+        &quot;rect&quot;: tm.app.Object2D.prototype.isHitPointRect,
+        &quot;circle&quot;: tm.app.Object2D.prototype.isHitPointCircle,
+        &quot;true&quot;: function() { return true; },
+        &quot;false&quot;: function() { return false; },
+    };
+ 
+    var _isHitFuncMapHierarchy = {
+        &quot;rect&quot;: tm.app.Object2D.prototype.isHitPointRectHierarchy,
+        &quot;circle&quot;: tm.app.Object2D.prototype.isHitPointCircleHierarchy,
+        &quot;true&quot;: function() { return true; },
+        &quot;false&quot;: function() { return false; },
+    };
+ 
+    var _isHitElementMap = {
+        &quot;rect&quot;: tm.app.Object2D.prototype.isHitElementRect,
+        &quot;circle&quot;: tm.app.Object2D.prototype.isHitElementCircle,
+        &quot;true&quot;: function() { return true; },
+        &quot;false&quot;: function() { return false; },
+    };
+ 
+<span id='tm-app-Object2D-property-_setIsHitFunc'>    /**
+</span>     * @member      tm.app.Object2D
+     * @property    _setIsHitFunc
+     * @private
+     */
+    tm.app.Object2D.prototype._setIsHitFunc = function() {
+        var isHitFuncMap = (this.checkHierarchy) ? _isHitFuncMapHierarchy : _isHitFuncMap;
+        var boundingType = this.boundingType;
+        var isHitFunc = (isHitFuncMap[boundingType]) ? (isHitFuncMap[boundingType]) : (isHitFuncMap[&quot;true&quot;]);
+ 
+        this.isHitPoint   = (isHitFuncMap[boundingType]) ? (isHitFuncMap[boundingType]) : (isHitFuncMap[&quot;true&quot;]);
+        this.isHitElement = (_isHitElementMap[boundingType]) ? (_isHitElementMap[boundingType]) : (_isHitElementMap[&quot;true&quot;]);
+    };
+    
+<span id='tm-app-Object2D-property-_checkPointing'>    /**
+</span>     * @member      tm.app.Object2D
+     * @property    _checkPointing
+     * ポイントをチェック
+     * @param {Object} isMobile
+     * @private
+     */
+    tm.app.Object2D.prototype._checkPointing = (tm.isMobile) ?
+        tm.app.Object2D.prototype._checkTouch : tm.app.Object2D.prototype._checkMouse;
+
+    
+})();
+</pre>
+</body>
+</html>
