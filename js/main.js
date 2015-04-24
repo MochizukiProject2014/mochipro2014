@@ -1,5 +1,6 @@
 //グローバル変数をなるべくさける
 //lengthによる配列オブジェクトへのアクセスを無くす。
+//hogeブランチ！！！！！！
 var cEditor;
 var result = new Array();
 var result2 = new Array();
