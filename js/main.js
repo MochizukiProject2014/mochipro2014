@@ -1,25 +1,22 @@
-var text;
+//グローバル変数をなるべくさける
+//lengthによる配列オブジェクトへのアクセスを無くす。
 var cEditor;
 var result = new Array();
 var result2 = new Array();
-var lines;
 var jsOfAnimes = new Array();
 var sampleOfAnimes = new Array();
-var rindex;
+var lines;
+var rindex = 0;					//scanf文があった場合の、アニメ実行配列にはさむしおり
 var animeStartIndex=0;
-var scanfname;
-var scanftype;
+var scanfname, scanftype;
 var codeOfUser;
 var encodeTime;
 var consoleStatus = "";
 var doTheMainfunction =0;
 var htmlversion;
-var syntaxErrorFlag = true;
-var codeFinishFlag = false;
-var returnflag=true;
-var scanf_flag=false;
-var syntaxStr ="";
-var scopeLevel = 1;
+var syntaxErrorFlag = true,codeFinishFlag = false,returnflag=true,scanf_flag=false;			//
+var syntaxStr ="";				//エラー文の保存用配列
+var scopeLevel = 1;				//変数のスコープの管理用
 function disTexetarea(){
 	cEditor.markText({line: 0 , ch: 0}, {line: 100, ch: 100}, {className: "styled-background-null"});
 	cEditor.save();
@@ -30,21 +27,19 @@ function disTexetarea(){
 		if_conditions.push(true);if_end_flag.push(true);
 		for_flag = true;for_cnt = 0;
 	}
-	sampleflag = false;
 	encodeTime++;
-	rindex = 0;
-	text = document.getElementById('text').value;
-	codeOfUser = text;
+	codeOfUser = document.getElementById('text').value;
 	consoleStatus = document.getElementById("console").value;
-	codeOfUser = text;
-	if(!text.match(/return\x20[0-9]/))returnflag=false;
+	if(!codeOfUser.match(/return\x20[0-9]/))returnflag=false;
 	line_reset();
-	result = parser.parse(text);
+	result = parser.parse(codeOfUser);
 	var ucode = "";
-	for(var deb = 0;deb < result.length;deb++)ucode += result[deb];
+	var resultlength = result.length;
+	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
 	result2 = ucode.split(";");
 	codeArrayList();
-	for(doTheMainfunction =0;doTheMainfunction < result2.length;doTheMainfunction++){
+	var result2rength = result2.length;
+	for(doTheMainfunction =0;doTheMainfunction < result2rength;doTheMainfunction++){
 		console.log(result2[doTheMainfunction]);
 		eval(result2[doTheMainfunction]);
 		if(result2[doTheMainfunction].match(/^scanf_js.*/)){
@@ -77,8 +72,6 @@ window.onload = function() {
 	encodeTime = 0;
 	var p = document.getElementById('button');
 	p.addEventListener('click', disTexetarea, false);
-	/*var p2 = document.getElementById('button2');
-	p2.addEventListener('click', newscanfnext, false);*/
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion!="free")document.getElementById('sample').addEventListener('click', doSampleCode, false);
 	console.log("q"+document.getElementById("ver").getAttribute("version")+"を読み込みました。");
@@ -94,7 +87,7 @@ window.onload = function() {
 	});
 	cEditor.setSize(600, 200);
 	//if(document.getElementById("ver").getAttribute("mode")=="develop")
-	//SPEED=0.1;
+	SPEED=0.1;
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211"){
@@ -137,7 +130,8 @@ if(action_frag == true){
 }
 function evalContexts(cnt){
 	console.log("条件："+for_conditions_array[cnt]+"、変化式："+for_alt_array[cnt]+"、文群："+for_contexts_array[cnt])
-	for(var fi = 0;fi < for_contexts_array.length ;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");
+	var forcontextarraylength = for_contexts_array.length;
+	for(var fi = 0;fi < forcontextarraylength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");
 	var context = for_contexts_array[cnt].match(/(.*);$/)[1];
 	var forArray = for_init_array[cnt].split(",");
 	for_flag=true;
@@ -186,7 +180,7 @@ function line_2(line_i){
 	cEditor.markText({line: 0 , ch: 0}, {line: line_i -2, ch: 100}, {className: "styled-background-null"});
 }
 function line_reset(){
-	cEditor.value = text;
+	cEditor.value = codeOfUser;
 	cEditor.setValue(cEditor.value)
 	cEditor.save();
 	sign = 1;
@@ -205,6 +199,7 @@ scanfSetStr+="<font color = red>「値」</font>を入力した後に<font color
 scanfSetStr+="<BR>"
 scanfSetStr+="また、scanf(“%d %d”,&amp;x,&amp;y);なら<BR>"
 scanfSetStr+="<font color = red>「値」「enterキー」「値」「enterキー」</font>の順に入力するにゃ。</b>";
+
 function R(){
 	//console.log("現在のanimeStartIndex："+animeStartIndex)
 	console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
@@ -218,30 +213,13 @@ function R(){
 				animeStartIndex++;
 				document.getElementById("com").innerHTML=scanfSetStr;
 				scanf_flag=true;
-			}
-			else{animeStartIndex++;document.getElementById("com").innerHTML="";}
+			}else{animeStartIndex++;document.getElementById("com").innerHTML="";}
 			if(animeStartIndex < jsOfAnimes.length)setTimeout(R,0);
 		}else{
 			if(animeStartIndex < jsOfAnimes.length)setTimeout(R,0);
 		}
 	}
 };
-
-/*function R2(){
-	var animeNowIndex;
-	console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex);
-	if(animeStartIndex<jsOfAnimes.length){
-		if(sign===1){
-			sign=0;
-			console.log(jsOfAnimes[animeStartIndex]);
-			animeNowIndex = animeStartIndex;
-			eval(jsOfAnimes[animeStartIndex]);
-			animeStartIndex++;
-			if((animeStartIndex < jsOfAnimes.length)&&(jsOfAnimes[animeNowIndex].match(/line/)))setTimeout(R2,0);
-		}
-	}
-	if(codeFinishFlag)console.log("おわったよ！！！！１")//fresult();
-}*/
 
 var swich=0;
 var switchi=0;
@@ -258,8 +236,7 @@ function advance(){
 };
 
 /*------------------------------------------------------*/
-//||text.match(/^.*printf\('\x20*Hello\x20*World!\x20*'\);.*/)
-var sampleflag = false;
+
 function doSampleCode(){
 	codeArrayInit();animeArrayInit();ANIME_reset();tfInit();
 	consoleStatus="";action_frag = true;if_cnt = 0;syntaxErrorFlag = true;animeStartIndex=0;
@@ -445,47 +422,7 @@ if(scanf_flag){
 		}
 	}
 }
-/*function scanfnext(){
-if(action_frag == true){
-	firstPrintf=false;
-	var p = getNewInput();
-	console.log("scanfnextが押されたよ！"+ (p >= 20));
-	if((p=="5")&&(scanfname=="x")&&(htmlversion=="221"))TFscanfNumber=true;//221の正誤判定
-	if((p=="15")&&(scanfname=="x")&&(htmlversion=="222"))TFscanfNumberX=true;//222の正誤判定
-	if((p=="30")&&(scanfname=="y")&&(htmlversion=="222"))TFscanfNumberY=true;//222の正誤判定
-	if((p=="5")&&(scanfname=="x")&&(htmlversion=="223"))TFscanfNumberX=true;//223の正誤判定
-	if((p=="5.5")&&(scanfname=="y")&&(htmlversion=="223"))TFscanfNumberY=true;//223の正誤判定
-	if((scanfname=="x")&&type_judge(scanfname,p)&&(htmlversion=="231"))TFscanfInputX=true;//231の正誤判定
-	if((scanfname=="y")&&type_judge(scanfname,p)&&(htmlversion=="232"))TFscanfInputY=true;//232の正誤判定
-	if((scanfname=="x")&&type_judge(scanfname,p)&&(htmlversion=="233"))TFscanfInputX=true;//233の正誤判定
-	if((scanfname=="y")&&type_judge(scanfname,p)&&(htmlversion=="233"))TFscanfInputY=true;//233の正誤判定
-	if(htmlversion=="241"){
-		for(var sn =0;sn <variables.length;sn++){//241の正誤判定
-			if((variables[sn].name==scanfname)&&(variables[sn].data_type=="int"))scanfInputANY=true;inputArray.push(variables[sn].name);
-		}
-	}
-	if((scanfname=="x")&&type_judge(scanfname,p)&&(htmlversion=="331"))TFscanfInputX=true;//233の正誤判定
-	if(htmlversion=="341"){
-		for(var sn =0;sn <variables.length;sn++){//241の正誤判定
-			if((variables[sn].name==scanfname)&&(variables[sn].data_type=="int"))scanfInputANY=true;inputArray.push(variables[sn].name);
-		}
-	}
-	//console.log("pはこれ："+p);
-	substitute(scanfname,p);
-	for(doTheMainfunction = rindex+1 ;doTheMainfunction < result2.length;doTheMainfunction++){
-		console.log(result2[doTheMainfunction]);
-		eval(result2[doTheMainfunction]);
-		if(result2[doTheMainfunction].match(/^scanf_js/)){
-			rindex = doTheMainfunction;
-			break;
-		}
-	}
-	animeArrayList();
-	sign =1;
-	R();
-	}
-}*/
-/*--------------------------------------------------------------------------------------------------------------------------*/
+
 function tfInit(){
 TFscanfNumber = false;
 TFscanfNumberX = false;
@@ -528,7 +465,7 @@ function tf_judge(){
 	variablesList();
 	var ucode = "";
 	var TFcodeFundamental = false;var TFvariableX = false;var TFvariableY = false;var TFvariableZ = false;
-	var ucArray = text.split(/\r\n|\r|\n/);
+	var ucArray = codeOfUser.split(/\r\n|\r|\n/);
 	for(var deb = 0;deb < ucArray.length;deb++)ucode += ucArray[deb];
 	if(ucode.match(/^\x20*#include\x20*<stdio.h>\x20*int\x20*main\(void\){.*}\x20*$/)&&ucode.match(/return\x200/))TFcodeFundamental=true;
 	console.log("コードの基礎チェック…"+TFcodeFundamental);
@@ -576,7 +513,6 @@ function tf_judge(){
 		if(TFvariableX){
 			correct_answer();
 			movenext212();
-		//ここにかいて下さい！
 		$.cookie("q2",true, { expires: 7 , path: '/'});
 		
 		}
@@ -586,7 +522,6 @@ function tf_judge(){
 		if(doubleAInit){
 			correct_answer();
 			movenext213();
-		//ここに書いてください！
 		$.cookie("q3",true, { expires: 7 , path: '/'});
 		}else{miss_answer()}
 	}else if(htmlversion=="221"){console.log("q2-2-1の判定開始");
@@ -722,7 +657,7 @@ function tf_judge(){
 		if(ucode.match(/if\x20*\(.*90.*\).*"良".*else\x20if\x20*\(.*90.*60.*\).*"可".*else\x20if\x20*\(.*60.*40.*\).*"再試験".*else.*"不可"/))TForder=true;
 		if(TFscanfInputX&&elseCondition&&elseCondition2&&TForder&&TFvariableX&&ifCondition){
 		*/
-		var code_score = parser_c3.parse(text);
+		var code_score = parser_c3.parse(codeOfUser);
 		if(hantei_331(code_score,90,"良") != true){ miss_answer("条件式と文を確認してみよう！"); return 0;}
 		else if( hantei_331(code_score,60,"可") != true){ miss_answer("条件式と文を確認してみよう！"); return 0;}
 		else if( hantei_331(code_score,40,"再試験") != true){ miss_answer("条件式と文を確認してみよう！"); return 0;}
@@ -735,7 +670,7 @@ function tf_judge(){
 		//}else{miss_answer()}
 	}else if(htmlversion=="c3"){
        console.log("c3正誤判定開始");
-		var code_bmi = parser_c3.parse(text);
+		var code_bmi = parser_c3.parse(codeOfUser);
 		if(hantei_c3(code_bmi,1,18.49,"やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
 		else if( hantei_c3(code_bmi,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
 		else if( hantei_c3(code_bmi,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
@@ -1562,7 +1497,7 @@ function return_js(value){
 	//doTheMainfunction = result2.length-1;
 }
 function ANIME_finish(){
-	if(!sampleflag)tf_judge();
+	tf_judge();
 }
 function type_judge(name,value){
 if(action_frag == true){
