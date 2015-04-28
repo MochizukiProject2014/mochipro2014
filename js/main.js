@@ -3,6 +3,7 @@
 var cEditor;
 var result = new Array();
 var result2 = new Array();
+var user_pattern_array = new Array();
 var jsOfAnimes = new Array();
 var sampleOfAnimes = new Array();
 var lines;
@@ -36,11 +37,12 @@ function disTexetarea(){
 	var ucode = "";
 	var resultlength = result.length;
 	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
-	result2 = ucode.split(";");
+	result2 = ucode.match(/(.+);$/)[1].split(";");
 	codeArrayList();
-	var result2rength = result2.length;
-	for(doTheMainfunction =0;doTheMainfunction < result2rength;doTheMainfunction++){
+	var result2length = result2.length;
+	for(doTheMainfunction =0;doTheMainfunction < result2length;doTheMainfunction++){
 		console.log(result2[doTheMainfunction]);
+		user_pattern_array.push(result2[doTheMainfunction]);
 		eval(result2[doTheMainfunction]);
 		if(result2[doTheMainfunction].match(/^scanf_js.*/)){
 			rindex = doTheMainfunction;
@@ -50,7 +52,6 @@ function disTexetarea(){
 	jsOfAnimes.push('line_reset();');
 	animeArrayList();
 	sign =1;
-	console.log(syntaxErrorFlag+"："+returnflag)
 	if(syntaxErrorFlag&&returnflag){
 		R();
 	}else if(!returnflag){
@@ -63,7 +64,6 @@ function disTexetarea(){
 	}
 };
 
-
 window.onload = function() {
 	firstSetting();
 	var loading = tm.app.LoadingScene({assets:ASSETS,nextScene:MainScene, }); 
@@ -72,7 +72,7 @@ window.onload = function() {
 	encodeTime = 0;
 	var p = document.getElementById('button');
 	p.addEventListener('click', disTexetarea, false);
-	htmlversion = document.getElementById("ver").getAttribute("version");
+	htmlversion=document.getElementById("ver").getAttribute("version")
 	if(htmlversion!="free")document.getElementById('sample').addEventListener('click', doSampleCode, false);
 	console.log("q"+document.getElementById("ver").getAttribute("version")+"を読み込みました。");
 	cEditor = CodeMirror.fromTextArea(document.getElementById("text"), {
@@ -87,7 +87,7 @@ window.onload = function() {
 	});
 	cEditor.setSize(600, 200);
 	//if(document.getElementById("ver").getAttribute("mode")=="develop")
-	SPEED=0.1;
+	SPEED=0.25;
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211"){
@@ -99,20 +99,20 @@ window.onload = function() {
 	for(var i = 0;i < tarray.length;i++)console.log(tarray[i])*/
 };
 var for_flag = true;
-var for_contexts_array = new Array();
-var for_cnt = 0;
-var for_init_array = new Array();
-var for_conditions_array =new Array();
-var for_alt_array = new Array();
-var for_line_array = new Array();
+var for_contexts_array = new Array();			//for文の中にある文を蓄積するための配列
+var for_cnt = 0;								//for文の階層を数える変数
+var for_init_array = new Array();				//for文の初期化に関わる事を蓄積するための配列
+var for_conditions_array =new Array();			//for文の終了条件を蓄積するための配列
+var for_alt_array = new Array();				//for文の変化式を蓄積するための配列
+var for_line_array = new Array();				//for文の行情報を蓄積するための配列
 function for_js(init,cond,altv,altc,line_num){
 if(action_frag == true){
 	var alt = 'substitute("'+altv+'","'+altc+'")';
 	for_contexts_array.push("");
 	for_init_array.push(init);
-	var forArray = init.split(",");
 	scopeLevel++;
 	for_line_array.push('line('+line_num+')');
+	//jsOfAnimes.push('line(' + line_num + ');');
 	push_line(line_num);
 	for_flag = false;
 	for_cnt++;
@@ -121,6 +121,7 @@ if(action_frag == true){
 	for_alt_array.push(alt);
 	}
 }
+
 function end_of_for(){
 if(action_frag == true){
 	for_cnt-=1;
@@ -128,7 +129,9 @@ if(action_frag == true){
 	scopeLevel-=1;
 	}
 }
+
 function evalContexts(cnt){
+	console.log("evalcontext実行開始");
 	console.log("条件："+for_conditions_array[cnt]+"、変化式："+for_alt_array[cnt]+"、文群："+for_contexts_array[cnt])
 	var forcontextarraylength = for_contexts_array.length;
 	for(var fi = 0;fi < forcontextarraylength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");
@@ -158,8 +161,14 @@ function evalContexts(cnt){
 	variable_scope_kill(scopeLevel);
 		temoi++;
 	}
-	console.log(cnt+"層の実行終了。")
+	if(temoi >=50){
+		syntaxErrorFlag = false;
+		syntaxStr = "for文の回数が多すぎるよ！";
+	}
+	console.log(cnt+"層の実行終了。");
+	console.log("evalcontext実行完了");
 }
+
 function CheckLength(str){//半角だとtrueを返す
 	for(var i = 0;i < str.length;i++){
 		var c = str.charCodeAt(i);
@@ -186,7 +195,7 @@ function line_reset(){
 	sign = 1;
 }
 function push_line(line_i){
-	if(action_frag == true&&for_flag){
+	if(action_frag	&&for_flag){
 		jsOfAnimes.push('line(' + line_i + ');');
 	}else if(!for_flag){
 		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'push_line('+line_i+');');
@@ -201,12 +210,11 @@ scanfSetStr+="また、scanf(“%d %d”,&amp;x,&amp;y);なら<BR>"
 scanfSetStr+="<font color = red>「値」「enterキー」「値」「enterキー」</font>の順に入力するにゃ。</b>";
 
 function R(){
-	//console.log("現在のanimeStartIndex："+animeStartIndex)
-	console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
+	//console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
 	if(animeStartIndex<jsOfAnimes.length){
 		if(sign===1){
 			sign=0;
-			console.log(jsOfAnimes[animeStartIndex]);
+			//console.log(jsOfAnimes[animeStartIndex]);
 			eval(jsOfAnimes[animeStartIndex]);
 			if(jsOfAnimes[animeStartIndex].match(/ANIME_scanf/)){
 				sign=1;
@@ -221,21 +229,6 @@ function R(){
 	}
 };
 
-var swich=0;
-var switchi=0;
-function advance(){
-	swich = 1;
-	while(swich == 1){
-		console.log(result[switchi]);
-	 	eval(result[switchi]);
-	 	document.getElementById('text').select();
-	 	switchi++;
-		swich = 0;
-	}
-	variablesList();
-};
-
-/*------------------------------------------------------*/
 
 function doSampleCode(){
 	codeArrayInit();animeArrayInit();ANIME_reset();tfInit();
@@ -381,6 +374,7 @@ if(scanf_flag){
 								syntaxStr = "型と入力指定文字があってないよ！";
 							}
 					}
+				user_pattern_array.push('newscanfnext('+nameArray[si]+','+inputValueArray[si]+')');
 				if((inputValueArray[si]=="5")&&(nameArray[si]=="x")&&(htmlversion=="221"))TFscanfNumber=true;//221の正誤判定
 				if((inputValueArray[si]=="15")&&(nameArray[si]=="x")&&(htmlversion=="222"))TFscanfNumberX=true;//222の正誤判定
 				if((inputValueArray[si]=="5.5")&&(nameArray[si]=="y")&&(htmlversion=="222"))TFscanfNumberY=true;//222の正誤判定
@@ -406,6 +400,7 @@ if(scanf_flag){
 			}
 			for(doTheMainfunction = rindex+1 ;doTheMainfunction < result2.length;doTheMainfunction++){
 				console.log(result2[doTheMainfunction]);
+				user_pattern_array.push(result2[doTheMainfunction]);
 				eval(result2[doTheMainfunction]);
 				if(result2[doTheMainfunction].match(/^scanf_js.*/)){
 					rindex = doTheMainfunction;
@@ -684,6 +679,44 @@ function tf_judge(){
 		//}else{miss_answer()}//上のif文が真じゃなきゃ不正解のアニメを呼び出してる。
 	}
 	line_reset();
+}
+
+function answer_check(num){
+	var version = num,answer_pattern;
+	switch(version){
+		case 211:
+			answer_pattern = 'duplication_judge.("int","x",\x20null\x20||[0-9]+);plural_declaration.("double","y,z")';
+			break;
+		case 212:
+			console.log("あれれ？");
+			break;
+	}
+	var upalen = user_pattern_array.length;
+	/*for(var i = 0;i<upalen;i++)console.log(user_pattern_array[i]);*/
+	var answer_pattern_array = answer_pattern.split(";");
+	var apalen = answer_pattern_array.length;
+	var pattern_index = 0;
+	for(var i = 0;i<upalen;i++){
+		//console.log(user_pattern_array[i]+"と"+answer_pattern_array[pattern_index]+"がマッチしてるかどうかチェックします。");
+		if(user_pattern_array[i].match(answer_pattern_array[pattern_index])){
+			//console.log("マッチしました。パターンインデックスの値をインクリメントします。");
+			pattern_index++
+		}
+		if(pattern_index == apalen)break;
+	}
+	if(pattern_index == apalen)console.log("大正解！！！！");
+	line_reset();
+}
+
+function return_js(value){
+	console.log("return受領。終わりだよ")
+	jsOfAnimes.push("ANIME_finish()");
+	codeFinishFlag = true;
+	//doTheMainfunction = result2.length-1;
+}
+function ANIME_finish(){
+	//answer_check(211);
+	tf_judge();
 }
 
 //code=コード、scan_data[]=scanfで入力するデータ、re_eval=入力の結果
@@ -972,12 +1005,11 @@ if(action_frag == true){
 	var errorFlag = true;
 	for(var i = 0; i < fArray.length; i++){
 		if(fArray[i].match(/^[a-zA-Z].*/)){//指揮の中に英数字があったら…変数か？入力ミスか？
-		console.log("既存の変数かチェケしています。:"+fArray[i]);
 		errorFlag = false;
 			for(var j = 0; j < variables.length; j++){
 				if(variables[j].name == fArray[i]){//変数の場合
 					errorFlag = true;
-					fstr += variables[j].value;console.log(variables[j].name+"は、"+variables[j].value+"だよ！");
+					fstr += variables[j].value;
 					if((variables[j].value=="?"))nullflag = true;
 					}else{//変数じゃなくて、英数字だった場合
 					}
@@ -993,7 +1025,6 @@ if(action_frag == true){
 			}
 		}
 	//return String(eval(fstr));
-	console.log("calc内の出力：fstr："+fstr);
 	if(nullflag){
 		syntaxErrorFlag = false;
 		syntaxStr = "値の入っていない変数が演算式の中にあるよ！";
@@ -1177,7 +1208,7 @@ if(action_frag == true&&for_flag){
 	for(var si = 0;si < variables.length;si++){
 		if(variables[si].name==name)vtype = variables[si].data_type;
 	}
-	console.log(vtype+"の、"+name+"に、"+value+"を代入するよ！！");
+	//console.log(vtype+"の、"+name+"に、"+value+"を代入するよ！！");
 	if(value=="?"||!value){
 		jsOfAnimes.push('ANIME_dainyu_typeMiss("'+name+'")');
 		return false;
@@ -1188,7 +1219,6 @@ if(action_frag == true&&for_flag){
 		calcflag = true;
 		var formula = value;
 		value =calc(value);
-		console.log("formula"+formula);
 		var fArray = formula.split(":");
 		var fArrayStr = "[";
 		for(var si = 0;si < fArray.length;si++){
@@ -1199,7 +1229,6 @@ if(action_frag == true&&for_flag){
 				fArrayStr +=']';
 			}
 		}
-		console.log(fArray);
 	}else if(value.match(/^[a-z][0-9a-zA-Z]*/)){
 		var variablevalue;
 		console.log("変数かな？");
@@ -1209,23 +1238,18 @@ if(action_frag == true&&for_flag){
 			if(variables[si].name == value)vvalue = variables[si].value;
 		}
 		if(vvalue==null&&vtype=="char"){
-			console.log("これcharに文字列代入してんじゃね？");
 			vflag = false;
 		}else{
 			variablevalue = vvalue;
 		}
 		console.log(value);
 	}else if(value.match(/^[0-9]*/)){
-		console.log("整数かな？");
 	}else if(!(type_judge(name,value))){
-		console.log(name+","+value);
-		console.log("代入される型と数字が会ってません。");
 		return false;
 	}else{
 	console.log("substitute内、valueの型エラー");
 	return false;
 	}
-	console.log("substitute内の出力。vflag："+vflag+"、calcflag："+calcflag);
 	//if(calcflag)var evalue = String(eval(value));
 	var evalue = value;
 	console.log("evalue："+evalue+"、value："+value);
@@ -1235,13 +1259,11 @@ if(action_frag == true&&for_flag){
 			if(calcflag){
 				if(evalue){
 					evalue = regulate_js(name,evalue);
-					if(type_judge(name,evalue))variables[i].value = evalue;console.log(" おっやるか？");
+					if(type_judge(name,evalue))variables[i].value = evalue;
 				}else{
 					variables[i].value = null;
 					evalue = "?";
 				}
-				console.log("ああえいふぉ"+evalue);
-				console.log(fArrayStr);
 				console.log('ANIME_enzan_dainyu("'+name+'",'+fArrayStr+',"'+evalue+'")');
 				jsOfAnimes.push('ANIME_enzan_dainyu("'+name+'",'+fArrayStr+',"'+evalue+'")');
 				calcflag=false;
@@ -1476,29 +1498,20 @@ if(action_frag == true&&for_flag){
 	}else if(!for_flag){
 		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'printf_djs('+dstr+');');
 		for_contexts_array[for_cnt-1]+='printf_djs("'+dstr+'");';
-		
+		for(var fi = 0;fi < for_cnt-1;fi++){
+			for_contexts_array[fi] += 'for_next;';
+		}
 	}
 if((if_cnt>=1)&&(htmlversion=="313")&&(dstr=="xは0ではないです"))TextInIf = true;//313の正誤判定
 }
 
 function setPrintf(value){
-console.log(action_frag);
-	console.log("setPrintfStrは："+value);
 	if(String(value).match(/null/))value = value.replace(/null/g,"?");
 	document.getElementById("console").value += (value)+"\n";
 	consoleStatus = document.getElementById("console").value;
 	sign = 1;
 }
 
-function return_js(value){
-	console.log("return受領。終わりだよ")
-	jsOfAnimes.push("ANIME_finish()");
-	codeFinishFlag = true;
-	//doTheMainfunction = result2.length-1;
-}
-function ANIME_finish(){
-	tf_judge();
-}
 function type_judge(name,value){
 if(action_frag == true){
 	var i;
