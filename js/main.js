@@ -11,11 +11,11 @@ var rindex = 0;					//scanf文があった場合の、アニメ実行配列に�
 var animeStartIndex=0;
 var scanfname, scanftype;
 var codeOfUser;
-var encodeTime;
-var consoleStatus = "";
-var doTheMainfunction =0;
-var htmlversion;
-var syntaxErrorFlag = true,codeFinishFlag = false,returnflag=true,scanf_flag=false;			//
+var encodeTime;//
+var consoleStatus = "";//コンソールの現在の状態を保持
+var doTheMainfunction =0;//アニメメソッドを格納している配列のしおり
+var htmlversion;//どのhtmlを読み込んでいるかの情報を保持
+var syntaxErrorFlag = true,codeFinishFlag = false,returnflag=true,scanf_flag=false;	
 var syntaxStr ="";				//エラー文の保存用配列
 var scopeLevel = 1;				//変数のスコープの管理用
 function disTexetarea(){
@@ -42,7 +42,7 @@ function disTexetarea(){
 	var result2length = result2.length;
 	for(doTheMainfunction =0;doTheMainfunction < result2length;doTheMainfunction++){
 		console.log(result2[doTheMainfunction]);
-		user_pattern_array.push(result2[doTheMainfunction]);
+		if(!result2[doTheMainfunction].match(/push_line/))user_pattern_array.push(result2[doTheMainfunction]);
 		eval(result2[doTheMainfunction]);
 		if(result2[doTheMainfunction].match(/^scanf_js.*/)){
 			rindex = doTheMainfunction;
@@ -87,16 +87,16 @@ window.onload = function() {
 	});
 	cEditor.setSize(600, 200);
 	//if(document.getElementById("ver").getAttribute("mode")=="develop")
-	SPEED=0.25;
+	SPEED=0.01;
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211"){
 	    console.log("画面説明を表示します。");
 		document.getElementById("click_data").click();
-	}
 	/*document.getElementById("console").value="aa";consoleStatus="";document.getElementById("console").value="3 5";console.log(getNewInput())
 	var tarray = getNewInput().split(/\x20+/);
 	for(var i = 0;i < tarray.length;i++)console.log(tarray[i])*/
+	}
 };
 var for_flag = true;
 var for_contexts_array = new Array();			//for文の中にある文を蓄積するための配列
@@ -178,6 +178,7 @@ function CheckLength(str){//半角だとtrueを返す
 		}
 	return false;
 }
+
 function line(line_i){
 line_reset();
 	cEditor.markText({line: line_i-1, ch: 0}, {line: line_i-1, ch: 100}, {className: "styled-background"});
@@ -374,20 +375,18 @@ if(scanf_flag){
 								syntaxStr = "型と入力指定文字があってないよ！";
 							}
 					}
-				user_pattern_array.push('newscanfnext('+nameArray[si]+','+inputValueArray[si]+')');
 				if((inputValueArray[si]=="5")&&(nameArray[si]=="x")&&(htmlversion=="221"))TFscanfNumber=true;//221の正誤判定
 				if((inputValueArray[si]=="15")&&(nameArray[si]=="x")&&(htmlversion=="222"))TFscanfNumberX=true;//222の正誤判定
 				if((inputValueArray[si]=="5.5")&&(nameArray[si]=="y")&&(htmlversion=="222"))TFscanfNumberY=true;//222の正誤判定
 				if((nameArray[si]=="x")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="231"))TFscanfInputX=true;//231の正誤判定
 				if((nameArray[si]=="x")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="232"))TFscanfInputX=true;//232の正誤判定
 				if((nameArray[si]=="y")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="232")){TFscanfInputY=true;}//232の正誤判定
-				console.log("出力:"+type_judge(nameArray[si],inputValueArray[si]));
 				if(htmlversion=="241"){for(var sn =0;sn <variables.length;sn++){//241の正誤判定
 						if((variables[sn].name==nameArray[si])&&(variables[sn].data_type=="int")){scanfInputANY=true;inputArray.push(variables[sn].name);}
 				}}
 				if((inputValueArray[si]=="3.5")&&(nameArray[si]=="x")&&(htmlversion=="242"))TFscanfNumberX=true;//242の正誤判定
 				if((inputValueArray[si]=="a")&&(nameArray[si]=="y")&&(htmlversion=="242"))TFscanfNumberY=true;//242の正誤判定
-				}
+			}
 				if(htmlversion=="c2"){for(var sn =0;sn <variables.length;sn++){//c2の正誤判定
 						if((variables[sn].name==nameArray[si])&&(variables[sn].data_type=="int")){scanfInputANY=true;inputArray.push(variables[sn].name);}
 				}}
@@ -397,7 +396,8 @@ if(scanf_flag){
 				if((nameArray[si]=="weight")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="q3"))TFscanfInputY=true;//232の正誤判定
 				tempnum = regulate_js(nameArray[si],inputValueArray[si])
 				substitute(nameArray[si],tempnum);
-			}
+				user_pattern_array.push('newscanfnext('+nameArray[si]+','+inputValueArray[si]+')');
+		}
 			for(doTheMainfunction = rindex+1 ;doTheMainfunction < result2.length;doTheMainfunction++){
 				console.log(result2[doTheMainfunction]);
 				user_pattern_array.push(result2[doTheMainfunction]);
@@ -682,45 +682,160 @@ function tf_judge(){
 }
 
 function answer_check(num){
-	var version = num,answer_pattern;
+	console.log("answe_checkに入ります。");
+	var version = Number(num),re;
+	var answer_pattern_array = [];
+	var flagArr = [];
+	var index = 0;
+	var apalen = user_pattern_array.length;
+	for(var i = 0;i < apalen;i++)console.log(user_pattern_array[i]);
 	switch(version){
 		case 211:
-			answer_pattern = 'duplication_judge.("int","x",\x20null\x20||[0-9]+);plural_declaration.("double","y,z")';
-			break;
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("double","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
 		case 212:
-			console.log("あれれ？");
-			break;
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("x","10"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 213:
+			re = new RegExp(/duplication_judge\("double","a","5\.5"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 221:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,5\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 222:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("double","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/newscanfnext\(x,15\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(y,5\.5\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 231:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("x","x:\+:3"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 232:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","y",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","z",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,\d\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(y,\d\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("z","x:\+:y"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 241:
+			re = new RegExp(/newscanfnext\((\w+),\d\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("(\w+)","%."\)/);answer_pattern_array.push(re);
+			flagArr.push(adjustable_check(user_pattern_array,answer_pattern_array));
+		break;
+		case 242:
+			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("char","y",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("y","%."\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
 	}
-	var upalen = user_pattern_array.length;
-	/*for(var i = 0;i<upalen;i++)console.log(user_pattern_array[i]);*/
-	var answer_pattern_array = answer_pattern.split(";");
-	var apalen = answer_pattern_array.length;
-	var pattern_index = 0;
-	for(var i = 0;i<upalen;i++){
-		//console.log(user_pattern_array[i]+"と"+answer_pattern_array[pattern_index]+"がマッチしてるかどうかチェックします。");
-		if(user_pattern_array[i].match(answer_pattern_array[pattern_index])){
-			//console.log("マッチしました。パターンインデックスの値をインクリメントします。");
-			pattern_index++
+	var flen = flagArr.length;
+	console.log(flen+"つのtrueが必要です。");
+	for(var i = 0;i < flen;i++){
+		if(flagArr[i]){
+			index++;
+			console.log(index+"個目のtrueです！");
 		}
-		if(pattern_index == apalen)break;
 	}
-	if(pattern_index == apalen)console.log("大正解！！！！");
+	if(flen == index&&flen!=0){console.log("All OK!!!");}
+	else{console.log("GAME OVER...")}
 	line_reset();
+}
+
+function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮したチェック、falseなら順序関係なしにチェック
+	console.log("text_checkを始めます。");
+	var index = 0;
+	var ulen = uArr.length;
+	var alen = aArr.length;
+	for(var i =0;i < ulen;i++){
+		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		if(uArr[i].match(aArr[index])){
+			console.log("！！！マッチしました！！！");
+			if(flag)i=-1;
+			index++;
+		}
+		if(index == alen)break;
+	}
+	for(var i = 0;i < alen;i++)aArr.shift();
+	if(index == alen){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+}
+
+function adjustable_check(uArr,aArr){//正誤判定に変数名が指定されていない場合のチェック
+	console.log("adjustable_checkを始めます。");
+	var user_variable =[];
+	var temp_variable =[];
+	var index = 0;
+	var ulen = uArr.length;
+	var alen = aArr.length;
+	for(var i = 0;i < ulen;i++){
+		if(uArr[i].match(/duplication_judge\("int","\w+",.+\)/)){
+			user_variable.push(uArr[i].match(/duplication_judge\("int","(\w+)",.+\)/)[1]);
+		}
+	}
+	var uvlen = user_variable.length;
+	for(var i = 0; i < ulen;i++){
+		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		if(uArr[i].match(aArr[index])){
+			console.log("！！！マッチしました！！！");
+			for(var j = 0;j < uvlen;j++){
+				console.log(uArr[i].match(aArr[index])[1]+"と"+user_variable[j]+"を比較します。")
+				if(uArr[i].match(aArr[index])[1]==user_variable[j]){
+					console.log(true);
+					temp_variable.push(user_variable[j]);
+				}
+			}
+		}
+		if(uArr[i].match(/return/)){
+			for(var k = 0;k < uvlen;k++)user_variable.shift();
+			var tvlen = temp_variable.length;
+			for(var k = 0;k < tvlen;k++)user_variable.push(temp_variable[k]);
+			for(var k = 0;k < tvlen;k++)temp_variable.shift();
+			uvlen = user_variable.length;
+			index++;i=-1;
+			console.log("次のアンサーパターンに写ります。");
+		}
+		if(index == alen)break;
+	}
+	for(var i = 0;i < alen;i++)aArr.shift();
+	if(index == alen&&user_variable.length>0){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+}
+
+function arr_check(str,uArr){
+	console.log("--------------------"+str+"配列の中身一覧-------------------------");
+	var ulen = uArr.length;
+	for(var i = 0;i < ulen;i++)console.log(str+"Arr["+i+"] = "+uArr[i]);
+	console.log("----------------------------------------------------");
 }
 
 function return_js(value){
 	console.log("return受領。終わりだよ")
 	jsOfAnimes.push("ANIME_finish()");
 	codeFinishFlag = true;
-	//doTheMainfunction = result2.length-1;
 }
 function ANIME_finish(){
-	//answer_check(211);
-	tf_judge();
+	answer_check(htmlversion);
+	//tf_judge();
 }
 
 //code=コード、scan_data[]=scanfで入力するデータ、re_eval=入力の結果
-
 function hantei_c3(code,scan1,scan2,seikai){
  var scan_data = new Array;
  scan_data[0] = scan1;
@@ -1146,16 +1261,17 @@ if(action_frag == true&&for_flag){
 	console.log(variable);
 	//variable = variable.replace(/\x20/g,"");
 	var v = variable.split(",");
-	console.log(v[0]);
 	for(var i=0; i < v.length; i++){
 		console.log(v[i]);
 		if(v[i].indexOf("=", 0) == -1){
 			console.log("ただの宣言！");
-			duplication_judge(type , v[i] , null );
+			user_pattern_array.push('duplication_judge("'+type+'","'+v[i]+'", '+null+' )');
+			duplication_judge(type,v[i], null );
 		}else{
 			console.log("式の宣言！");
 			var x = v[i].split("=");
 			if(x[1].indexOf(":", 0) == -1){
+				user_pattern_array.push('duplication_judge("'+type+'","'+x[0]+'","'+x[1]+'")');
 				duplication_judge(type , x[0] , x[1] );
 			}else{
 				y = x[1].replace(/:/g,"");
@@ -1317,7 +1433,7 @@ if(action_frag == true&&for_flag){
 	var ExistFlagArray = new Array();
 	if(!(nameArray.length==typeArray.length)){
 		syntaxErrorFlag = false;
-		syntaxStr = "型と入力指定文字があってないよ！";
+		syntaxStr = "型と入力指定文字の数があってないよ！";
 		return 0;
 	}
 	for(var si =0;si < nameArray.length;si++){
@@ -1325,7 +1441,6 @@ if(action_frag == true&&for_flag){
 		for(var si2 = 0;si2 < variables.length;si2++){
 			if(nameArray[si]==variables[si2].name)variableExistFlag = true;
 		}
-		console.log(nameArray[si]+"がそんざいするか？："+variableExistFlag)
 		ExistFlagArray.push(variableExistFlag);
 	}
 	for(var si = 0;si < typeArray.length;si++){
@@ -1344,11 +1459,13 @@ if(action_frag == true&&for_flag){
 				}
 			}
 		}
-	for(var si = 0;si < ExistFlagArray.length;si++)if(!ExistFlagArray[si]){
-		syntaxErrorFlag = false;
-		syntaxStr = "scanf内で存在しない変数を指定しているよ！"
+	for(var si = 0;si < ExistFlagArray.length;si++){
+		if(!ExistFlagArray[si]){
+			syntaxErrorFlag = false;
+			syntaxStr = "scanf内で存在しない変数を指定しているよ！"
+		}
 	}
-	console.log("で、結局これエラーなの？："+syntaxErrorFlag);
+	console.log("コンパイルチェック："+syntaxErrorFlag);
 	console.log(inputValueArray.length);
 	if(inputValueArray.length!=0){
 		var il = inputValueArray.length;
@@ -1375,11 +1492,13 @@ if(action_frag == true&&for_flag){
 	var typeMissErrorFlag = false;
 	if(value.match(/^:@:.*:@:$/)){
 		value =value.match(/^:@:(.*):@:$/)[1];
-		console.log("※注意：変数の出力から始まるため、パーサで与えられているはずの「：：」を除去しています。")
+		console.log("※注意：変数の出力から始まるため、パーサで与えられているはずの「：：」を除去しています。"+value)
 	}
 	var pstr = "";
 	var nameArray = name.split(",");
-	var valueArray = value.split(":@:");
+	var valueArray = value.split(":@: :@:");
+	var namelen = nameArray.length;
+	var valuelen = valueArray.length;
 	var inputTypeArray =new Array();
 	for(var pi2 = 0;pi2 < nameArray.length;pi2++){
 		console.log("nameArray："+nameArray[pi2]);
@@ -1389,6 +1508,9 @@ if(action_frag == true&&for_flag){
 			}
 		}
 	var inputCounter = 0;
+	if(namelen>1){
+		for(var i = 0;i < namelen;i++)user_pattern_array.push('printf_js("'+nameArray[i]+'","'+valueArray[i]+'")');
+	}
 	for(var pi = 0;pi < valueArray.length;pi++)console.log("valueArray："+valueArray[pi]);
 	for(var pi = 0;pi < valueArray.length;pi++){
 		if(valueArray[pi].match(/^%[a-z]/)){inputTypeArray.push(valueArray[pi]);
