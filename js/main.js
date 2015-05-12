@@ -87,7 +87,7 @@ window.onload = function() {
 	});
 	cEditor.setSize(600, 200);
 	//if(document.getElementById("ver").getAttribute("mode")=="develop")
-	SPEED=0.01;
+	//SPEED=0.01;
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211"){
@@ -682,7 +682,7 @@ function tf_judge(){
 }
 
 function answer_check(num){
-	console.log("answe_checkに入ります。");
+	console.log(num+"のanswe_checkに入ります。");
 	var version = Number(num),re;
 	var answer_pattern_array = [];
 	var flagArr = [];
@@ -744,6 +744,16 @@ function answer_check(num){
 			re = new RegExp(/printf_js\("y","%."\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 		break;
+		case 311:
+			re = new RegExp(/if_js\("x > 20"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("xは20より大きいです"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 312:
+			re = new RegExp(/if_js\("x > 20"\)/);answer_pattern_array.push(re);
+			
+		break;
 	}
 	var flen = flagArr.length;
 	console.log(flen+"つのtrueが必要です。");
@@ -759,7 +769,8 @@ function answer_check(num){
 }
 
 function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮したチェック、falseなら順序関係なしにチェック
-	console.log("text_checkを始めます。");
+	if(flag){console.log("順序を考慮したチェックを始めます。");}
+	else{console.log("順序を考慮しないチェックを始めます。")}
 	var index = 0;
 	var ulen = uArr.length;
 	var alen = aArr.length;
@@ -769,6 +780,27 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 			console.log("！！！マッチしました！！！");
 			if(flag)i=-1;
 			index++;
+		}
+		if(index == alen)break;
+	}
+	for(var i = 0;i < alen;i++)aArr.shift();
+	if(index == alen){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+}
+
+function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時のチェック。！※！一文ずつ入れる事。
+	var index = 0;
+	var ulen = uArr.length;
+	var alen = aArr.length;
+	for(var i =0;i < ulen;i++){
+		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		if(uArr[i].match(keystr)){
+			console.log("！！！マッチしました！！！");
+			for(var j = 0;j < alen;j++){
+				if(uArr[i].match(aArr[j])){
+					console.log("！！！マッチしましぞ！！！");
+				}
+			}
 		}
 		if(index == alen)break;
 	}
@@ -1149,7 +1181,6 @@ if(action_frag == true){
 	}
 	}
 }
-
 
 //宣言を行う関数
 function duplication_judge(data_type,name,value){
