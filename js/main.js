@@ -4,6 +4,7 @@ var cEditor;
 var result = new Array();
 var result2 = new Array();
 var user_pattern_array = new Array();
+var user_history = new Array();
 var jsOfAnimes = new Array();
 var sampleOfAnimes = new Array();
 var lines;
@@ -74,7 +75,6 @@ window.onload = function() {
 	p.addEventListener('click', disTexetarea, false);
 	htmlversion=document.getElementById("ver").getAttribute("version")
 	if(htmlversion!="free")document.getElementById('sample').addEventListener('click', doSampleCode, false);
-	console.log("q"+document.getElementById("ver").getAttribute("version")+"を読み込みました。");
 	cEditor = CodeMirror.fromTextArea(document.getElementById("text"), {
 		mode: "text/x-csrc", 
 		theme: "default",
@@ -87,15 +87,12 @@ window.onload = function() {
 	});
 	cEditor.setSize(600, 200);
 	//if(document.getElementById("ver").getAttribute("mode")=="develop")
-	//SPEED=0.01;
+	SPEED=0.01;
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211"){
 	    console.log("画面説明を表示します。");
 		document.getElementById("click_data").click();
-	/*document.getElementById("console").value="aa";consoleStatus="";document.getElementById("console").value="3 5";console.log(getNewInput())
-	var tarray = getNewInput().split(/\x20+/);
-	for(var i = 0;i < tarray.length;i++)console.log(tarray[i])*/
 	}
 };
 var for_flag = true;
@@ -751,8 +748,9 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 312:
-			re = new RegExp(/if_js\("x > 20"\)/);answer_pattern_array.push(re);
-			
+			re = new RegExp(/duplication_judge\("\w+","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("x","10"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 		break;
 	}
 	var flen = flagArr.length;
@@ -799,6 +797,7 @@ function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時の
 			for(var j = 0;j < alen;j++){
 				if(uArr[i].match(aArr[j])){
 					console.log("！！！マッチしましぞ！！！");
+					break;
 				}
 			}
 		}
@@ -1252,6 +1251,7 @@ if(action_frag == true){
 		}
 	}
 	var v = new Variable(data_type,name,value,scopeLevel);
+	user_pattern_array.push('substitute("'+name+'","'+value+'")');
 	if((name=="x")&&(htmlversion=="242"))TFscanfInputX=true;//242の正誤判定
 	if((name=="y")&&(htmlversion=="242"))TFscanfInputY=true;//242の正誤判定
 	//console.log('ANIME_sengen_dainyu("'+data_type+'","'+name+'","'+value+'");');
