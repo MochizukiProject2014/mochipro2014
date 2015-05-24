@@ -39,7 +39,7 @@ function disTexetarea(){
 	var resultlength = result.length;
 	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
 	result2 = ucode.match(/(.+);$/)[1].split(";");
-	codeArrayList();
+	arr_check("パーサー結果配列",result2);
 	var result2length = result2.length;
 	for(doTheMainfunction =0;doTheMainfunction < result2length;doTheMainfunction++){
 		console.log(result2[doTheMainfunction]);
@@ -51,7 +51,7 @@ function disTexetarea(){
 		}
 	}
 	jsOfAnimes.push('line_reset();');
-	animeArrayList();
+	arr_check("アニメ配列",jsOfAnimes);
 	sign =1;
 	if(syntaxErrorFlag&&returnflag){
 		R();
@@ -125,6 +125,10 @@ if(action_frag == true){
 	if(for_cnt==0)evalContexts(0);
 	scopeLevel-=1;
 	}
+}
+
+function status_reset(){
+	
 }
 
 function evalContexts(cnt){
@@ -403,7 +407,7 @@ if(scanf_flag){
 					rindex = doTheMainfunction;
 					break;
 				}
-			}animeArrayList();sign =1;
+			}arr_check("アニメ配列",jsOfAnimes);sign =1;
 			scanf_flag=false;
 			if(syntaxErrorFlag){
 				R();
@@ -454,7 +458,7 @@ var inputArray = new Array();
 var cookiesave;
 function tf_judge(){
 	console.log("〜正誤判定開始〜");
-	variablesList();
+	arr_check("変数配列",variables);
 	var ucode = "";
 	var TFcodeFundamental = false;var TFvariableX = false;var TFvariableY = false;var TFvariableZ = false;
 	var ucArray = codeOfUser.split(/\r\n|\r|\n/);
@@ -905,36 +909,6 @@ function Variable(data_type,name,value,scopeLevel){
 	this.scopeLevel = scopeLevel;
 };
 
-function debugArrayList(){
-	console.log("配列全部を出力するよ！")
-	variablesList();codeArrayList();animeArrayList();
-	console.log("--------------------条件配列の中身一覧-------------------------");
-	for(var joa = 0;joa < result2.length;joa++)console.log(if_conditions[joa]);
-	console.log("----------------------------------------------------");
-	console.log("--------------------ifフラグ配列の中身一覧-------------------------");
-	for(var joa = 0;joa < result2.length;joa++)console.log(if_end_flag[joa]);
-	console.log("----------------------------------------------------");
-}
-
-function variablesList(){
-console.log("---------------------------変数配列の中身一覧-------------------------");
-	for(var deb = 0;deb < variables.length;deb++){
-		console.log((deb+1)+"つ目："+variables[deb].name+"、型："+variables[deb].data_type+"、値："+variables[deb].value+" 、有効レベル："+variables[deb].scopeLevel);
-	}
-	console.log("----------------------------------------------------");
-}
-
-function codeArrayList(){
-console.log("--------------------パーサで書き換えたjsメソッド配列の中身一覧-------------------------");
-	for(var joa = 0;joa < result2.length;joa++)console.log(result2[joa]);
-	console.log("----------------------------------------------------");
-}
-function animeArrayList(){
-console.log("---------------------------アニメ配列の中身一覧-------------------------");
-	for(var joa = 0;joa < jsOfAnimes.length;joa++)console.log(jsOfAnimes[joa]);
-	console.log("----------------------------------------------------");
-}
-
 function codeArrayInit(){
 	if(result){
 	console.log("result配列とvariables配列を初期化します。");
@@ -1184,6 +1158,7 @@ if(action_frag == true){
 //宣言を行う関数
 function duplication_judge(data_type,name,value){
 if(action_frag == true&&for_flag){
+	user_history.push('duplication_judge("'+data_type+'","'+name+'","'+value+'")');
 	if(value == null||value=="null"){
 		if(variables[0] == null){
 			variable_declare(data_type,name,value);//console.log(name+"の宣言を最初に受け付けました。");
@@ -1252,8 +1227,6 @@ if(action_frag == true){
 	}
 	var v = new Variable(data_type,name,value,scopeLevel);
 	user_pattern_array.push('substitute("'+name+'","'+value+'")');
-	if((name=="x")&&(htmlversion=="242"))TFscanfInputX=true;//242の正誤判定
-	if((name=="y")&&(htmlversion=="242"))TFscanfInputY=true;//242の正誤判定
 	//console.log('ANIME_sengen_dainyu("'+data_type+'","'+name+'","'+value+'");');
 	if(exp){
 		jsOfAnimes.push('ANIME_sengen_enzan("'+data_type+'","'+name+'",'+exp+',"'+value+'");');
@@ -1307,9 +1280,6 @@ if(action_frag == true&&for_flag){
 			}else{
 				y = x[1].replace(/:/g,"");
 				duplication_judge(type , x[0] , y );
-				console.log("plural_decrlaration内の出力。y："+y);
-				animeArrayList();
-				console.log("plural_decrlaration内の出力。calc(x[1])："+calc(x[1]));
 				substitute(x[0] , calc(x[1]));
 			}
 		}
@@ -1637,16 +1607,13 @@ if(action_frag == true&&for_flag){
 }
 
 function printf_djs(dstr){
-var tempArray= dstr.split(/\r\n|\r|\n/);
+var tempArray= dstr.split(/\r\n|\r|\n/);//改行で区切り
 var tempstr ="";
 for(var pi = 0;pi<tempArray.length;pi++)tempstr += tempArray[pi];
 dstr = tempstr;
 if(action_frag == true&&for_flag){
 	jsOfAnimes.push('ANIME_printf("'+dstr+'");');
 	jsOfAnimes.push('setPrintf("'+dstr+'");');
-	if((if_cnt>=1)&&(htmlversion=="311")&&(dstr=="xは20より大きいです"))TextInIf = true;//311の正誤判定
-	if((if_cnt>=1)&&(htmlversion=="312")&&(dstr=="xはyより小さいです"))TextInIf = true;//312の正誤判定
-	if((if_cnt>=1)&&(htmlversion=="322")&&(dstr=="xは0ではないです"))TextInIf = true;//322の正誤判定
 	consoleStatus = document.getElementById("console").value;
 	}else if(!for_flag){
 		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'printf_djs('+dstr+');');
