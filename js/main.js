@@ -1,21 +1,20 @@
 //グローバル変数をなるべくさける
 //lengthによる配列オブジェクトへのアクセスを無くす。
-var cEditor;
+var cEditor,lines;
 var result = new Array();
 var result2 = new Array();
 var user_pattern_array = new Array();
 var user_history = new Array();
 var jsOfAnimes = new Array();
 var sampleOfAnimes = new Array();
-var lines;
 var rindex = 0;					//scanf文があった場合の、アニメ実行配列にはさむしおり
 var animeStartIndex=0;
 var scanfname, scanftype;
-var codeOfUser;
-var encodeTime;//
-var consoleStatus = "";//コンソールの現在の状態を保持
-var doTheMainfunction =0;//アニメメソッドを格納している配列のしおり
-var htmlversion;//どのhtmlを読み込んでいるかの情報を保持
+var codeOfUser;					//ユーザーのコードを保持
+var encodeTime;					//現在が何回めの実行かを保持。現状使い道は一回目かそうじゃないかだけ。
+var consoleStatus = "";			//コンソールの現在の状態を保持
+var doTheMainfunction =0;		//アニメメソッドを格納している配列のしおり
+var htmlversion;				//どのhtmlを読み込んでいるかの情報を保持
 var syntaxErrorFlag = true,codeFinishFlag = false,returnflag=true,scanf_flag=false;	
 var syntaxStr ="";				//エラー文の保存用配列
 var scopeLevel = 1;				//変数のスコープの管理用
@@ -23,7 +22,7 @@ function disTexetarea(){
 	cEditor.markText({line: 0 , ch: 0}, {line: 100, ch: 100}, {className: "styled-background-null"});
 	cEditor.save();
 	if(encodeTime>0){
-		codeArrayInit();animeArrayInit();ANIME_reset();tfInit();
+		codeArrayInit();ANIME_reset();
 		consoleStatus="";action_frag = true;if_cnt = 0;syntaxErrorFlag = true;animeStartIndex=0;returnflag=true;
 		document.getElementById("console").value="";codeFinishFlag = false
 		if_conditions.push(true);if_end_flag.push(true);
@@ -95,6 +94,79 @@ window.onload = function() {
 		document.getElementById("click_data").click();
 	}
 };
+
+function type_judge(name,value){
+if(action_frag == true){
+	var i;
+	for(i = 0; i <= variables.length; i++){
+		if(variables[i].name == name){
+			var data_type = variables[i].data_type;
+			break;
+		}
+	}
+	
+	
+	
+	value = String(data_type);
+	switch(version){
+		case "int":
+		break;
+	}
+	if(data_type == "int"){
+		if(value.match(/^[a-z].*/)){
+			for(i = 0; i < variables.length; i++){
+				if(variables[i].name == value){
+					if(variables[i].data_type == "int" || variables[i].data_type == "double"){
+						value = variables[i].value;
+						return true;
+					}
+				}
+			if(i==variables.length)return false;
+			}
+		} else if(value.match(/^[0-9]+/)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	if(data_type == "double"){
+		if(value.match(/^[a-z].*/)){
+			for(i = 0; i < variables.length; i++){
+				if(variables[i].name == value){
+					if(variables[i].data_type == "int" || variables[i].data_type == "double"){
+						value = variables[i].value;
+						return true;
+					}
+				}
+				if(i==variables.length)return false;
+			}
+		} else if(value.match(/^[0-9]+\.[0-9]+|^[0-9]/)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	if(data_type == "char"){
+		if(value.match(/^[a-z].*/)){
+			for(i = 0; i < variables.length; i++){
+				if(variables[i].name == value){
+					if(variables[i].data_type == "char"){
+						value = variables[i].value;
+						return true;
+					}else if(variables[i].data_type == "int" || variables[i].data_type == "double"){
+					 return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+}
+};
+
+
 var for_flag = true;
 var for_contexts_array = new Array();			//for文の中にある文を蓄積するための配列
 var for_cnt = 0;								//for文の階層を数える変数
@@ -125,10 +197,6 @@ if(action_frag == true){
 	if(for_cnt==0)evalContexts(0);
 	scopeLevel-=1;
 	}
-}
-
-function status_reset(){
-	
 }
 
 function evalContexts(cnt){
@@ -233,7 +301,7 @@ function R(){
 
 
 function doSampleCode(){
-	codeArrayInit();animeArrayInit();ANIME_reset();tfInit();
+	codeArrayInit();ANIME_reset();
 	consoleStatus="";action_frag = true;if_cnt = 0;syntaxErrorFlag = true;animeStartIndex=0;
 	document.getElementById("console").value="";codeFinishFlag = false
 	if_conditions.push(true);if_end_flag.push(true);
@@ -342,7 +410,6 @@ var inputValueArray = new Array();
 function newscanfnext(){
 if(scanf_flag){
 	//if(scanftype.match(/^::/))scanftype =scanftype.match(/^::(.*)::$/)[1];
-	console.log("newscanfnextを実行");
 	var inputTypeArray =scanftype.split(/\x20/);
 	var nameArray = scanfname.split(",");
 	var typeArray = new Array();
@@ -376,310 +443,30 @@ if(scanf_flag){
 								syntaxStr = "型と入力指定文字があってないよ！";
 							}
 					}
-				if((inputValueArray[si]=="5")&&(nameArray[si]=="x")&&(htmlversion=="221"))TFscanfNumber=true;//221の正誤判定
-				if((inputValueArray[si]=="15")&&(nameArray[si]=="x")&&(htmlversion=="222"))TFscanfNumberX=true;//222の正誤判定
-				if((inputValueArray[si]=="5.5")&&(nameArray[si]=="y")&&(htmlversion=="222"))TFscanfNumberY=true;//222の正誤判定
-				if((nameArray[si]=="x")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="231"))TFscanfInputX=true;//231の正誤判定
-				if((nameArray[si]=="x")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="232"))TFscanfInputX=true;//232の正誤判定
-				if((nameArray[si]=="y")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="232")){TFscanfInputY=true;}//232の正誤判定
-				if(htmlversion=="241"){for(var sn =0;sn <variables.length;sn++){//241の正誤判定
-						if((variables[sn].name==nameArray[si])&&(variables[sn].data_type=="int")){scanfInputANY=true;inputArray.push(variables[sn].name);}
-				}}
-				if((inputValueArray[si]=="3.5")&&(nameArray[si]=="x")&&(htmlversion=="242"))TFscanfNumberX=true;//242の正誤判定
-				if((inputValueArray[si]=="a")&&(nameArray[si]=="y")&&(htmlversion=="242"))TFscanfNumberY=true;//242の正誤判定
-			}
-				if(htmlversion=="c2"){for(var sn =0;sn <variables.length;sn++){//c2の正誤判定
-						if((variables[sn].name==nameArray[si])&&(variables[sn].data_type=="int")){scanfInputANY=true;inputArray.push(variables[sn].name);}
-				}}
-				if((nameArray[si]=="x")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="321"))TFscanfInputX=true;
-				if((nameArray[si]=="score")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="331"))TFscanfInputX=true;//331の正誤判定
-				if((nameArray[si]=="height")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="q3"))TFscanfInputX=true;//232の正誤判定
-				if((nameArray[si]=="weight")&&type_judge(nameArray[si],inputValueArray[si])&&(htmlversion=="q3"))TFscanfInputY=true;//232の正誤判定
-				tempnum = regulate_js(nameArray[si],inputValueArray[si])
-				substitute(nameArray[si],tempnum);
-				user_pattern_array.push('newscanfnext('+nameArray[si]+','+inputValueArray[si]+')');
-		}
-			for(doTheMainfunction = rindex+1 ;doTheMainfunction < result2.length;doTheMainfunction++){
-				console.log(result2[doTheMainfunction]);
-				user_pattern_array.push(result2[doTheMainfunction]);
-				eval(result2[doTheMainfunction]);
-				if(result2[doTheMainfunction].match(/^scanf_js.*/)){
-					rindex = doTheMainfunction;
-					break;
 				}
-			}arr_check("アニメ配列",jsOfAnimes);sign =1;
-			scanf_flag=false;
-			if(syntaxErrorFlag){
+			}
+			tempnum = regulate_js(nameArray[si],inputValueArray[si])
+			substitute(nameArray[si],tempnum);
+			user_pattern_array.push('newscanfnext('+nameArray[si]+','+inputValueArray[si]+')');
+		}
+		for(doTheMainfunction = rindex+1 ;doTheMainfunction < result2.length;doTheMainfunction++){
+			console.log(result2[doTheMainfunction]);
+			user_pattern_array.push(result2[doTheMainfunction]);
+			eval(result2[doTheMainfunction]);
+			if(result2[doTheMainfunction].match(/^scanf_js.*/)){
+				rindex = doTheMainfunction;
+				break;
+			}
+		}
+		arr_check("アニメ配列",jsOfAnimes);sign =1;
+		scanf_flag=false;
+		if(syntaxErrorFlag){
 				R();
-			}else{
+		}else{
 			console.log("warning");
-				ANIME_error(syntaxStr);
-			}
+			ANIME_error(syntaxStr);
 		}
 	}
-}
-
-function tfInit(){
-TFscanfNumber = false;
-TFscanfNumberX = false;
-TFscanfNumberY = false;
-TFscanfInputX =false;
-TFscanfInputY = false;
-TFprintfX = false;
-TFprintfY = false;
-scanfInputANY = false;
-printfOutputANY = false;
-ifCondition =false;
-elseCondition = false;
-elseExist =false;
-TextInIf = false;
-elseCondition2= false
-if(jsOfAnimes){
-	var al = jsOfAnimes.length;
-	for(var st = 0;st < al;st++)jsOfAnimes.shift();
-	}
-}
-
-var TFscanfNumber = false;
-var TFscanfNumberX = false;
-var TFscanfNumberY = false;
-var TFscanfInputX =false;
-var TFscanfInputY = false;
-var TFprintfX = false;
-var TFprintfY = false;
-var scanfInputANY = false;
-var printfOutputANY = false;
-var ifCondition =false;
-var elseCondition = false;
-var elseCondition2= false;
-var elseExist =false;
-var TextInIf = false;
-var inputArray = new Array();
-var cookiesave;
-function tf_judge(){
-	console.log("〜正誤判定開始〜");
-	arr_check("変数配列",variables);
-	var ucode = "";
-	var TFcodeFundamental = false;var TFvariableX = false;var TFvariableY = false;var TFvariableZ = false;
-	var ucArray = codeOfUser.split(/\r\n|\r|\n/);
-	for(var deb = 0;deb < ucArray.length;deb++)ucode += ucArray[deb];
-	if(ucode.match(/^\x20*#include\x20*<stdio.h>\x20*int\x20*main\(void\){.*}\x20*$/)&&ucode.match(/return\x200/))TFcodeFundamental=true;
-	console.log("コードの基礎チェック…"+TFcodeFundamental);
-	if(!TFcodeFundamental){
-	console.log("基礎がなっとらん！");
-	return false;
-	}
-	console.log(htmlversion);
-	if(htmlversion=="111"){console.log("q1-1-1の判定開始");
-		var TFcodePrintfHW = false;
-		if(ucode.match(/printf\x20*\("\x20*Hello\x20*World!\x20*"\);/)||ucode.match(/printf\('\x20*Hello\x20*World!\x20*'\);/))TFcodePrintfHW = true;
-		if(TFcodePrintfHW){
-			correct_answer();
-			$.removeCookie("questioncount");
-			$.cookie("questioncount",1);
-			movenext111();
-		}else{miss_answer()}
-	}else if(htmlversion=="c1"){console.log("q1まとめの判定開始");
-		var TFcodePrintfHW = false;
-		if(ucode.match(/printf\x20*\("\x20*Hello\x20*World!\x20*"\);/)||ucode.match(/printf\('\x20*Hello\x20*World!\x20*'\);/))TFcodePrintfHW = true;
-		if(TFcodePrintfHW){
-			correct_answer();
-			$.removeCookie("questioncount");
-			$.cookie("questioncount",2);
-			movenextc1();
-		}else{miss_answer()}
-	}else if(htmlversion=="211"){console.log("q2-1-1の判定開始");
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int"))TFvariableX = true;
-			if((variables[tfi].name=="y")&&(variables[tfi].data_type=="double"))TFvariableY = true;
-		}
-		if(TFvariableX&&TFvariableY){
-			correct_answer();
-			$.cookie("q1",true, { expires: 7 , path: '/'});
-			movenext211();
-		}else{miss_answer()}
-	}else if(htmlversion=="212"){console.log("q2-1-2の判定開始。")
-		var xvalue = false;
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int")&&(variables[tfi].value=="10")){
-				TFvariableX = true;
-				}
-				
-		}
-		if(TFvariableX){
-			correct_answer();
-			movenext212();
-		$.cookie("q2",true, { expires: 7 , path: '/'});
-		
-		}
-	}else if(htmlversion=="213"){console.log("q2-1-3の判定開始");
-		var doubleAInit =false;
-		if(ucode.match(/double\x20*a\x20*=\x20*5\.5;/))doubleAInit = true;
-		if(doubleAInit){
-			correct_answer();
-			movenext213();
-		$.cookie("q3",true, { expires: 7 , path: '/'});
-		}else{miss_answer()}
-	}else if(htmlversion=="221"){console.log("q2-2-1の判定開始");
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int"))TFvariableX = true;
-		}
-		console.log(TFvariableX);
-		console.log(TFscanfNumber);
-	if(TFvariableX&&TFscanfNumber){
-		correct_answer();
-		$.cookie("q4",true, { expires: 7 , path: '/'});
-		movenext221();
-	}else{miss_answer()}
-	}else if(htmlversion=="222"){console.log("q2-2-3の判定開始");
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int"))TFvariableX = true;
-			if((variables[tfi].name=="y")&&(variables[tfi].data_type=="double"))TFvariableY = true;
-		}
-		if(TFvariableX&&TFvariableY&&TFscanfNumberX&&TFscanfNumberY){
-			correct_answer();
-			$.cookie("q5",true, { expires: 7 , path: '/'});
-			movenext222();
-		}else{miss_answer()}
-	}else if(htmlversion=="231"){console.log("q2-3-1の判定開始");
-		var TFxPlusThree =false;
-		if(ucode.match(/x\x20*=\x20*x\x20*\+\x20*3/)||ucode.match(/x\x20*=\x20*3\x20*\+\x20*x/))TFxPlusThree = true;
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int"))TFvariableX = true;
-		}
-	if(TFvariableX&&TFscanfInputX&&TFxPlusThree){
-		correct_answer();
-		$.cookie("q6",true, { expires: 7 , path: '/'});
-		movenext231();
-		}else{miss_answer()}
-	}else if(htmlversion=="232"){console.log("q2-3-3の判定開始");
-		var TFzCalculate = false;
-		if(ucode.match(/z\x20*=\x20*x\x20*\+\x20*y;/)||ucode.match(/\x20*z\x20*=\x20*y\x20*\+\x20*x;/))TFzCalculate = true;
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int"||variables[tfi].data_type=="double"))TFvariableX = true;
-			if((variables[tfi].name=="y")&&(variables[tfi].data_type=="int"||variables[tfi].data_type=="double"))TFvariableY = true;
-			if((variables[tfi].name=="z")&&(variables[tfi].data_type=="int"||variables[tfi].data_type=="double"))TFvariableZ = true;
-		}
-		console.log(TFvariableX+"、"+TFscanfInputX+"、"+TFvariableY+"、"+TFvariableZ+"、"+TFscanfInputY+"、"+TFzCalculate)
-		if(TFvariableX&&TFscanfInputX&&TFvariableY&&TFvariableZ&&TFscanfInputY&&TFzCalculate){
-			correct_answer();
-			$.cookie("q7",true, { expires: 7 , path: '/'});
-			movenext232();
-		}else{miss_answer()}
-	}else if(htmlversion=="241"){console.log("q2-4-1の判定開始");
-		if(scanfInputANY&&printfOutputANY){
-			correct_answer();
-			$.cookie("q8",true, { expires: 7 , path: '/'});
-			movenext241();
-		}else{miss_answer()}
-	}else if(htmlversion=="242"){console.log("q2-4-2の判定開始");
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="double"))TFvariableX = true;
-			if((variables[tfi].name=="y")&&(variables[tfi].data_type=="char"))TFvariableY = true;
-		}
-		console.log(TFvariableX+"："+TFvariableY+"："+TFscanfInputX+"："+TFscanfInputY+"："+TFprintfX+"："+TFprintfY);
-		if(TFvariableX&&TFvariableY&&TFscanfInputX&&TFscanfInputY&&TFprintfX&&TFprintfY){
-			correct_answer();
-			$.cookie("q9",true, { expires: 7 , path: '/'});
-			movenext242();
-		}else{miss_answer()}
-	}else if(htmlversion=="c2"){console.log("q2の正誤判定開始")
-		var TFANYCalculate = false;
-		var re;
-		for(var i = 0;i < inputArray.length;i++){
-			re=new RegExp(inputArray[i]+"\x20*=\x20*"+inputArray[i]+"\x20*[*]\x20*3","g")
-			if(re.test(ucode))TFANYCalculate = true;
-		}
-		console.log(scanfInputANY+"、"+TFANYCalculate+"、"+printfOutputANY);
-		if(scanfInputANY&&TFANYCalculate&&printfOutputANY){
-			correct_answer();
-			$.cookie("q10",true, { expires: 7 , path: '/'});
-			movenextc2();
-		}else{miss_answer()}
-	}else if(htmlversion=="311"){console.log("q3-1-1の判定開始");
-		if(ifCondition&&TextInIf){
-			correct_answer();
-			$.cookie("q11",true, { expires: 7 , path: '/'});
-			movenext311();
-		}else{miss_answer()}
-	}else if(htmlversion=="312"){console.log("q3-1-2の判定開始");
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int"))TFvariableX = true;
-			if((variables[tfi].name=="y")&&(variables[tfi].data_type=="int"))TFvariableY = true;
-		}
-		console.log(TFvariableX+"、"+TFvariableY+"、"+ifCondition+"、"+TextInIf);
-		if(TFvariableX&&TFvariableY&&ifCondition&&TextInIf){
-			correct_answer();
-			$.cookie("q12",true, { expires: 7 , path: '/'});
-			movenext312();
-		}else{miss_answer()}
-	}else if(htmlversion=="313"){console.log("q3-1-3の判定開始");
-		if(ifCondition&&TextInIf){
-			correct_answer();
-			$.cookie("q13",true, { expires: 7 , path: '/'});
-			movenext313();
-		}else{miss_answer()}
-	}else if(htmlversion=="314"){console.log("q3-1-4の判定開始");
-		var TFcalc =false;
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="bmi")&&(variables[tfi].data_type=="double"))TFvariableX = true;
-			if((variables[tfi].name=="height")&&(variables[tfi].data_type=="double"))TFvariableY = true;
-			if((variables[tfi].name=="weight")&&(variables[tfi].data_type=="double"))TFvariableZ = true;
-		}
-		if(ucode.match(/bmi\x20*=\x20*weight\x20*\/\x20*\(\x20*height\x20*\*\x20*height\)/))TFcalc = true;
-		console.log(ifCondition+"、"+TFcalc+"、"+TFvariableY+"、"+TFvariableX+"、"+TFvariableZ)
-		if(ifCondition&&TFcalc&&TFvariableY&&TFvariableX&&TFvariableZ){
-			correct_answer();
-			$.cookie("q14",true, { expires: 7 , path: '/'});
-			movenext314();
-		}else{miss_answer()}
-	}else if(htmlversion=="321"){console.log("q3-2-1の判定開始");
-		var elseExist = false;
-		for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="x")&&(variables[tfi].data_type=="int"))TFvariableX = true;
-		}
-		if(ucode.match(/else/))elseExist = true;
-		console.log(TFscanfInputX+"、"+elseExist+"、"+TFvariableX+"、"+ifCondition)
-		if(TFscanfInputX&&elseExist&&TFvariableX&&ifCondition){
-			correct_answer();
-			$.cookie("q15",true, { expires: 7 , path: '/'});
-			movenext321();
-		}else{miss_answer()}
-	}else if(htmlversion=="331"){
-		/*for(var tfi = 0;tfi < variables.length;tfi++){
-			if((variables[tfi].name=="score")&&(variables[tfi].data_type=="int"))TFvariableX = true;
-		}
-		var TForder = false;
-		if(ucode.match(/if\x20*\(.*90.*\).*"良".*else\x20if\x20*\(.*90.*60.*\).*"可".*else\x20if\x20*\(.*60.*40.*\).*"再試験".*else.*"不可"/))TForder=true;
-		if(TFscanfInputX&&elseCondition&&elseCondition2&&TForder&&TFvariableX&&ifCondition){
-		*/
-		var code_score = parser_c3.parse(codeOfUser);
-		if(hantei_331(code_score,90,"良") != true){ miss_answer("条件式と文を確認してみよう！"); return 0;}
-		else if( hantei_331(code_score,60,"可") != true){ miss_answer("条件式と文を確認してみよう！"); return 0;}
-		else if( hantei_331(code_score,40,"再試験") != true){ miss_answer("条件式と文を確認してみよう！"); return 0;}
-		else if( hantei_331(code_score, 39,"不可") != true){ miss_answer("条件式と文を確認してみよう！"); return 0;}
-		else{
-			correct_answer();
-			$.cookie("q16",true, { expires: 7 , path: '/'});
-			movenext331();
-			}
-		//}else{miss_answer()}
-	}else if(htmlversion=="c3"){
-       console.log("c3正誤判定開始");
-		var code_bmi = parser_c3.parse(codeOfUser);
-		if(hantei_c3(code_bmi,1,18.49,"やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
-		else if( hantei_c3(code_bmi,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
-		else if( hantei_c3(code_bmi,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
-		else if( hantei_c3(code_bmi, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
-		
-		else{//ここのif文内の条件nが真ならば、正解と判定している。このif群は基本条件だけ替えればOK。
-			correct_answer();
-			$.cookie("q17",true, { expires: 7 , path: '/'});
-			movenextc3();
-		}
-		//}else{miss_answer()}//上のif文が真じゃなきゃ不正解のアニメを呼び出してる。
-	}
-	line_reset();
 }
 
 function answer_check(num){
@@ -752,9 +539,52 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 312:
-			re = new RegExp(/duplication_judge\("\w+","x",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/substitute\("x","10"\)/);answer_pattern_array.push(re);
-			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/duplication_judge\("int","x","12"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","y","20"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("x < y"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("xはyより小さいです")/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 313:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("x != 0"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("xは0ではないです")/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 314:
+			re = new RegExp(/plural_duplication\("double","height,weight,bmi")/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("bmi","weight:\/:\(:height:\*:height:\)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("(bmi >= 18\.5 && bmi <= 25\.0)|(bmi >= 18\.5 && 25\.0 >= bmi)|(18\.5 <= bmi && bmi <= 25\.0)|(18\.5 <= bmi && 25\.0 >= bmi)|(bmi <= 25\.0 && bmi >= 18\.5)|(bmi <= 25\.0 && 18\.5 <= bmi)|(25\.0 >= bmi && bmi >= 18\.5)|(25\.0 >= bmi && 18\.5 <= bmi)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/あなたは適正です。/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 321:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,\d\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("(x >= 20)|(20 <= x)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("あなたは成人です。")/);answer_pattern_array.push(re);
+			re = new RegExp(/else_js\(\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("あなたは未成人です。")/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 331:
+			re = new RegExp(/duplication_judge\("int","score",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(score,\d\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("(score >= 20)|(20 <= score)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("良")/);answer_pattern_array.push(re);
+			re = new RegExp(/else_if_js\("(score < 90 && score >= 60)|(score < 90 && 60 <= score)|(90 > score && score >= 60)|(90 > score && 60 <= score)|(score >= 60 && score < 90)|(score >= 60 && 90 > score)|(60 <= score && 90 > score)|(60 <= score && score < 90)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("可")/);answer_pattern_array.push(re);
+			re = new RegExp(/else_if_js\("(score < 60 && score >= 60)|(score < 60 && 40 <= score)|(60 > score && score >= 40)|(60 > score && 40 <= score)|(score >= 40 && score < 60)|(score >= 40 && 60 > score)|(40 <= score && 60 > score)|(40 <= score && score < 60)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("再試験")/);answer_pattern_array.push(re);
+			re = new RegExp(/else_js\(\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("不可")/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
+		break;
+		case c2:
 		break;
 	}
 	var flen = flagArr.length;
@@ -765,8 +595,13 @@ function answer_check(num){
 			console.log(index+"個目のtrueです！");
 		}
 	}
-	if(flen == index&&flen!=0){console.log("All OK!!!");}
-	else{console.log("GAME OVER...")}
+	if(flen == index&&flen!=0){
+		console.log("All OK!!!");
+		correct_answer();movenext();
+	}else{
+		miss_answer()
+		console.log("GAME OVER...");
+	}
 	line_reset();
 }
 
@@ -860,6 +695,13 @@ function arr_check(str,uArr){
 	console.log("----------------------------------------------------");
 }
 
+function arr_init(str,uArr){
+	console.log("--------------------"+str+"配列を初期化しました。-------------------------");
+	var ulen = uArr.length;
+	for(var i = 0;i < ulen;i++)uArr.shift();
+}
+
+
 function return_js(value){
 	console.log("return受領。終わりだよ")
 	jsOfAnimes.push("ANIME_finish()");
@@ -900,7 +742,14 @@ function hantei_eval(code, scan_data,scan_i){
 /*--------------------------------------------------------------------------------------------------------------------------*/
 //変数を格納する配列
 var variables = new Array();
-
+//ユーザーが使用できる配列と配列オブジェクトを格納する配列
+var arrays = [];
+var uArr_1 = [];
+var uArr_2 = []
+var uArr_3 = [];
+var uArr_4 = [];
+var uArr_5 = [];
+var uArr_num = 0;
 //変数のクラス
 function Variable(data_type,name,value,scopeLevel){
 	this.data_type = data_type;	//型
@@ -909,41 +758,54 @@ function Variable(data_type,name,value,scopeLevel){
 	this.scopeLevel = scopeLevel;
 };
 
-function codeArrayInit(){
-	if(result){
-	console.log("result配列とvariables配列を初期化します。");
-		var rl = result.length;
-		var rl2 = result2.length;
-		var vs = variables.length;
-		var c = if_conditions.length;
-		var ief = if_end_flag.length;
-		var il = inputValueArray.length;
-		var fc = for_contexts_array.length
-		var fi = for_init_array.length;
-		var fc2 = for_conditions_array.length;
-		var fa = for_alt_array.length;
-		var fl = for_line_array.length;
-		for(var st = 0;st < rl;st++)result.splice(0,1);
-		for(var st2 = 0;st2 < rl2;st2++)result2.splice(0,1);
-		for(var st2 = 0;st2 < vs;st2++)variables.shift();
-		for(var st2 = 0;st2 < c;st2++)if_conditions.shift();
-		for(var st2 = 0;st2 < ief;st2++)if_end_flag.shift();
-		for(var st = 0;st < il;st++)inputValueArray.shift();
-		for(var st = 0;st < fc;st++)for_contexts_array.shift();
-		for(var st = 0;st < fi;st++)for_init_array.shift();
-		for(var st = 0;st < fc2;st++)for_conditions_array.shift();
-		for(var st = 0;st < fa;st++)for_alt_array.shift();
-		for(var st = 0;st < fl;st++)for_line_array.shift();
+function array_declare(data_type,name,value,length){
+if(action_frag == true){
+	uArr_num++;
+	var v = new Arr(data_type,name,value,length,uArr_num);
+	switch(uArr_num){
+		case 1: 
+			uArr_1 = value.split(",");
+		break;
 	}
+	arrays.push(v);
+}
+variable_declare(data_type,name,value){//配列を変数に代入させる関数
+if(action_frag == true){
+	var v = new Variable(data_type,name,"?",scopeLevel);
+	jsOfAnimes.push('ANIME_sengen("'+data_type+'","'+name+'");');
+	variables.push(v);
+	}
+};
 }
 
-function animeArrayInit(){
-	console.log("result配列を初期化します。");
-	if(jsOfAnimes){
-		var al = jsOfAnimes.length;
-		for(var st = 0;st < al;st++){
-			jsOfAnimes.shift();
-		}
+
+
+
+function Arr(data_type,name,value,length,number){
+	this.data_type = data_type;	//型
+	this.name = name;				//名前
+	this.value = value;				//値
+	this.length = length;			//長さ
+	this.number = number;			//対応番号
+}
+
+
+
+function codeArrayInit(){
+	if(result){
+	console.log("様々な配列の初期化を開始しますします。");
+		arr_init("result",result);
+		arr_init("result2",result2);
+		arr_init("variable",variables);
+		arr_init("ifの条件",if_conditions);
+		arr_init("if_end_flag",if_end_flag);
+		arr_init("inputValueArray",inputValueArray);
+		arr_init("for_contexts_array",for_contexts_array);
+		arr_init("for_init_array",for_init_array);
+		arr_init("for_conditions_array",for_contexts_array);
+		arr_init("for_alt_array",for_alt_array);
+		arr_init("for_line_array",for_line_array);
+		arr_init("アニメ",jsOfAnimes);
 	}
 }
 
@@ -956,31 +818,6 @@ function if_js(condition){
 	if(for_flag){
 	if_cnt++;scopeLevel++;
 	if_conditions.push(assess(condition));
-	if((condition.match(/\x20*x\x20*>\x20*20\x20*/)||condition.match(/\x20*20\x20*<\x20*x\x20*/))&&(htmlversion=="311")){
-		ifCondition=true;//311の正誤判定
-	}
-	if((condition.match(/\x20*x\x20*<\x20*y\x20*/)||condition.match(/\x20*y\x20*>\x20*x\x20*/))&&(htmlversion=="312")){
-		ifCondition=true;//312の正誤判定
-	}
-	if((condition.match(/\x20*x\x20*\!=\x20*0\x20*/)||condition.match(/\x20*0\x20*\!=\x20*x\x20*/))&&(htmlversion=="313")){
-		ifCondition=true;//313の正誤判定
-	}
-	if((condition.match(/bmi\x20*>=\x20*18\.5\x20*&&\x20*bmi\x20*<\x20*25/)||
-		condition.match(/bmi\x20*>=\x20*18\.5\x20*&&\x20*25\x20*>\x20*bmi/)||
-		condition.match(/18\.5\x20*<=\x20*bmi\x20*&&\x20*bmi\x20*<\x20*25/)||
-		condition.match(/18\.5\x20*<=\x20*bmi\x20*&&\x20*25\x20*>\x20*bmi/))
-		&&(htmlversion=="314")){
-		ifCondition=true;//314の正誤判定
-	}
-	if((condition.match(/\x20*x\x20*\>=\x20*20\x20*/))||(condition.match(/\x20*20\x20*\<=\x20*x\x20*/))&&(htmlversion=="321")||
-		((condition.match(/\x20*x\x20*\<=\x20*19\x20*/)||condition.match(/\x20*19\x20*\>=\x20*x\x20*/))&&(htmlversion=="321"))||
-		((condition.match(/\x20*x\x20*\<\x20*20\x20*/)||condition.match(/\x20*20\x20*\>\x20*x\x20*/))&&(htmlversion=="321"))){
-		ifCondition=true;//321の正誤判定
-	}
-	if((condition.match(/\x20*score\x20*\>=\x20*90\x20*/))||(condition.match(/\x20*90\x20*\<=\x20*score\x20*/))&&(htmlversion=="331")){
-		ifCondition=true;//331の正誤判定
-	}
-	
 	console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
 	if(if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
 		console.log("if_js内の出力：実行しようぜ！");
@@ -1006,20 +843,6 @@ function if_js(condition){
 
 function else_if_js(condition){
 	if(for_flag){
-	if((condition.match(/score\x20*<\x20*90\x20*&&\x20*score\x20*>=\x20*60/)||condition.match(/score\x20*<\x20*90\x20*&&\x20*60\x20*<=\x20*score/)||
-		condition.match(/90\x20*>\x20*scorex20*&&\x20*score\x20*>=\x20*60/)||condition.match(/90\x20*>\x20*scorex20*&&\x20*60\x20*<=\x20*score/))
-		&&(htmlversion=="331")){
-		elseCondition=true;//331の正誤判定
-	}
-	if((condition.match(/score\x20*<\x20*60\x20*&&\x20*score\x20*>=\x20*40/)||condition.match(/score\x20*<\x20*60\x20*&&\x20*40\x20*<=\x20*score/)||
-		condition.match(/40\x20*>\x20*scorex20*&&\x20*score\x20*>=\x20*40/)||condition.match(/60\x20*>\x20*scorex20*&&\x20*40\x20*<=\x20*score/))
-		&&(htmlversion=="331")){
-		elseCondition2=true;//331の正誤判定
-	}
-	if((condition.match(/\x20*bmi\x20*\>\x20*25\x20*/))||(condition.match(/\x20*25\x20*\<\x20*bmi\x20*/))&&(htmlversion=="c3")){
-		ifCondition=true;//331の正誤判定
-	}
-	if((condition.match(/bmi\x20*\>\x20*25/)||(condition.match(/25\x20*\<\x20*bmi/)))&&(htmlversion=="q3"))ifCondition=true;//q3の正誤判定
 	if_conditions[if_cnt]=assess(condition);
 	console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	if(!(if_end_flag[if_cnt])&&if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
@@ -1292,7 +1115,6 @@ if(action_frag == true&&for_flag){
 }
 
 function variable_declare(data_type,name,value){//配列を変数に代入させる関数
-console.log("VDI内の出力：datatype："+data_type+"、name："+name+"、value："+value+"、scope："+scopeLevel);
 if(action_frag == true){
 	var v = new Variable(data_type,name,"?",scopeLevel);
 	jsOfAnimes.push('ANIME_sengen("'+data_type+'","'+name+'");');
@@ -1398,10 +1220,6 @@ if(action_frag == true&&for_flag){
 				console.log("変数や数式ではありませんでした。substitute内の出力。value："+value+"、value："+value);
 				if(type_judge(name,value))variables[i].value = regulate_js(name,value);
 				jsOfAnimes.push('ANIME_dainyu("'+name+'","'+regulate_js(name,value)+'")');
-				if((name=="x")&&(htmlversion=="242"))TFscanfInputX=true;//242の正誤判定
-				if((name=="y")&&(htmlversion=="242"))TFscanfInputY=true;//242の正誤判定
-				if((value=="12")&&(name=="x")&&(htmlversion=="312"))TFscanfNumberX=true;//312の正誤判定
-				if((value=="20")&&(name=="y")&&(htmlversion=="312"))TFscanfNumberY=true;//312の正誤判定
 			}
 		}
 	}
@@ -1532,19 +1350,6 @@ if(action_frag == true&&for_flag){
 			}
 		}
 	}
-	for(var pi = 0; pi < inputArray.length;pi++){//241の正誤判定
-		for(var pi2 = 0;pi2 < nameArray.length;pi2++){
-			if((inputArray[pi]==nameArray[pi2])&&(htmlversion=="241"))printfOutputANY=true;
-	}}
-	for(var pi = 0;pi < nameArray.length;pi++){
-		if((nameArray[pi]=="x")&&(htmlversion=="242"))TFprintfX=true;//242の正誤判定
-		if((nameArray[pi]=="y")&&(htmlversion=="242"))TFprintfY=true;//242の正誤判定
-	}
-	for(var pi = 0; pi < inputArray.length;pi++){//q2の正誤判定
-		for(var pi2 = 0;pi2 < nameArray.length;pi2++){
-			console.log(inputArray[pi]+"："+nameArray[pi2])
-			if((inputArray[pi]==nameArray[pi2])&&(htmlversion=="c2"))printfOutputANY=true;
-	}}
 	var variableNumCounter = 0;
 	var whetherCharFlag = false;
 	for(var pi = 0;pi<valueArray.length;pi++){
@@ -1622,7 +1427,6 @@ if(action_frag == true&&for_flag){
 			for_contexts_array[fi] += 'for_next;';
 		}
 	}
-if((if_cnt>=1)&&(htmlversion=="313")&&(dstr=="xは0ではないです"))TextInIf = true;//313の正誤判定
 }
 
 function setPrintf(value){
@@ -1632,77 +1436,3 @@ function setPrintf(value){
 	sign = 1;
 }
 
-function type_judge(name,value){
-if(action_frag == true){
-	var i;
-	for(i = 0; i <= variables.length; i++){
-		if(variables[i].name == name){
-			var data_type = variables[i].data_type;
-			break;
-		}
-	}
-	value = String(value);
-	if(data_type == "int"){
-	//【変数に文字が代入された場合…ミスか変数かを判断する】
-		if(value.match(/^[a-z].*/)){
-			for(i = 0; i < variables.length; i++){
-				//【変数に変数が代入された場合】
-				if(variables[i].name == value){
-					if(variables[i].data_type == "int" || variables[i].data_type == "double"){
-						value = variables[i].value;
-						/* 変数→中身の数値に表示を切り替えるアニメ */return true;
-					} else {/* doubleかint型じゃなければintに文字型を代入してしまった場合のアニメ */
-					}
-				/*【変数に文字列が代入された場合】*/
-				} else {/* 既存の変数にはないと判断し、intに文字を代入してしまった場合のアニメ*/
-				}
-				if(i==variables.length)return false;
-			}
-		} else if(value.match(/^[0-9]+/)){/*代入するvalueが数値だった場合はそのまま代入する*/
-			return true;
-		}else{
-			return false;
-		}
-	}
-	if(data_type == "double"){
-	//【変数に文字が代入された場合…ミスか変数かを判断する】
-		if(value.match(/^[a-z].*/)){
-			for(i = 0; i < variables.length; i++){
-				//【変数に変数が代入された場合】
-				if(variables[i].name == value){
-					if(variables[i].data_type == "int" || variables[i].data_type == "double"){
-						value = variables[i].value;
-						/* 変数→中身の数値に表示を切り替えるアニメ */return true;
-					} else {/* doubleかint型じゃなければdoubleに文字型を代入してしまった場合のアニメ */
-					}
-				/*【変数に文字列が代入された場合】*/
-				} else {/* 既存の変数にはないと判断し、doubleに文字を代入してしまった場合のアニメ*/
-				}
-				if(i==variables.length)return false;
-			}
-		} else if(value.match(/^[0-9]+\.[0-9]+|^[0-9]/)){/*代入するvalueが数値だった場合はそのまま代入する*/
-			return true;
-		}else{
-			return false;
-		}
-	}
-	if(data_type == "char"){
-	//【変数に文字が代入された場合…ミスか変数かを判断する】
-		if(value.match(/^[a-z].*/)){
-			for(i = 0; i < variables.length; i++){
-				//【変数に変数が代入された場合】
-				if(variables[i].name == value){
-					if(variables[i].data_type == "char"){
-						value = variables[i].value;
-						/* 変数→中身の数値に表示を切り替えるアニメ */return true;
-					}else if(variables[i].data_type == "int" || variables[i].data_type == "double"){
-					 return false;
-					}
-				}
-			}/*変数のなかには無かった！*/
-		}
-		return true;
-		}
-	}
-	
-};
