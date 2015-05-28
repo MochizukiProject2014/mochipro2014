@@ -584,7 +584,12 @@ function answer_check(num){
 			re = new RegExp(/printf_djs("不可")/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 		break;
-		case c2:
+		case c3:
+			var code_bmi = parser_judge.parse(text);
+			if(hantei(code_bmi,1,18.49,"やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
+			else if( hantei(code_bmi,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
+			else if( hantei(code_bmi,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei(code_bmi, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
 		break;
 	}
 	var flen = flagArr.length;

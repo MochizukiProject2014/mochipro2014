@@ -84,13 +84,13 @@ parser = (function() {
         peg$c49 = { type: "literal", value: "[", description: "\"[\"" },
         peg$c50 = "]",
         peg$c51 = { type: "literal", value: "]", description: "\"]\"" },
-        peg$c52 = function(name, length) { return  'array_declare("int","' + name + '",undefined,' + length + ');'  },
+        peg$c52 = function(name, length) { return  'array_declare("int","' + name + '","undefined",' + length + ');'  },
         peg$c53 = function(name, length, variable) {
         		return 'array_declare("int","' + name + '","' + variable + '",' + length + ');'   },
         peg$c54 = function(name, length, variable) {
         		return 'array_declare("int","' + name + '","' + variable + '",' + length + ');'  },
         peg$c55 = function(name, variable) {
-        		return 'array_declare("int","' + name + '","' + variable + '");'   },
+        		return 'array_declare("int","' + name + '","' + variable + '","undefined");'   },
         peg$c56 = function(name, variable) {
         		return 'array_declare("int","' + name + '","' + variable + '");'  },
         peg$c57 = function(variable, length1, length2) { return "intの配列： " + variable + "　大きさ：" + length1 + "," + length2 + ';'  },
@@ -475,7 +475,7 @@ parser = (function() {
 
         foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
 
-       var l = posDetails.line;
+        var l = posDetails.line;
         
         if(expectedDesc.indexOf(";") != -1){
         	l = l-1;
