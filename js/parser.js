@@ -84,7 +84,7 @@ parser = (function() {
         peg$c49 = { type: "literal", value: "[", description: "\"[\"" },
         peg$c50 = "]",
         peg$c51 = { type: "literal", value: "]", description: "\"]\"" },
-        peg$c52 = function(name, length) { return  'array_declare("int","' + name + '",中身なし,' + length + ');'  },
+        peg$c52 = function(name, length) { return  'array_declare("int","' + name + '",undefined,' + length + ');'  },
         peg$c53 = function(name, length, variable) {
         		return 'array_declare("int","' + name + '","' + variable + '",' + length + ');'   },
         peg$c54 = function(name, length, variable) {
@@ -475,7 +475,7 @@ parser = (function() {
 
         foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
 
-        var l = posDetails.line;
+       var l = posDetails.line;
         
         if(expectedDesc.indexOf(";") != -1){
         	l = l-1;
@@ -501,8 +501,6 @@ parser = (function() {
         }
 
         return "Expected " + expectedDesc + " but " + foundDesc + " found.";
-
-
       }
 
       var posDetails = peg$computePosDetails(pos),

@@ -56,7 +56,7 @@ initialization_char
 //配列宣言
 //配列（int）
 statement_array_int
-= "int " space name:variable "[" space length:additive space "]"  ";" space { return  'array_declare("int","' + name + '",中身なし,' + length + ');'  }
+= "int " space name:variable "[" space length:additive space "]"  ";" space { return  'array_declare("int","' + name + '",undefined,' + length + ');'  }
 
 //長さ指定あり、中身あり
 /  "int " space name:variable "[" space length:additive space "]" space "=" variable:array_contents  ";" space {
