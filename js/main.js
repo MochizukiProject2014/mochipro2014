@@ -585,11 +585,27 @@ function answer_check(num){
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 		break;
 		case c3:
-			var code_bmi = parser_judge.parse(text);
-			if(hantei(code_bmi,1,18.49,"やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
-			else if( hantei(code_bmi,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
-			else if( hantei(code_bmi,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
-			else if( hantei(code_bmi, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			var code_jud = parser_judge.parse(text);
+			if(hantei(code_jud,1,18.49,"やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
+			else if( hantei(code_jud,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
+			else if( hantei(code_jud,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei(code_jud, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+		break;
+		case 421:
+			var code_jud = parser_judge.parse(text);
+			if(hantei(code_jud,1, 2,"終了") != true){ miss_answer("421はずれ"); return 0;}
+			else if( hantei(code_jud,1, 1, 2, "終了") != true){ miss_answer("421はずれ"); return 0;}
+			else if( hantei(code_jud,1, 1, 1, 2, "終了") != true){ miss_answer("421はずれ"); return 0;}
+		break;
+		case 422:
+			var code_jud = parser_judge.parse(text);
+			if(hantei(code_jud,99, 2,"100を超えました。%dです。") != true){ miss_answer("422はずれ"); return 0;}
+			else if( hantei(code_jud, 20, 20, 80, "100を超えました。%dです。") != true){ miss_answer("422はずれ"); return 0;}
+			else if( hantei(code_jud,50, 40, 5, 5, "100を超えました。%dです。") != true){ miss_answer("422はずれ"); return 0;}
+		break;
+		case 431:
+			var code_jud = parser_judge.parse(text);
+			if(hantei_eval(code_jud) == ""){ miss_answer("422はずれ"); return 0;}
 		break;
 	}
 	var flen = flagArr.length;

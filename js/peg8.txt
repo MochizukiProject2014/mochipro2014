@@ -185,13 +185,13 @@ divergence
 
 //代入  
 substitution
-  =  left:variable space "=" space right:(variable/minus/decimal) space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
-  /   left:variable space "=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
-  /   left:variable space "++" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:1'+ '");' ; }
-  /   left:variable space "--" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:1' + '");' ; }
-  /  left:variable space "+=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:' + right + '");' ; }
-  /   left:variable space "-=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:' + right + '");' ; }
-  /   left:variable space "=" space "'" right:[a-zA-Z] "'" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  =  left:(variable_array/variable) space "=" space right:(variable_array/variable/minus/decimal) space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  /   left:(variable_array/variable) space "=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  /   left:(variable_array/variable) space "++" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:1'+ '");' ; }
+  /   left:(variable_array/variable) space "--" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:1' + '");' ; }
+  /  left:(variable_array/variable) space "+=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:' + right + '");' ; }
+  /   left:(variable_array/variable) space "-=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:' + right + '");' ; }
+  /   left:(variable_array/variable) space "=" space "'" right:[a-zA-Z] "'" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
 
 //for文で用いる代入・演算
 substitution_for
@@ -334,6 +334,7 @@ remainder
 primary
   = minus
   / decimal
+  / variable_array
   / variable
   / "(" additive:additive ")" { return "(" + ":" + additive + ":" + ")"; }
 
@@ -364,7 +365,8 @@ character
 variable
   = variable:([a-zA-Z][a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
 
-
+variable_array
+ = variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
 
 //改行・コメント
 space
