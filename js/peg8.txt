@@ -185,13 +185,13 @@ divergence
 
 //代入  
 substitution
-  =  left:variable space "=" space right:(variable/minus/decimal) space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
-  /   left:variable space "=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
-  /   left:variable space "++" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:1'+ '");' ; }
-  /   left:variable space "--" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:1' + '");' ; }
-  /  left:variable space "+=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:' + right + '");' ; }
-  /   left:variable space "-=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:' + right + '");' ; }
-  /   left:variable space "=" space "'" right:[a-zA-Z] "'" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  =  left:(variable_array/variable) space "=" space right:(variable_array/variable/minus/decimal) space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  /   left:(variable_array/variable) space "=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  /   left:(variable_array/variable) space "++" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:1'+ '");' ; }
+  /   left:(variable_array/variable) space "--" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:1' + '");' ; }
+  /  left:(variable_array/variable) space "+=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:' + right + '");' ; }
+  /   left:(variable_array/variable) space "-=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:' + right + '");' ; }
+  /   left:(variable_array/variable) space "=" space "'" right:[a-zA-Z] "'" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
 
 //for文で用いる代入・演算
 substitution_for
@@ -252,12 +252,11 @@ comparison_not_equal
 //スキャン
 scanf
   =  "scanf" space "("  space ["] type:scan_type ["] space "," space "&" space variable:variable space ")" [\n]* ";" space{ return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + type + '");' ;  }
-  // "scanf" space "("  space ["] type1:scan_typespace type2:scan_type ["] space "," space "&" space variable1:variable space "," space "&" space variable2:variable space ")" [\n]* ";" space{ return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable1 + '","' + type1 + '");scanf_js("' + variable2 + '","' + type1 + '");' ;  }
   /  "scanf" space "(" space ["] space   contents:scan_val space ["]   space "," space variable:additive_plural_scan space ")" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + contents + '");' ; }
 
 scan_val
-  =left:[\x20]* type:scan_type right:scan_val { return " " + "::" + type + "::" + right; }
-  /  letter
+  =left:[\x20]* type:scan_type right:scan_val { return "::" + type + "::" + right; }
+  / [\x20]* { return ""; }
 
 scan_type
   = "%" type:("d"/"o"/"x"/"X"/"c"/"s"/"f"/"lf")  {return "%" + type;}
@@ -334,6 +333,7 @@ remainder
 primary
   = minus
   / decimal
+  / variable_array
   / variable
   / "(" additive:additive ")" { return "(" + ":" + additive + ":" + ")"; }
 
@@ -364,7 +364,8 @@ character
 variable
   = variable:([a-zA-Z][a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
 
-
+variable_array
+ = variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
 
 //改行・コメント
 space
