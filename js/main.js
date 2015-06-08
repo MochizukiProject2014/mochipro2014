@@ -374,8 +374,7 @@ if(action_frag == true){
 	}
 	variables.push(v);
 	check_obj("a");
-	substitute("a[1]","100");
-	console.log(calc("x"));
+	substitute("a[x]","100");
 	check_obj("a");
 }
 }
@@ -385,10 +384,10 @@ if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
 	var str;
 	var len = variables.length;
-	if(/\[\d+\]/.test(name)){
+	if(/\[.+\]/.test(name)){
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
-		console.log("デバック："+index);
-		name = name.match(/^([a-z]\w*)\[\d+\]/)[1];
+		if(/^[a-z]\w*/.test(name)||/:/.test(name))index =calc(index);
+		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	var vtype = getVariableType(name);
 	if(value.match(/:/)){//代入する値が計算式の場合
