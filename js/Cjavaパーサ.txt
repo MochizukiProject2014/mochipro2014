@@ -1,0 +1,385 @@
+/*
+ * Classic example grammar, which recognizes simple arithmetic expressions like
+ * "2*(3+4)". The parser generated from this grammar then computes their value.
+ */
+
+start
+  = space "#include" space "<stdio.h>"  space coment* "int" space "main" space "(void)" block:block  space {return block;}
+
+block
+  =  space "{"  space script:script*  space "}"  space {return script;}
+
+script
+  = divergence_if
+  / divergence
+  / statement
+  / substitution
+  / repetition
+  / scanf
+  / printf
+  / break
+  / return
+  / coment
+
+//------------------------------------------------------------
+
+//宣言
+statement
+  = statement_int
+  / statement_double
+  / statement_array_int
+  / statement_char
+
+statement_int
+  =  "int " space variable:variable space ";"  space {return "var " + variable + ";" ;}
+  /  "int " space left:variable space "=" space right:additive ";"  space { return "var " + left + "=" + right + ";" ;}
+  /  "int " space contents:(statement_plural* (initialization/variable))  space  ";"  space { return "var " + contents + ";" ;} 
+	
+statement_char
+  =  "char " space variable:variable space ";"  space {return "var " + variable + ";" }
+  /  "char " space left:variable space "=" space ["] space right:[a-zA-Z] space ["] space ";"  space { return "var " + left + "=" + right + ";" ;}
+//  "char " space contents:(statement_plural* (initialization/variable))  space  ";"  space { return "var " + contents + ";" ;} 
+
+statement_double
+  =  "double " space variable:variable space ";"  space {return "var " + variable + ";" } 
+  /  "double " space left:variable space "=" space right:additive ";"  space { return "var " + left + "=" + right + ";" ;}
+  /  "double " space contents:(statement_plural* (initialization/variable))  space  ";"  space { return "var " + contents + ";" ;} 
+
+
+//複数宣言
+statement_plural
+ =  space contents:(initialization/variable)  space ","  space {return contents;} statement_plural_char
+ = space contents:(initialization_char/variable) space "," space {return contents;}
+
+//初期化
+initialization
+ =  left:(variable_array/variable) space "=" space right:additive space  space { return left + "=" + right ; } 
+initialization_char
+ =  left:variable space "=" space ['] space right:[a-zA-Z] space ['] space { return left + "=" + right ; } 
+
+//配列宣言
+//配列（int）
+statement_array_int
+= "int " space name:variable "[" space length:additive space "]" space  ";" space { return  'var ' + name + '= new Array(' + length + ');'  }
+/ "int " space name:variable "[" space "]" space  ";" space { return  'var ' + name + '= new Array();'  }
+
+//長さ指定あり、中身あり
+/  "int " space name:variable "[" space length:additive space "]" space "=" variable:array_contents space  ";" space {
+		return  'var ' + name + '= [' + variable + '];'  }
+
+//長さ指定なし、中身あり
+/  "int " space name:variable "[" space "]" space "=" variable:array_contents  ";" space {
+		return  'var ' + name + '= [' + variable + '];'    }
+ 
+statement_array_int_2
+  =  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  ";" space { return "intの配列： " + variable + "　大きさ：" + length1 + "," + length2 + ';'  }
+  /  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  space "=" space "{" space contents:additive space "}" space  ";" space { return "intの配列：" + variable + "　大きさ：" + length1 + "," + length2 + "　中身：" + contents + ';'  }
+ /  "int " space variable:variable "[" space length:additive space "]" space "=" space "{" space contents:(array_contents* additive) space "}" space  ";" space { return "intの配列：" + variable + "　大きさ：" + length + "　中身：" + contents + ';'  }
+
+//配列の初期化{1,2,3,4}みたいなやつ
+array_contents
+ =space  "{"space contents:additive_plural_array space "}" space {return contents}
+ 
+ additive_plural_array
+ = space left:additive space "," space right:additive_plural_array {return left + "," + right;}
+ /  additive
+
+//------------------------------------------------------------
+
+//繰り返し
+repetition
+ = repetition_for
+ /repetition_while
+
+repetition_for
+  =  "for" space "(" space left:(variable_array/variable) space "=" space right:additive space ";" space comparison:logical space ";" space  substitution:substitution_for space  ")" space block:block  space {
+    var a = block[0];
+    for(var k=1; k < block.length; k++){
+          a = a + block[k];
+    }
+    return 'substitute("' + left + '","' + right + '");' + "for(" + left + "=" + right + " " + comparison +  "; " + substitution + ") {" + block  + "}"; 
+  }
+  
+  /  "for" space "(" space "int" space left:(variable_array/variable) space "=" space right:additive space ";" space comparison:logical space ";" space  substitution:substitution_for space  ")" space block:block  space {
+     var a = block[0];
+     for(var k=1; k < block.length; k++){
+        a = a + block[k];
+     }
+    return 'substitute("' + left + '","' + right + '");' + "for(" + left + "=" + right + " " + comparison +  "; " + substitution + ") {" + block  + "}"; 
+    }
+  
+repetition_while
+ =  "while"  space "(" space comparison:(logical/additive) space ")" space block:block  space {
+      var a = block[0];
+     for(var k=1; k < block.length; k++){
+        a = a + block[k];
+     }
+  return "while(" + comparison + "){" + block + "}"; }
+
+
+break
+ =  "break"  space ";"  space {return "break;" ;}
+
+//------------------------------------------------------------
+  
+//分岐
+divergence_if
+= result:divergence_else { return result + ";" ;  }
+
+divergence_else
+= left:divergence_else_if  space "else"  space block:block {
+     var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+       for(var k=1; k < block.length; k++){
+         a = a + block[k];
+       }
+     return left +  "else{" + a + "}";}
+/  divergence_else_if
+
+divergence_else_if
+= left:divergence  space "else"  space "if" space "(" space comparison:logical space ")"  space block:block right:divergence_else_if_2* {
+        var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+        for(var k=1; k < block.length; k++){
+          a = a + block[k];
+        }
+        comparison = comparison.replace(/:/g,"");
+        return left + "else if(" + comparison + "){" + a + "}" + right;}
+/ left:divergence  space "else"  space "if" space "(" space comparison:logical space ")"  space block:block {
+        var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+        for(var k=1; k < block.length; k++){
+          a = a + block[k];
+        }
+        comparison = comparison.replace(/:/g,"");
+        return left + "else if(" + comparison + "){" + a + "}";}
+/ divergence
+
+divergence_else_if_2
+= "else"  space "if" space "(" space comparison:logical space ")"  space block:block {
+        var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+        for(var k=1; k < block.length; k++){
+          a = a + block[k];
+        }
+        comparison = comparison.replace(/:/g,"");
+        return "else if(" + comparison + "){" + a + "}";}
+
+divergence
+= "if" space "(" space comparison:logical space ")"  space block:block  space {
+         var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+        for(var k=1; k < block.length; k++){
+          a = a + block[k];
+        }
+        comparison = comparison.replace(/:/g,"");
+        return "if(" + comparison + "){" + a + "}" ;}
+
+
+//------------------------------------------------------------
+
+//代入  
+substitution
+  =  left:(variable_array/variable) space "=" space right:(variable/minus/decimal) space ";"  space { return left + "=" + right + ";" ; } 
+  /   left:(variable_array/variable) space "=" space right:additive space ";"  space { return left + "=" + right + ";" ; } 
+  /   left:(variable_array/variable)  space "++" space ";"  space { return left + "++;" ; }
+  /   left:(variable_array/variable)  space "--" space ";"  space { return left + "--;" ; }
+  /   "++" space left:(variable_array/variable)  space  ";"  space { return "++" + left + ";" ; }
+  /   "--" space left:(variable_array/variable)  space  ";"  space { return "--" + left + ";" ; }
+  /  left:(variable_array/variable)  space "+=" space right:additive space ";"  space { return left + "+=" + right + ";" ; }
+  /   left:(variable_array/variable)  space "-=" space right:additive space ";"  space { return left + "-=" + right + ";" ;  }
+  /   left:(variable_array/variable) space "=" space "'" right:[a-zA-Z] "'" space ";"  space { return left + '="' + right + '";' ; } 
+
+//for文で用いる代入・演算
+substitution_for
+  = left:(variable_array/variable) space "=" space right:additive  space { return left + " = " + right ; } 
+  /   left:(variable_array/variable) "++"  space { return left + "++" ; }
+  /   left:(variable_array/variable) "--"  space { return left + "--" ; }
+  /   left:(variable_array/variable) "+=" right:additive space  space { return left + "+=" + right ; }
+  /   left:(variable_array/variable) "-=" right:additive space  space { return left + "-=" + right ; }
+
+//------------------------------------------------------------
+
+//論理演算子
+logical
+ = logical_and
+ / logical_or
+ / logical_not
+ / comparison
+ 
+logical_and
+ = left:comparison space "&&" space right:logical space  space { return left + " && " + right ; }
+
+logical_or
+ = left:comparison space "||" space right:logical space  space {return left + " || " + right ; }
+ 
+logical_not
+ = space "!" space comparison_same:logical space  space { return "!" + comparison_same ;}
+
+//比較
+comparison
+  = comparison_same
+  / comparison_greater_than
+  / comparison_less_than
+  / comparison_greater_than_or_equal
+  / comparison_less_than_or_equal
+  / comparison_not_equal
+
+comparison_same
+  = left:additive space "==" space right:additive  space  { return left + " == " + right ; }
+  
+comparison_greater_than
+  = left:additive space ">" space right:additive   space  { return left + " > " + right ; }
+  
+comparison_less_than
+  = left:additive space "<" space right:additive  space  { return left + " < " + right ; }
+  
+comparison_greater_than_or_equal
+  = left:additive space ">=" space right:additive  space  { return left + " >= " + right ; }
+  
+comparison_less_than_or_equal
+  = left:additive space "<=" space right:additive  space  { return left + " <= " + right ; }
+  
+comparison_not_equal
+  = left:additive space "!=" space right:additive  space  { return left + " != " + right ; }
+
+
+//------------------------------------------------------------
+
+//スキャン
+scanf
+  =  "scanf" space "("  space ["] scan_type ["] space "," space "&" space variable:variable space ")" [\n]* ";"  space{ return variable + "= scan_data[scan_i]; scan_i++;";}
+  / "scanf" space "("  space ["] type1:scan_type[\x20]* type2:scan_type ["] space "," space "&" space variable1:variable space "," space "&" space variable2:variable space ")" [\n]* ";"  space{  return variable1 + "= scan_data[scan_i]; scan_i++;" + variable2 + "= scan_data[scan_i]; scan_i++;" ;  }
+  //  "scanf" space "(" space ["] space   contents:scan_val space ["]   space "," space variable:additive_plural_scan space ")" space ";"  space { return " " ; }
+
+scan_val
+  =left:letter type:scan_type right:scan_val { return left + "::" + type + "::" + right; }
+  /  letter
+
+scan_type
+  = "%" type:("d"/"o"/"x"/"X"/"c"/"s"/"f"/"lf")  {return "%" + type;}
+  
+additive_plural_scan
+ =  space "&" left:additive  space ","  space right:additive_plural_scan {return left + ":" + right;}
+ /  "&" add:additive {return add}
+  
+//プリント
+printf
+  =  "printf" space "(" space ["] contents:letter_2 ["] space ")" space ";"  space {    
+if(contents.indexOf("\\") != -1){
+  	contents = contents.replace(/\\/g,"\\\\");
+  }  
+  return 're_eval="' + contents + '";' ; }
+
+  / "printf" space "(" space ["] contents:letter_2 ["] space "," space variable:variable space ")" space ";"  space { 
+  if(contents.indexOf("\\") != -1){
+  	contents = contents.replace(/\\/g,"\\\\");
+  }  
+  
+  return 're_eval="' + contents + '"; re_eval = re_eval.replace("%d",' + variable + ');' ; }
+
+print_val
+  =left:letter type:print_type right:print_val { return left + "::" + type + "::" + right; }
+  /  letter
+  
+print_type
+  ="%" type:("d"/"o"/"x"/"X"/"u"/"s"/"f"/"e"/"E"/"g"/"G"/"c") {return "%" + type;}
+
+//なんでもいい文字列
+letter
+ =letter:[^"%,+]* { return letter.join("").replace(/,/g,""); }
+ 
+letter_2
+ =letter:[^"]* { return letter.join("").replace(/,/g,""); }
+
+ 
+additive_plural
+ =  space left:additive  space ","  space right:additive_plural {return left + ":" + right;}
+ /  additive
+ 
+ //------------------------------------------------------------
+ 
+ //リターン
+ return
+  =  "return"  space result:additive  space ";"  space {return " ";}
+
+//------------------------------------------------------------
+
+//四則演算
+additive
+  = left:multiplicative space "+" space right:additive { return left + "+" + right; }
+  / multiplicative
+
+multiplicative
+  = left:subtraction space "*" space right:multiplicative { return left + "*" + right; }
+  / subtraction
+
+subtraction
+  = left:division space "-" space right:subtraction {  return left + "-"  + right;  }
+  / division
+
+division
+  = left:primary space "/" space right:division {  return left  + "/" +  right;  }
+  / remainder
+  
+remainder
+   = left:primary space "%" space right:division {  return left +  "%" +  right;  }
+  / primary
+
+primary
+  = minus
+  / decimal
+  / variable_array
+  / variable
+  / "(" additive:additive ")" { return "(" + ":" + additive + ":" + ")"; }
+
+//マイナス
+minus
+ = "-" result:decimal {return "-" + result}
+
+//少数
+decimal
+ = left:integer "." right:decimal_places { return parseFloat(left + "." + right) }
+ / integer
+
+//整数
+integer "integer"
+  = digits:[0-9]+ { return parseInt(digits.join(""), 10); }
+ 
+
+
+//小数点以下
+decimal_places
+ = digits:[0-9]+ { return digits.join("").replace(/,/g,""); }
+
+//文字列
+character
+ = char:([a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
+ 
+ //変数命名規約
+variable
+  = variable:([a-zA-Z][a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
+
+variable_array
+ = variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
+
+
+//改行・コメント
+ space
+  = [\x20\n\t]*
+  / coment
+
+coment
+  = "//" [^\n]* [\n]  space {return  " "}
+
+//------------------------------------------------------------
