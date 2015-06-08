@@ -373,9 +373,6 @@ if(action_frag == true){
 		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'","'+valuelen+'",'+str+');');
 	}
 	variables.push(v);
-	check_obj("a");
-	substitute("a[x]","100");
-	check_obj("a");
 }
 }
 
