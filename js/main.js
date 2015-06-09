@@ -65,10 +65,10 @@ window.onload = function() {
 		matchBrackets: true
 	});
 	cEditor.setSize(600, 200);
-	SPEED=0.25;
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
+	SPEED=0.5;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -201,7 +201,6 @@ if(action_frag == true){
 	for(var gi = 0;gi < nowArray.length;gi++)nstr += nowArray[gi];
 	var result = String(nstr.substr((pstr.length)+(nstr.indexOf(pstr))));
 	consoleStatus = nstr;
-	console.log("現状のコンソールステータス："+consoleStatus+"、result："+result);
 	return result;
 	}
 }
@@ -222,7 +221,7 @@ function codeArrayInit(){
 
 function getVariableExist(name){
 	var vlen = variables.length;
-	if(/\[\d+\]/.test(name))name = name.match(/^([a-z]\w*)\[\d+\]/)[1];
+	if(/\[.+\]/.test(name))name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	for(i = 0; i < vlen; i++){
 		if(variables[i].name == name){
 			return true;
@@ -233,7 +232,7 @@ function getVariableExist(name){
 
 function getVariableType(name){
 	var vlen = variables.length;
-	if(/\[\d+\]/.test(name))name = name.match(/^([a-z]\w*)\[\d+\]/)[1];
+	if(/\[.+\]/.test(name))name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	var result;
 	for(i = 0; i < vlen; i++){
 		if(variables[i].name == name){
@@ -247,9 +246,10 @@ function getVariableType(name){
 function getVariableValue(name){
 	var vlen = variables.length;
 	var result;
-	if(/\[\d+\]/.test(name)){
-		var index = name.match(/[a-z]\w*\[(\d+)\]/)[1];
-		name = name.match(/^([a-z]\w*)\[\d+\]/)[1];
+	if(/\[.+\]/.test(name)){
+		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
+		if(/^[a-z]\w*/.test(name)||/:/.test(name))index =calc(index);
+		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	for(i = 0; i < vlen; i++){
 		if(variables[i].name == name){
@@ -420,6 +420,9 @@ if(action_frag == true&&for_flag){
 			variables[i].value = value;
 		break;
 		case "a":
+			if(cvflag){jsOfAnimes.push('ANIME_enzan_dainyu("'+name+'['+index+']'+'",'+str+',"'+value+'")');}
+			else{jsOfAnimes.push('ANIME_dainyu("'+name+'['+index+']'+'","'+value+'")');}
+			variables[i].value = value;
 			var str="";
 			var tempArr = [];
 			for(var i=0;i<len;i++)if(variables[i].name==name)tempArr=variables[i].value.split(":")
@@ -733,8 +736,6 @@ if(action_frag == true){
 
 function scanf_js(name,type){
 if(action_frag == true&&for_flag){
-	if(/^\x20+(.*)/.test(type))type = type.match(/^\x20+(.*)/)[1];
-	if(/^(.*)\x20+$/.test(type))type = type.match(/^(.*)\x20+$/)[1];
 	var nameArray = name.split(",");
 	var typeArray = type.split(/\x20/);
 	for(var si = 0;si < typeArray.length;si++){
@@ -978,7 +979,7 @@ function answer_check(num){
 			re = new RegExp(/printf_djs("不可")/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 		break;
-		case c3:
+		case 3:
 			var code_bmi = parser_judge.parse(text);
 			if(hantei(code_bmi,1,18.49,"やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
 			else if( hantei(code_bmi,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
@@ -999,7 +1000,7 @@ function answer_check(num){
 			else if( hantei(code_bmi,99, 99, "100を超えました。198です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
 			else if( hantei(code_bmi, 12, 34, 56, "100を超えました。102です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
 		break;
-		case c4:
+		case 4:
 			var code_bmi = parser_judge.parse(text);
 			if(hantei(code_bmi,1, 99, 0,"合計は100です") != true){ miss_answer("４章まとめ不正解！"); return 0;}
 			else if( hantei(code_bmi,10,20,77,0,"合計は107です") != true){ miss_answer("４章不正解！"); return 0;}

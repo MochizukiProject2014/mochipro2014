@@ -17,70 +17,92 @@ var WRITE2 = 7;
 var HERE = null;
 var Pnum = 0;
 
+/*///////////////////////////
+		画像の設定
+///////////////////////////*/
+
 //読み込む画像
 var ASSETS = {
-    "printf_space" : "img/syutsuryokusozai.png", //printf表示用の外枠
+	//printf表示用の外枠
+    "printf_space" : "img/syutsuryokusozai.png", 
     
-    "Gpromin_front" : "img/Gpromin/Gpromin_front.png", //緑プロミン
-    
+    //緑プロミン
+    "Gpromin_front" : "img/Gpromin/Gpromin_front.png", 
     "Gpromin_right1" : "img/Gpromin/Gpromin_right1.png",
     "Gpromin_left1" : "img/Gpromin/Gpromin_left1.png",
     "Gpromin_writing1" : "img/Gpromin/Gpromin_writing1.png",
     "Gpromin_eracing1" : "img/Gpromin/Gpromin_eracing1.png",
     "Gpromin_question1" : "img/Gpromin/Gpromin_question1.png",
-
     "Gpromin_right2" : "img/Gpromin/Gpromin_right2.png",
     "Gpromin_left2" : "img/Gpromin/Gpromin_left2.png",
     "Gpromin_writing2" : "img/Gpromin/Gpromin_writing2.png",
     "Gpromin_eracing2" : "img/Gpromin/Gpromin_eracing2.png",
     "Gpromin_question2" : "img/Gpromin/Gpromin_question2.png",
-    
-    "Bpromin_front" : "img/Bpromin/Bpromin_front.png", //青プロミン
-    
+   
+    //青プロミン
+    "Bpromin_front" : "img/Bpromin/Bpromin_front.png",  
     "Bpromin_right1" : "img/Bpromin/Bpromin_right1.png",
     "Bpromin_left1" : "img/Bpromin/Bpromin_left1.png",
     "Bpromin_writing1" : "img/Bpromin/Bpromin_writing1.png",
     "Bpromin_eracing1" : "img/Bpromin/Bpromin_eracing1.png",
     "Bpromin_question1" : "img/Bpromin/Bpromin_question1.png",
-
     "Bpromin_left2" : "img/Bpromin/Bpromin_left2.png",
     "Bpromin_writing2" : "img/Bpromin/Bpromin_writing2.png",
     "Bpromin_eracing2" : "img/Bpromin/Bpromin_eracing2.png",
     "Bpromin_question2" : "img/Bpromin/Bpromin_question2.png",
 
+    //オレンジプロミン
     "Opromin_front" : "img/Opromin/Opromin_front.png",
-
     "Opromin_right1" : "img/Opromin/Opromin_right1.png",
     "Opromin_left1" : "img/Opromin/Opromin_left1.png",
     "Opromin_writing1" : "img/Opromin/Opromin_writing1.png",
     "Opromin_eracing1" : "img/Opromin/Opromin_eracing1.png",
     "Opromin_question1" : "img/Opromin/Opromin_question1.png",
-
     "Opromin_right2" : "img/Opromin/Opromin_right2.png",
     "Opromin_left2" : "img/Opromin/Opromin_left2.png",
     "Opromin_writing2" : "img/Opromin/Opromin_writing2.png",
     "Opromin_eracing2" : "img/Opromin/Opromin_eracing2.png",
     "Opromin_question2" : "img/Opromin/Opromin_question2.png",
 
-    "intHead" : "img/array/intArray/intHead.png",
-    "intHead_writing" : "img/array/intArray/intHead_writing.png",
-    "intHead_eracing" : "img/array/intArray/intHead_eracing.png",
-    "intHead_ry" : "img/array/intArray/intHead_ry.png",
+    //ing型配列（青）
+    "intArray_front" : "img/array/intArray/intTrain_front.png",
+    "intArray_writing" : "img/array/intArray/intTrain_writing.png",
+    "intArray_eracing" : "img/array/intArray/intTrain_eracing.png",
+    "intArray_lookdown" : "img/array/intArray/intTrain_lookdown.png",
+    "intArray_writing2" : "img/array/intArray/intTrain_writing2.png",
+    "intArray_eracing2" : "img/array/intArray/intTrain_eracing2.png",
 
-    "kengo" : "img/character/kengo.png", //健吾（中学生ver)
+    //double型配列(緑)
+    "doubleHead_left" : "img/array/doubleArray/doubleHead_left.png",
+    "doubleHead_right" : "img/array/doubleArray/doubleHead_right.png",
+    "doubleHead_ry" : "img/array/doubleArray/doubleHead_ry.png",
+    "doubleGetOff_eracing" : "img/array/doubleArray/doubleGetOff_eracing.png",
+    "doubleGetOff_writing" : "img/array/doubleArray/doubleGetOff_writing.png",
+    "doubleGetOff_left" : "img/array/doubleArray/doubleGetOff_left.png",
+    "doubleGetOff_right" : "img/array/doubleArray/doubleGetOff_right.png",
+
+    //char型配列（オレンジ）
+    "charHead_left" : "img/array/charArray/charHead_left.png",
+    "charHead_right" : "img/array/charArray/charHead_right.png",
+    "charHead_ry" : "img/array/charArray/charHead_ry.png",
+    "charGetOff_eracing" : "img/array/charArray/charGetOff_eracing.png",
+    "charGetOff_writing" : "img/array/charArray/charGetOff_writing.png",
+    "charGetOff_left" : "img/array/charArray/charGetOff_left.png",
+    "charGetOff_right" : "img/array/charArray/charGetOff_right.png",
+    
+    //健吾
+    "kengo" : "img/character/kengo.png", 
 	"kengo_clear" : "img/character/kengo_clear.png",
 	"kengo_failure" : "img/character/kengo_failure.png",
 
-    "kaitoC" : "img/character/kaitoC.png", //怪盗C
-
+	//怪盗C
+    "kaitoC" : "img/character/kaitoC.png", 
     "fukidashi" : "img/fukidashi.png",
-
-  	//"yajirushi1" : "img/yajirushi1.png",
-    //"yajirushi2" : "img/yajirushi2.png",
       
 };
 
-var IntProminImg = { //int型のプロミン（青）のイメージセット
+//int型のプロミン（青）のイメージセット
+var IntProminImg = { 
 	front:"Bpromin_front",
 	right1:"Bpromin_right1",
 	left1:"Bpromin_left1",
@@ -91,10 +113,11 @@ var IntProminImg = { //int型のプロミン（青）のイメージセット
 	left2:"Bpromin_left2",
 	erace2:"Bpromin_eracing2",
 	write2:"Bpromin_writing2",
-	question2:"Bpromin_question2"
+	question2:"Bpromin_question2",
 };
 
-var DoubleProminImg = { //double型のプロミン（みどり）のイメージセット
+//double型のプロミン（みどり）のイメージセット
+var DoubleProminImg = { 
 	front:"Gpromin_front",
 	right1:"Gpromin_right1",
 	left1:"Gpromin_left1",
@@ -108,7 +131,8 @@ var DoubleProminImg = { //double型のプロミン（みどり）のイメージ
 	question2:"Gpromin_question2"
 };
 
-var CharProminImg = { //char型のプロミン（オレンジ）のイメージセット
+//char型のプロミン（オレンジ）のイメージセット
+var CharProminImg = { 
 	front:"Opromin_front",
 	right1:"Opromin_right1",
 	left1:"Opromin_left1",
@@ -122,14 +146,36 @@ var CharProminImg = { //char型のプロミン（オレンジ）のイメージ�
 	question2:"Opromin_question2"
 };
 
+
+//ing型配列のイメージセット(未完成)
+var IntArrayImg = {
+	front:"intArray_front",
+	right1:"intArray_front",
+	left1:"intArray_front",
+	erace1:"intArray_eracing",
+	write1:"intArray_writing",
+	question1:"intArray_front",
+	right2:"intArray_front",
+	left2:"intArray_front",
+	erace2:"intArray_eracing2",
+	write2:"intArray_writing2",
+	question2:"intArray_front",
+	lookdown:"intArray_lookdown"
+}
+
+/*///////////////////////////
+		アニメ全般関連
+///////////////////////////*/
+
+
 // メインシーン（アニメーションを行うシーン）クラス
 tm.define("MainScene", { 
     superClass:"tm.app.Scene",
     init : function() {
         this.superInit();
         this.addChild(SAMPLE); //お手本画面を予め追加しておく（デフォルトは非表示）
-        this.addChild(HERE);
-        this.addChild(ERROR);
+        this.addChild(HERE); //お手本画面用の「ここだよ！」をあらかじめ追加しておく(デフォルトは非表示)
+        this.addChild(ERROR); 
         this.Label = tm.app.Label(DEFAULT_SPEED/SPEED+"倍速").addChildTo(this);
         this.Label
 			.setFillStyle("gray")
@@ -151,22 +197,28 @@ tm.define("MiniPromin",{
 			this.superInit("Opromin_front");
 		};
 
+		//お手本でプロミンに丸印をつけるための丸印の設定
 		var circle = tm.app.Shape(80,80);
 		circle.canvas.setStrokeStyle("rgba(220,30,0,0.8)");
 		circle.canvas.lineWidth = 10;
 		circle.canvas.strokeCircle(40,40,35);
 		this.addChild(circle);
-		circle.hide();
-
+		circle.hide(); //デフォルトは非表示
 		this.circle = circle;
+
+		//データ型の設定
 		this.dataType = dataType;
+		
+		//変数の値の設定
 		this.value = value;
+
+		//変数名の設定
 		this.name = name;
-		this.value = value;
-		//this.num = promin_array.length;
+
+		//変数の通し番号の設定
 		this.num = Pnum;
-		//Pnum++;
-		this.checked = false;
+
+		//プロミンのデフォルト（ベンチ時）座標の設定
 		if(this.num<5){
 			this.defaultX = 50; //プロミンを縦向きに並べる場合のx座標
   		  	this.defaultY = (0.6+this.num)*79; //上記のy座標
@@ -203,54 +255,106 @@ tm.define("MiniPromin",{
 	},
 });
 
-function ANIME_remove_promin(name){
-	for(var i=0;i<promin_array.length;i++){
-		if(promin_array[i].name===name){
-			app.currentScene.removeChild(promin_array[i]);
-			//promin_array[i] = null;
-			promin_array.splice(i, 1); //3番目の要素を削除
-			break;
-		}
-	}
-	sign=1;
-}
+//配列プロミンクラス
+tm.define("ArrayPromin",{ 
+	superClass: "tm.app.Sprite",
+	init:function(dataType,name,index,value){
+		if(dataType==="int"){
+			this.superInit("intArray_front");
+		}else if(dataType==="double"){
+			this.superInit("Gpromin_front");
+		}else if(dataType==="char"){
+			this.superInit("Opromin_front");
+		};
 
-//プロミンの方今転換
-function turn(promin,d){
-	if(d===LEFT){
-		promin.image=promin.imgSet.left1;
-		promin.nameLabel.setPosition(5,-15);
-		promin.valueLabel.show();
-	}else if(d===FRONT){
-		promin.image=promin.imgSet.front;
-		promin.nameLabel.setPosition(5,-15);
-		promin.valueLabel.show();
-	}else if(d===RIGHT){
-		promin.image=promin.imgSet.right1;
-		promin.nameLabel.setPosition(-5,-15);
-		promin.valueLabel.show();
-	}else if(d===WRITE){
-		promin.image=promin.imgSet.write1;
-		promin.nameLabel.setPosition(5,-15);
-		promin.valueLabel.show();
-	}else if(d===ERACE){
-		promin.image=promin.imgSet.erace1;
-		promin.nameLabel.setPosition(5,-15);
-		promin.valueLabel.show();
-	}else if(d===QUESTION){
-		promin.image=promin.imgSet.question1;
-		promin.nameLabel.setPosition(15,-15);
-		promin.valueLabel.hide();
-	}else if(d===ERACE2){
-		promin.image=promin.imgSet.erace2;
-		promin.nameLabel.setPosition(5,-15);
-		promin.valueLabel.show();
-	}else if(d===WRITE2){
-		promin.image=promin.imgSet.write2;
-		promin.nameLabel.setPosition(5,-15);
-		promin.valueLabel.show();
-	}
-}
+		//お手本でプロミンに丸印をつけるための丸印の設定
+		var circle = tm.app.Shape(80,80);
+		circle.canvas.setStrokeStyle("rgba(220,30,0,0.8)");
+		circle.canvas.lineWidth = 10;
+		circle.canvas.strokeCircle(40,40,35);
+		this.addChild(circle);
+		circle.hide(); //デフォルトは非表示
+		this.circle = circle;
+
+		//データ型の設定
+		this.dataType = dataType;
+
+		//変数の値の設定
+		this.value = value;
+
+		//変数名の設定
+		this.name = name;
+
+		//変数の通し番号の設定
+		this.num = Pnum;
+
+		//配列におけるインデックスの設定
+		this.index = index;
+
+		//配列フラグの付加
+		this.arrayFlag = true;
+
+		var canvas = tm.graphics.Canvas("#world");
+		canvas.resize(740,440);
+		var pre_promin,pre_prominX,pre_prominY;
+
+		if(this.index!==0){
+			for(var i=0;i<promin_array.length;i++){
+				if(promin_array[i].name === name && promin_array[i].index === index-1){
+					pre_promin = promin_array[i];
+					break;
+				}
+			}
+		}
+
+		if(pre_promin){
+
+		}
+
+		var plus = 0;
+		if(index>0 && 5>index){
+			plus = index*2;
+		}
+
+		//プロミンのデフォルト（ベンチ時）座標の設定
+		if(this.num<5){
+			this.defaultX = 50+plus; //プロミンを縦向きに並べる場合のx座標
+  		  	this.defaultY = (0.6+this.num)*79-plus; //上記のy座標
+  		}else{
+  			this.defaultX = 150+plus;
+  			this.defaultY = (0.6+this.num-5)*79-plus;
+  		}
+
+  		//プロミンの初期位置設定（画面外）
+		this.setPosition(900+(this.index*100),app.canvas.centerY); 
+		
+		// ラベル(プロミンに描画されるvalueとname)の設定 
+		this.nameLabel = tm.app.Label(name).addChildTo(this);
+		this.nameLabel
+			.setFillStyle("rgba(45,45,45,1)")
+			.setFontSize(15)
+			.setPosition(5,-15);
+		this.valueLabel = tm.app.Label(value).addChildTo(this);
+		this.valueLabel
+			.setFillStyle("rgba(0,0,0,1)")
+			.setFontSize(13)
+			.setPosition(0,20);
+		if(this.value.length>6){
+			this.valueLabel.setFontSize(10);
+		}
+		
+		//そのプロミンの型にあわせてイメージセットを登録
+		if(this.dataType==="int"){ 
+			this.imgSet=IntArrayImg;
+		}else if(this.dataType==="double"){
+			this.imgSet=DoubleProminImg;
+		}else if(this.dataType==="char"){
+			this.imgSet=CharProminImg;
+		}
+
+
+	},
+});
 
 // 初期設定
 function firstSetting(){ 
@@ -390,6 +494,261 @@ function ANIME_changeSPEED(){
 	//console.log("ANIME_changeSPEEDうごいてます");
 }
 
+//「ここだよ！」って出す関数
+function here(){
+	if(HERE.isHide===1){
+		HERE.show();
+		HERE.isHide=0;
+	}else{
+		HERE.hide();
+		HERE.isHide=1;
+	}
+}
+
+/*//////////////////////////////
+	配列関連の関数 (0 0)
+//////////////////////////////*/
+
+function ANIME_array_sengen(dataType,name,size){ 
+	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
+    var arrayIndex = 0;
+    var a_SPEED = 1*SPEED;
+    if(size>=20){
+    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    }else if(size>=50){
+    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    }
+
+    //eval("var a_"+name+" = [];");
+    for(arrayIndex=size-1;arrayIndex>=0;arrayIndex--){
+    	var promin = new ArrayPromin(dataType,name+"["+arrayIndex+"]",arrayIndex,"?"); //MiniProminオブジェクトを作成
+	    promin_array.push(promin);
+	   	app.currentScene.addChild(promin); //currentScene(MainScene)に作成したオブジェクトを追加
+	    movePromin(promin);
+	    //eval("a_"+name+"["+arrayIndex+"] = promin");
+    }
+    Pnum++;
+
+
+    function movePromin(promin){ //プロミンを動かすfunction
+		promin.tweener
+			.clear()
+			.call(function(){turn(promin,LEFT);})
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,1000*SPEED) //move( x, y, duration, fn )
+			.call(function(){turn(promin,FRONT);})
+			.wait(500*SPEED)
+			.call(function(){turn(promin,LEFT);})
+			.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
+			.move(promin.defaultX,promin.defaultY,500*SPEED)
+			.call(function(){turn(promin,FRONT);})
+			.wait(500*SPEED)
+			.call(function(){if(promin.index===size-1){sign = 1;BUTTON_ON();}});
+	}
+}
+
+function ANIME_array_sengen_dainyu(dataType,name,size,values){
+	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
+    var arrayIndex = 0;
+    var a_SPEED = 1*SPEED;
+    if(size>=20){
+    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    }else if(size>=50){
+    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    }
+
+    //eval("var a_"+name+" = [];");
+    for(arrayIndex=size-1;arrayIndex>=0;arrayIndex--){
+    	var promin = new ArrayPromin(dataType,name+"["+arrayIndex+"]",arrayIndex,"?");
+	    promin_array.push(promin);
+	   	app.currentScene.addChild(promin); //currentScene(MainScene)に作成したオブジェクトを追加
+	    movePromin(promin);
+    }
+
+    Pnum++;
+
+    function movePromin(promin){ //プロミンを動かすfunction
+    	promin.Label = tm.app.Label("= "+values[promin.index]).addChildTo(app.currentScene);
+		promin.Label
+			.setFillStyle("rgba(0,0,0,1)")
+			.setFontSize(25)
+			.setPosition(app.canvas.centerX,app.canvas.centerY+100)
+			.hide();
+		/*
+		promin.tweener
+			.clear()
+			.call(function(){turn(promin,LEFT);})
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,1000*SPEED) //move( x, y, duration, fn )
+			.call(function(){turn(promin,FRONT);})
+			.wait(500*SPEED)
+			.call(function(){
+				for(var i=0;i<promin.index;i++){
+					promin.tweener
+						.wait(3500*SPEED)
+						.moveBy(-100,0,500*SPEED);
+						//.wait(1000*SPEED);	
+				}
+				promin.tweener
+					.wait(500*SPEED)
+					.call(function(){
+						promin.Label.show();
+						promin.image=promin.imgSet.lookdown;
+						promin.nameLabel.setPosition(5,-15);
+					})
+
+					//消すモーション
+					.wait(1000*SPEED)
+					.call(function(){
+						promin.valueLabel.text="";
+						turn(promin,ERACE);
+					})
+					.wait(150*SPEED)
+					.call(function(){turn(promin,ERACE2);})
+					.wait(150*SPEED)
+					.call(function(){turn(promin,ERACE);})
+					.wait(150*SPEED)
+					.call(function(){turn(promin,ERACE2);})
+					.wait(150*SPEED)
+					.call(function(){turn(promin,ERACE);})
+					.wait(150*SPEED)
+
+					//書くモーション
+					.call(function(){turn(promin,WRITE);})
+					.wait(150*SPEED)
+					.call(function(){turn(promin,WRITE2);})
+					.wait(150*SPEED)
+					.call(function(){
+						promin.valueLabel.text=values[promin.index];
+					})
+					.call(function(){turn(promin,WRITE);})
+					.wait(150*SPEED)
+					.call(function(){turn(promin,WRITE2);})
+					.wait(150*SPEED)
+					.call(function(){
+						turn(promin,FRONT);
+						app.currentScene.removeChild(promin.Label);
+					})
+
+					.wait(500*SPEED)
+					.call(function(){turn(promin,LEFT);})
+					//.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
+					.move(promin.defaultX,promin.defaultY,500*SPEED)
+					.call(function(){turn(promin,FRONT);})
+					.wait(500*SPEED)
+					.call(function(){if(promin.index===size-1){sign = 1;BUTTON_ON();}});
+				});
+		*/
+		promin.tweener
+			.clear()
+			.call(function(){turn(promin,LEFT);})
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,250*SPEED) //move( x, y, duration, fn )
+			.call(function(){turn(promin,FRONT);})
+			.wait(250*SPEED)
+			.call(function(){
+				for(var i=0;i<promin.index;i++){
+					promin.tweener
+						.wait(1950*SPEED)
+						.moveBy(-100,0,250*SPEED);
+						//.wait(1000*SPEED);	
+				}
+				promin.tweener
+					.wait(250*SPEED)
+					.call(function(){
+						promin.Label.show();
+						promin.image=promin.imgSet.lookdown;
+						promin.nameLabel.setPosition(5,-15);
+					})
+
+					//消すモーション
+					.wait(500*SPEED)
+					.call(function(){
+						promin.valueLabel.text="";
+						turn(promin,ERACE);
+					})
+					.wait(75*SPEED)
+					.call(function(){turn(promin,ERACE2);})
+					.wait(75*SPEED)
+					.call(function(){turn(promin,ERACE);})
+					.wait(75*SPEED)
+					.call(function(){turn(promin,ERACE2);})
+					.wait(75*SPEED)
+					.call(function(){turn(promin,ERACE);})
+					.wait(75*SPEED)
+
+					//書くモーション
+					.call(function(){turn(promin,WRITE);})
+					.wait(75*SPEED)
+					.call(function(){turn(promin,WRITE2);})
+					.wait(75*SPEED)
+					.call(function(){turn(promin,WRITE);})
+					.wait(75*SPEED)
+					.call(function(){turn(promin,WRITE2);})
+					.call(function(){
+						promin.valueLabel.text=values[promin.index];
+					})
+					.wait(75*SPEED)
+					.call(function(){
+						turn(promin,FRONT);
+						app.currentScene.removeChild(promin.Label);
+					})
+
+					.wait(500*SPEED)
+					.call(function(){turn(promin,LEFT);})
+					//.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
+					.move(promin.defaultX,promin.defaultY,250*SPEED)
+					.call(function(){turn(promin,FRONT);})
+					.wait(250*SPEED)
+					.call(function(){if(promin.index===size-1){sign = 1;BUTTON_ON();}});
+				});
+	}
+}	
+
+
+/*//////////////////////////////
+	変数関連の関数 (0 0)←プロミン
+//////////////////////////////*/
+
+//プロミンの方今転換
+function turn(promin,d){
+	if(d===LEFT){
+		promin.image=promin.imgSet.left1;
+		if(promin.arrayFlag===true){promin.nameLabel.setPosition(5,-22);}
+		else{promin.nameLabel.setPosition(5,-15);}
+		//promin.valueLabel.show();
+	}else if(d===FRONT){
+		promin.image=promin.imgSet.front;
+		if(promin.arrayFlag===true){
+			promin.nameLabel.setPosition(5,-22);
+		}else{
+			promin.nameLabel.setPosition(5,-15);
+		}
+		promin.valueLabel.show();
+	}else if(d===RIGHT){
+		promin.image=promin.imgSet.right1;
+		promin.nameLabel.setPosition(-5,-15);
+		promin.valueLabel.show();
+	}else if(d===WRITE){
+		promin.image=promin.imgSet.write1;
+		promin.nameLabel.setPosition(5,-15);
+		promin.valueLabel.show();
+	}else if(d===ERACE){
+		promin.image=promin.imgSet.erace1;
+		promin.nameLabel.setPosition(5,-15);
+		promin.valueLabel.show();
+	}else if(d===QUESTION){
+		promin.image=promin.imgSet.question1;
+		promin.nameLabel.setPosition(15,-15);
+		promin.valueLabel.hide();
+	}else if(d===ERACE2){
+		promin.image=promin.imgSet.erace2;
+		promin.nameLabel.setPosition(5,-15);
+		promin.valueLabel.show();
+	}else if(d===WRITE2){
+		promin.image=promin.imgSet.write2;
+		promin.nameLabel.setPosition(5,-15);
+		promin.valueLabel.show();
+	}
+}
+
 // 変数宣言のfunction (初期化は行わず、値は不定値を表す"?"になる)
 function ANIME_sengen(dataType,name){ 
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
@@ -480,6 +839,7 @@ function ANIME_dainyu(target_name,new_value){
 			.wait(150*SPEED)
 			.call(function(){turn(promin,WRITE);})
 			.wait(250*SPEED)
+			
 
 			.call(function(){turn(promin,FRONT);})
 			.wait(1000*SPEED)
@@ -658,15 +1018,16 @@ function ANIME_enzan_dainyu(name,expression,result){
 	space.canvas.font = "20px center"; //フォントサイズ設定
 	
 	cnt = 0;
-	var P=[];
-	var C=[];
+	var P=[]; //Pspaceオブジェクトの配列(プロミンのcopy用の描画スペース)
+	var C=[]; //copyオブジェクトの配列
 
 	for(var i=0;i<expression.length;i++){
 		var check=0;
 		for(var k=0;k<promin_array.length;k++){
+			//式に含まれる変数と、promin_arrayのプロミンの名前が一致するものを探す
 			if(expression[i]===promin_array[k].name){
 				var Pspace = tm.app.Shape(80,80);
-				//Pspace.canvas.clearColor("red");
+				//Pspace.canvas.clearColor("red"); //デバッグ用にPspaceのcanvasを赤にする
 				Pspace.setPosition((between+(i*between))-250,space.canvas.centerY-80);
 				Pspace.Label = tm.app.Label(expression[i]).addChildTo(Pspace);
 				Pspace.Label
@@ -674,7 +1035,11 @@ function ANIME_enzan_dainyu(name,expression,result){
 					.setFontSize(20);
 				space.addChild(Pspace);
 				
-				var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
+				if(promin_array[k].arrayFlag===true){
+					var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+				}else{
+					var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
+				}
 				Pspace.addChild(copy);
 				copy.setPosition(0,0);
 				Pspace.addChild(copy);
@@ -699,34 +1064,19 @@ function ANIME_enzan_dainyu(name,expression,result){
 	}
 
 	if(C.length===1&&expression.length===1){
-		console.log("x=yみたいなパターン");
 		C[0].x = C[0].x+40;
 		P[0].Label.text="";
 		space.tweener
 			.clear()
-			/*.wait(1000*SPEED)
-			.call(function(){
-				for(var i=0;i<P.length;i++){
-					//P[i].Label.text = C[i].value;
-					//C[i].hide();
-				}
-			})*/
 			.wait(1000*SPEED) 
 			.call(function(){
-				//space.removeChildren();
 				space.canvas.font = "20px center"; //フォントサイズ設定
-				//space.canvas.fillText(result,space.canvas.centerX,space.canvas.centerY);
-
 				space.Label = tm.app.Label("").addChildTo(space);
-				/*	space.Label
-						.setFillStyle("rgba(0,0,0,1)")
-						.setPosition(space.Label.centerX,space.Label.centerY+20)
-						.setFontSize(30);*/
 				space.addChild(space.Label);
 
 				var promin;
 				for(var i=0;i<promin_array.length;i++){
-					if(name===promin_array[i].name){
+					if(name===promin_array[i].name){ 
 						promin = promin_array[i];
 						break;
 					}
@@ -756,8 +1106,6 @@ function ANIME_enzan_dainyu(name,expression,result){
 			.call(function(){
 				space.removeChildren();
 				space.canvas.font = "20px center"; //フォントサイズ設定
-				//space.canvas.fillText(result,space.canvas.centerX,space.canvas.centerY);
-
 				space.Label = tm.app.Label(result).addChildTo(space);
 					space.Label
 						.setFillStyle("rgba(0,0,0,1)")
@@ -773,7 +1121,6 @@ function ANIME_enzan_dainyu(name,expression,result){
 					}
 				}
 				MYdainyu_move(promin,result);
-
 			})
 			.wait(6500*SPEED)
 			.call(function(){space.removeChildren();})
@@ -1027,7 +1374,12 @@ function ANIME_sengen_enzan(dataType,name,expression,result){
 					.setFontSize(20);
 				space.addChild(Pspace);
 				
-				var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
+				if(promin_array[k].arrayFlag===true){
+					var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+				}else{
+					var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
+				}
+
 				Pspace.addChild(copy);
 				copy.setPosition(0,0);
 				Pspace.addChild(copy);
@@ -1195,7 +1547,26 @@ function ANIME_sengen_enzan(dataType,name,expression,result){
 	}
 }
 
-function correct_answer(){ //ユーザが問題に正解したときに実行するアニメーション
+function ANIME_remove_promin(name){
+	for(var i=0;i<promin_array.length;i++){
+		if(promin_array[i].name===name){
+			//アニメのカレントシーン上でプロミンを削除する
+			app.currentScene.removeChild(promin_array[i]);
+			//promin_arrayのi番目を削除し、順番を詰める
+			promin_array.splice(i, 1);
+			break;
+		}
+	}
+	sign=1;
+}
+
+
+/*//////////////////////////
+	正誤判定関連
+//////////////////////////*/
+
+//ユーザが問題に正解したときに実行するアニメーション
+function correct_answer(){
 	var msg = tm.app.Shape(750,440); //メッセージ用canvasの生成（750×440ならtmlib領域と同じサイズ）
 	var charaNum = parseInt(Math.random()*2);//random()*Nなら0からN未満までのランダムな数値
 
@@ -1287,7 +1658,8 @@ function correct_answer(){ //ユーザが問題に正解したときに実行す
 	*/
 }
 
-function miss_answer(text){ //ユーザが不正解のコードを実行し、コードを表現するアニメーションを見終わったあと実行する
+//ユーザが不正解のコードを実行し、コードを表現するアニメーションを見終わったあと実行する
+function miss_answer(text){ 
 	var msg = tm.app.Shape(750,440); //メッセージ用canvasの生成（750×440ならtmlib領域と同じサイズ）
 
 	fukidashi = tm.app.Sprite("fukidashi");
@@ -1321,7 +1693,12 @@ function miss_answer(text){ //ユーザが不正解のコードを実行し、�
 	msg.setPosition(app.canvas.centerX,app.canvas.centerY); //メッセージcanvasのtmlib領域上での座標指定
 }
 
-function example_end(){ //例題のアニメ終了に実行するアニメーション
+/*///////////////////////////
+	お手本関連
+///////////////////////////*/
+
+//例題のアニメ終了に実行するアニメーション
+function example_end(){ 
 	var msg = tm.app.Shape(750,440); //メッセージ用canvasの生成（750×440ならtmlib領域と同じサイズ）
 	msg.canvas.setFillStyle("blue"); //フォントカラー設定
 	msg.canvas.font = "20px center"; //フォントサイズ設定
@@ -1365,19 +1742,9 @@ function OffCheckPromin(name){
 	}
 }
 
-function here(){
-	if(HERE.isHide===1){
-		HERE.show();
-		HERE.isHide=0;
-	}else{
-		HERE.hide();
-		HERE.isHide=1;
-	}
-}
-
-
-
-//以下、エラー関連のアニメーション
+/*//////////////////////////////
+	エラー関連のアニメーション
+///////////////////////////////*/
 
 function ANIME_sengen_twice(n){
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
@@ -1394,15 +1761,7 @@ function ANIME_sengen_twice(n){
 
 	function a(promin){
 		turn(promin,QUESTION);
-		/*promin.tweener
-			.clear()
-			.wait(1000*SPEED)
-			.call(function(){
-				turn(promin,FRONT);
-				sign=1;
-			});*/
-		//sign=1; //sign=1を返さない方がいいかも
-	} //同じ名前の変数が複数回目の宣言をされた時に呼ぶエラーアニメ
+	}
 }
 
 function ANIME_printf_typeMiss(contents,variables){
