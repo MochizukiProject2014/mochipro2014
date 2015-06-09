@@ -236,7 +236,9 @@ parser = (function() {
         peg$c141 = /^[\n]/,
         peg$c142 = { type: "class", value: "[\\n]", description: "[\\n]" },
         peg$c143 = function(type, variable) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + type + '");' ;  },
-        peg$c144 = function(contents, variable) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + contents + '");' ; },
+        peg$c144 = function(contents, variable) {
+           contents = contents.replace(/::::/g,":: ::")
+           return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + contents + '");' ; },
         peg$c145 = /^[ ]/,
         peg$c146 = { type: "class", value: "[ ]", description: "[ ]" },
         peg$c147 = function(left, type, right) { return "::" + type + "::" + right; },
@@ -477,7 +479,7 @@ parser = (function() {
 
         foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
 
-                var l = posDetails.line;
+        var l = posDetails.line;
         
         if(expectedDesc.indexOf(";") != -1){
         	l = l-1;
@@ -503,6 +505,7 @@ parser = (function() {
         }
 
         return "Expected " + expectedDesc + " but " + foundDesc + " found.";
+
       }
 
       var posDetails = peg$computePosDetails(pos),
