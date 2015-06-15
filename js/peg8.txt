@@ -43,9 +43,17 @@ statement_char
 
 //複数宣言
 statement_plural
- = space contents:(initialization/variable) space "," space {return contents;}
+ = space contents:(state_array/array_nul/variable_array/initialization/variable) space "," space {return contents;}
  statement_plural_char
  = space contents:(initialization_char/variable) space "," space {return contents;}
+
+state_array
+ = ar:array_nul space "=" space cnt:array_contents { return ar + "=" + cnt ; }
+ / ar:variable_array space "=" space cnt:array_contents { return ar + "=" + cnt ; }
+
+array_nul
+  = variable:variable "[" space "]" { return variable + "[]" ; }
+
 
 //初期化
 initialization
@@ -56,19 +64,21 @@ initialization_char
 //配列宣言
 //配列（int）
 statement_array_int
-= "int " space name:variable "[" space length:additive space "]"  ";" space { return  'array_declare("int","' + name + '","undefined",' + length + ');'  }
+= "int " space name:variable "[" space length:additive space "]"  ";" space { return  'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","undefined",' + length + ');'  }
 
 //長さ指定あり、中身あり
 /  "int " space name:variable "[" space length:additive space "]" space "=" variable:array_contents  ";" space {
-		return 'array_declare("int","' + name + '","' + variable + '",' + length + ');'   }
+		return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","' + variable + '",' + length + ');'   }
 /  "int " space name:variable "[" space length:additive space "]" space "=" variable:array_contents space  ";" space {
-		return 'array_declare("int","' + name + '","' + variable + '",' + length + ');'  }
+		return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","' + variable + '",' + length + ');'  }
 
 //長さ指定なし、中身あり
+/  "int " space name:variable "[" space "]" space ";" space {
+		return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","undefined","undefined");'   }
 /  "int " space name:variable "[" space "]" space "=" variable:array_contents  ";" space {
-		return 'array_declare("int","' + name + '","' + variable + '","undefined");'   }
+		return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","' + variable + '","undefined");'   }
 /  "int " space name:variable "[" space "]" space "=" variable:array_contents  ";" space {
-		return 'array_declare("int","' + name + '","' + variable + '");'  }
+		return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","' + variable + '");'  }
 
  
 statement_array_int_2
@@ -81,7 +91,7 @@ array_contents
  =space  "{"space contents:additive_plural_array space "}" space {return contents}
  
  additive_plural_array
- = space left:additive space "," space right:additive_plural_array {return left + ":" + right;}
+ = space left:additive space "," space right:additive_plural_array {return left + "@" + right;}
  /  additive
 
 //------------------------------------------------------------
@@ -93,19 +103,25 @@ repetition
 
 repetition_for
   =  "for" space "(" space left:variable space "=" space right:additive space ";" space comparison:logical space ";" space  substitution:substitution_for space  ")" space block:block space {
-    var a = block[0];
-    for(var k=1; k < block.length; k++){
-          a = a + block[k];
-    }
-    return 'substitute("' + left + '","' + right + '");' + "for(" + left + "=" + right + " " + comparison +  "; " + substitution + ") {" + block  + "}"; 
+        var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+       for(var k=1; k < block.length; k++){
+         a = a + block[k];
+       }
+    return 'for_js("false,' + left + ',' + right + '","' + comparison + '","' + substitution + '","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; 
   }
   
-  /  "for" space "(" space "int" space left:variable space "=" space right:additive space ";" space comparison:logical space ";" space  substitution:substitution_for space  ")" space block:block space {
-     var a = block[0];
-     for(var k=1; k < block.length; k++){
-        a = a + block[k];
-     }
-    return 'substitute("' + left + '","' + right + '");' + "for(" + left + "=" + right + " " + comparison +  "; " + substitution + ") {" + block  + "}"; 
+  /  "for" space "(" space va:("int"/"double"/"char") space left:variable space "=" space right:additive space ";" space comparison:logical space ";" space  substitution:substitution_for space  ")" space block:block space {
+        var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+       for(var k=1; k < block.length; k++){
+         a = a + block[k];
+       }
+    return 'for_js("true,' + va + ',' + left + ',' + right + '","' + comparison + '","' + substitution + '","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; 
     }
   
 repetition_while
