@@ -1,11 +1,11 @@
 function answer_check(num){
-	console.log(num+"のanswe_checkに入ります。");
+	//console.log(num+"のanswe_checkに入ります。");
 	var version = Number(num),re;
 	var answer_pattern_array = [];
 	var flagArr = [];
 	var index = 0;
 	var apalen = user_pattern_array.length;
-	for(var i = 0;i < apalen;i++)console.log(user_pattern_array[i]);
+	for(var i = 0;i < apalen;i++)//console.log(user_pattern_array[i]);
 	switch(version){
 		case 211:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
@@ -142,7 +142,7 @@ function answer_check(num){
 			re = new RegExp(/for.+i/);answer_pattern_array.push(re);
 			re = new RegExp(/for.+k/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("x","(i:*:k)|(k:*:i)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs\("\\\\n")/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("\\\\n"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
 			
 			temp = getPatternLine(user_pattern_array,answer_pattern_array,temp);flagArr.push(temp);
@@ -156,19 +156,19 @@ function answer_check(num){
 		break;
 	}
 	var flen = flagArr.length;
-	console.log(flen+"つのtrueが必要です。");
+	//console.log(flen+"つのtrueが必要です。");
 	for(var i = 0;i < flen;i++){
 		if(flagArr[i]){
 			index++;
-			console.log(index+"個目のtrueです！");
+			//console.log(index+"個目のtrueです！");
 		}
 	}
 	if(flen == index&&flen!=0){
-		console.log("All OK!!!");
+		//console.log("All OK!!!");
 		correct_answer();movenext();
 	}else{
 		miss_answer()
-		console.log("GAME OVER...");
+		//console.log("GAME OVER...");
 	}
 	line_reset();
 }
@@ -179,9 +179,9 @@ function getPatternLine(uArr,aArr,line){
 	var alen = aArr.length;
 	var rArr =['-1'];
 	for(var i = line;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
-			console.log("！！！マッチしました！！！");
+			//console.log("！！！マッチしました！！！");
 			rArr.push(i);
 			i=line-1;index++;
 		}
@@ -193,23 +193,23 @@ function getPatternLine(uArr,aArr,line){
 }
 
 function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮したチェック、falseなら順序関係なしにチェック
-	if(flag){console.log("順序を考慮したチェックを始めます。");}
-	else{console.log("順序を考慮しないチェックを始めます。")}
+	if(flag){//console.log("順序を考慮したチェックを始めます。");}
+	else{//console.log("順序を考慮しないチェックを始めます。")}
 	var index = 0;
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
-			console.log("！！！マッチしました！！！");
+			//console.log("！！！マッチしました！！！");
 			if(flag)i=-1;
 			index++;
 		}
 		if(index == alen)break;
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
-	if(index == alen){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
-	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+	if(index == alen){//console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	else{//console.log("は？wwwwwwwwwwwwwwww");return false;}
 }
 
 function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時のチェック。！※！一文ずつ入れる事。
@@ -217,12 +217,12 @@ function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時の
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(keystr)){
-			console.log("！！！マッチしました！！！");
+			//console.log("！！！マッチしました！！！");
 			for(var j = 0;j < alen;j++){
 				if(uArr[i].match(aArr[j])){
-					console.log("！！！マッチしましぞ！！！");
+					//console.log("！！！マッチしましぞ！！！");
 					break;
 				}
 			}
@@ -230,12 +230,12 @@ function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時の
 		if(index == alen)break;
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
-	if(index == alen){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
-	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+	if(index == alen){//console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	else{//console.log("は？wwwwwwwwwwwwwwww");return false;}
 }
 
 function adjustable_check(uArr,aArr){//正誤判定に変数名が指定されていない場合のチェック
-	console.log("adjustable_checkを始めます。");
+	//console.log("adjustable_checkを始めます。");
 	var user_variable =[];
 	var temp_variable =[];
 	var index = 0;
@@ -248,13 +248,13 @@ function adjustable_check(uArr,aArr){//正誤判定に変数名が指定され�
 	}
 	var uvlen = user_variable.length;
 	for(var i = 0; i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
-			console.log("！！！マッチしました！！！");
+			//console.log("！！！マッチしました！！！");
 			for(var j = 0;j < uvlen;j++){
-				console.log(uArr[i].match(aArr[index])[1]+"と"+user_variable[j]+"を比較します。")
+				//console.log(uArr[i].match(aArr[index])[1]+"と"+user_variable[j]+"を比較します。")
 				if(uArr[i].match(aArr[index])[1]==user_variable[j]){
-					console.log(true);
+					//console.log(true);
 					temp_variable.push(user_variable[j]);
 				}
 			}
@@ -266,11 +266,11 @@ function adjustable_check(uArr,aArr){//正誤判定に変数名が指定され�
 			for(var k = 0;k < tvlen;k++)temp_variable.shift();
 			uvlen = user_variable.length;
 			index++;i=-1;
-			console.log("次のアンサーパターンに写ります。");
+			//console.log("次のアンサーパターンに写ります。");
 		}
 		if(index == alen)break;
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
-	if(index == alen&&user_variable.length>0){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
-	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+	if(index == alen&&user_variable.length>0){//console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	else{//console.log("は？wwwwwwwwwwwwwwww");return false;}
 }
