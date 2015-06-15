@@ -134,6 +134,11 @@ function answer_check(num){
 			else if( hantei(code_bmi,99, 99, "100を超えました。198です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
 			else if( hantei(code_bmi, 12, 34, 56, "100を超えました。102です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
 		break;
+		case 431:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","i",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","k",.+\)/);answer_pattern_array.push(re);
+		break;
 		case 4:
 			var code_bmi = parser_judge.parse(text);
 			if(hantei(code_bmi,1, 99, 0,"合計は100です") != true){ miss_answer("４章まとめ不正解！"); return 0;}
@@ -158,6 +163,24 @@ function answer_check(num){
 		console.log("GAME OVER...");
 	}
 	line_reset();
+}
+
+function getPatternLine(uArr,aArr,line){
+	var index = 0;
+	var ulen = uArr.length;
+	var alen = aArr.length;
+	var rArr =['-1'];
+	for(var i = line;i < ulen;i++){
+		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		if(uArr[i].match(aArr[index])){
+			console.log("！！！マッチしました！！！");
+			rArr.push(i);
+			i=-1;index++;
+		}
+		if(index == alen)break;
+	}
+	for(var i = 0;i < alen;i++)aArr.shift();
+	result Math.max.apply(null,rArr);
 }
 
 function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮したチェック、falseなら順序関係なしにチェック

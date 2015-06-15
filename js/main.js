@@ -69,6 +69,7 @@ window.onload = function() {
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
 	SPEED=0.5;
+	if(0)console.log(true);
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -335,47 +336,52 @@ function variable_declare(data_type,name,value){
 function array_declare(data_type,name,value,length){
 if(action_frag == true){
 	var alen = variables.length;
-	var init_flag = true;
+	var init_flag = false;
+	var calc_flag = false;
 	var valuelen = length;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)
-		return createSyntaxError("すでに同じ名前の配列があるよ！");
-	if(!(value=="undefined")){
+		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
+	if(value!="undefined"){
 		var valuearr = value.split(":");
 		valuelen = valuearr.length;
-		init_flag=false;
-		for(var i = 0;i < valuelen ;i++)if(!type_judge(data_type,valuearr[i]))
+		init_flag = true;
+		var str = "[";
+		for(var i = 0;i < valuelen ;i++)if(/@/.test(valuearr[i]))calc_flag = true;
+		if(!calc_flag){
+			for(var i = 0;i < valuelen ;i++)if(!type_judge(data_type,valuearr[i]))
 			return createSyntaxError("配列に代入する値が変だよ！");
+		}
 	}
 	uArr_num++;
-	var v = new Arr(data_type,name,value,valuelen,uArr_num);
-	if(init_flag){
-		jsOfAnimes.push('ANIME_array_sengen("'+data_type+'","'+name+'","'+valuelen+'");');
+	if(init_flag&&calc_flag){
+		var exp = "[";
+		for(var i = 0;i < valuelen ;i++){
+			exp += (''+valuearr[i]+'');
+			if(i<valuelen-1){exp += ',';}else{exp +=']';}
+		}
+		for(var i = 0;i < valuelen ;i++){
+			str += (''+calc(valuearr[i])+'');
+			if(i<valuelen-1){str += ',';}else{str +=']';}
+		}
+		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+valuelen+','+exp+','+str+');');
+		value = "";
+		for(var i = 0;i < valuelen ;i++){
+			value += (''+calc(valuearr[i])+'');
+			if(i<valuelen-1)value += ':';
+		}
+	}else if(init_flag){
+		for(var i = 0;i < valuelen ;i++){
+			str += (''+valuearr[i]+'');
+			if(i<valuelen-1){str += ',';}else{str +=']';}
+		}
+		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+valuelen+','+str+','+str+');');
 	}else{
-		var tempArr = value.split(":");
-		var len=tempArr.length;
-		switch(uArr_num){
-			case 1: uArr_1 = value.split(":");
-			break;
-			case 2: uArr_2 = value.split(":");
-			break;
-			case 3: uArr_3 = value.split(":");
-			break;
-			case 4: uArr_4 = value.split(":");
-			break;
-			case 5: uArr_5 = value.split(":");
-			break;
-		}
-		var str = "[";	
-		for(var i = 0;i < len ;i++){
-			str += (''+tempArr[i]+'');
-			if(i<len-1){str += ',';}else{str +=']';}
-		}
-		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'","'+valuelen+'",'+str+');');
+		jsOfAnimes.push('ANIME_array_sengen("'+data_type+'","'+name+'","'+valuelen+'");');
 	}
+	var v = new Arr(data_type,name,value,valuelen,uArr_num);
 	variables.push(v);
 }
 }
-
 function substitute(name,value){//変数に数字を代入するメソッド
 if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
@@ -421,7 +427,7 @@ if(action_frag == true&&for_flag){
 		break;
 		case "a":
 			if(cvflag){jsOfAnimes.push('ANIME_enzan_dainyu("'+name+'['+index+']'+'",'+str+',"'+value+'")');}
-			else{jsOfAnimes.push('ANIME_dainyu("'+name+'['+index+']'+'","'+value+'")');}
+			else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index+']'+'","'+value+'")');}
 			variables[i].value = value;
 			var str="";
 			var tempArr = [];
@@ -461,9 +467,8 @@ function return_js(value){
 	codeFinishFlag = true;
 }
 function ANIME_finish(){
-	answer_check(htmlversion);
+	if(htmlversion!="free")answer_check(htmlversion);
 }
-
 
 var if_conditions = new Array();if_conditions.push(true);
 var action_frag = true;
@@ -898,7 +903,6 @@ function doSampleCode(){
 		sign = 1;
 		sampleR();
 }
-
 var sampleAnimeIndex = 0;
 function sampleR(){
 	//console.log("現在のanimeStartIndex："+animeStartIndex)
@@ -934,7 +938,6 @@ if(action_frag == true){
 	substitute(name,generatedValue);
 }
 }
-
 function alertScanf(){
 	alert("コンソールに文字を代入してください。");
 	sign = 1;
@@ -950,7 +953,6 @@ function line_2(line_i){
 	cEditor.markText({line: line_i-1, ch: 0}, {line: line_i-1, ch: 100}, {className: "styled-background-red"});
 	cEditor.markText({line: 0 , ch: 0}, {line: line_i -2, ch: 100}, {className: "styled-background-null"});
 }
-//code=コード、scan_data[]=scanfで入力するデータ、re_eval=入力の結果
 function hantei_c3(code,scan1,scan2,seikai){
  var scan_data = new Array;
  scan_data[0] = scan1;
