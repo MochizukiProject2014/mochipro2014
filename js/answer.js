@@ -138,6 +138,14 @@ function answer_check(num){
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("int","i",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("int","k",.+\)/);answer_pattern_array.push(re);
+			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
+			re = new RegExp(/for.+i/);answer_pattern_array.push(re);
+			re = new RegExp(/for.+k/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("x","(i:*:k)|(k:*:i)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("\\\\n")/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
+			
+			temp = getPatternLine(user_pattern_array,answer_pattern_array,temp);flagArr.push(temp);
 		break;
 		case 4:
 			var code_bmi = parser_judge.parse(text);
@@ -175,12 +183,13 @@ function getPatternLine(uArr,aArr,line){
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			rArr.push(i);
-			i=-1;index++;
+			i=line-1;index++;
 		}
 		if(index == alen)break;
+		if(i==ulen-1)return 0;
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
-	result Math.max.apply(null,rArr);
+	return Math.max.apply(null,rArr)+1;
 }
 
 function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮したチェック、falseなら順序関係なしにチェック

@@ -68,8 +68,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	SPEED=0.5;
-	if(0)console.log(true);
+	SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -83,7 +82,7 @@ function evalfunction(index,rArr){
 	var len = rArr.length;
 	for(var i = index ;i < len ;i++){
 		console.log(rArr[i]);
-		if(!rArr[i].match(/push_line/))user_pattern_array.push(rArr[i]);
+		if(!(rArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(rArr[i]);
 		eval(rArr[i]);
 		if(rArr[i].match(/^scanf_js.*/)){
 			rindex = i;break;
@@ -467,7 +466,8 @@ function return_js(value){
 	codeFinishFlag = true;
 }
 function ANIME_finish(){
-	if(htmlversion!="free")answer_check(htmlversion);
+	if(htmlversion!="free"){answer_check(htmlversion);}
+	else{answer_check("431");}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
