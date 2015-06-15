@@ -1,6 +1,3 @@
-//グローバル変数をなるべくさける
-//lengthによる配列オブジェクトへのアクセスを無くす。
-//メモ：yeuman、bower、grunt…JSの便利ツール
 var cEditor,lines;
 var result2 = new Array();
 var user_pattern_array = new Array();
@@ -19,13 +16,7 @@ var scopeLevel = 1;				//変数のスコープの管理用
 function disTexetarea(){
 	cEditor.markText({line: 0 , ch: 0}, {line: 100, ch: 100}, {className: "styled-background-null"});
 	cEditor.save();
-	if(encodeTime>0){
-		codeArrayInit();ANIME_reset();
-		consoleStatus="";action_frag = true;if_cnt = 0;syntaxErrorFlag = true;animeStartIndex=0;
-		document.getElementById("console").value="";codeFinishFlag = false
-		if_conditions.push(true);if_end_flag.push(true);
-		for_flag = true;for_cnt = 0;
-	}
+	if(encodeTime>0)codeArrayInit();
 	encodeTime++;
 	codeOfUser = document.getElementById('text').value;
 	consoleStatus = document.getElementById("console").value;
@@ -68,7 +59,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	//SPEED=0.25;
+	SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -206,6 +197,15 @@ if(action_frag == true){
 }
 
 function codeArrayInit(){
+		ANIME_reset();codeOfUser ="";
+		consoleStatus="";action_frag = true;
+		if_cnt = 0;syntaxErrorFlag = true;
+		animeStartIndex=0;scopeLevel = 1;
+		for_flag = true;for_cnt = 0;
+		uArr_num = 0;rindex=0;
+		scanf_flag=false;
+		document.getElementById("console").value="";
+		codeFinishFlag = false;
 		arr_init("result",result);
 		arr_init("result2",result2);
 		arr_init("variable",variables);
@@ -217,6 +217,8 @@ function codeArrayInit(){
 		arr_init("for_alt_array",for_alt_array);
 		arr_init("for_line_array",for_line_array);
 		arr_init("アニメ",jsOfAnimes);
+		arr_init("ユーザパターンアレイ",user_pattern_array);
+		if_conditions.push(true);if_end_flag.push(true);
 }
 
 function getVariableExist(name){
@@ -270,11 +272,6 @@ function getVariableValue(name){
 //変数や配列を格納する配列
 var variables = [];
 //ユーザーが使用できる配列と配列オブジェクトを格納する配列
-var uArr_1 = [];
-var uArr_2 = []
-var uArr_3 = [];
-var uArr_4 = [];
-var uArr_5 = [];
 var uArr_num = 0;
 //変数のクラス
 function Variable(data_type,name,value,scopeLevel){
