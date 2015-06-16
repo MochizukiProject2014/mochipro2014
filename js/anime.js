@@ -227,15 +227,15 @@ tm.define("MainScene", {
         	 	}
         	 }
     	};
-
-    	/*window.setTimeout(function(){
-    		ANIME_sengen("int","x");
-    		ANIME_sengen("int","y");
-    		ANIME_sengen("int","z");
-    		ANIME_sengen("int","aa");
-    		ANIME_sengen("int","bb");
-    	},1000);*/
-		/*
+    	/*
+    	window.setTimeout(function(){
+    		ANIME_sengen_dainyu("int","x",9);
+    		//ANIME_sengen("int","y");
+    		//ANIME_sengen("int","z");
+    		//ANIME_sengen("int","aa");
+    		//ANIME_sengen("int","bb");
+    	},1000);
+		
 		window.setTimeout(function(){
 			ANIME_array_sengen("int","a",10);
 		},2000);
@@ -266,7 +266,11 @@ tm.define("MainScene", {
 			ANIME_printf(["a[0]は","%d","です"],["a[0]"]);
 		},4000);
 		*/
-
+		/*
+		window.setTimeout(function(){
+			ANIME_array_enzan_dainyu("a[1]","x","9");
+		},10000);
+		*/
     },
 });
 
@@ -1024,8 +1028,275 @@ function ANIME_array_dainyu(name,value){
 				})
 		}
 	}
+}
+
+function ANIME_array_enzan_dainyu(name,ex,result){ 
+	//nameは代入対象の変数の要素名(a[0]など)、valueは代入値
+	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
 	
-	//prominのみ代入アクション
+	var promin = null;
+	var target_index = null;
+	var train = null;
+
+	//まずはpromin_arrayから代入対象となるプロミンを探す
+	for(var i=0;i<promin_array.length;i++){
+		if(name===promin_array[i].name){
+			//prominには代入対象のプロミンが代入される
+			promin = promin_array[i];
+			target_index = promin_array[i].index;
+			break;
+		}
+	}
+
+	//trainportから、prominが所属しているtrainを探す
+	for(var i=0;i<trainport.length;i++){
+		if(promin.arrayName===trainport[i].name){
+			//trainには代入対象のプロミンが所属している列車オブジェクトが代入される
+			train = trainport[i];
+			break;
+		}
+	}
+
+	var space = tm.app.Shape(400,200);
+	space.setPosition(510,410);
+	//space.canvas.clearColor("skyblue");
+	app.currentScene.addChild(space);
+	//space.hide();
+
+	var cnt = 0;
+
+	//trainに所属するプロミンを動かす
+	for(var i=0;i<train.value.length;i++){
+
+		if(i===target_index){
+			train.value[i].tweener
+				.clear()
+				.move(app.canvas.centerX,app.canvas.centerY,200*SPEED*(train.value[i].index+1))
+				.wait(1000*SPEED)
+				.call(function(){
+					equalLabel = tm.app.Label("=").addChildTo(space);
+					equalLabel
+						.setPosition(space.canvas.centerX-350,space.canvas.centerY-130)
+						.setFillStyle("rgba(0,0,0,1)")
+						.setFontSize(25);
+
+
+					counter = 0;
+					var expression = String(ex).split(":");
+					var between = 400/(expression.length+1);
+					var P=[]; //Pspaceオブジェクトの配列(プロミンのcopy用の描画スペース)
+					var C=[]; //copyオブジェクトの配列
+
+					for(var j=0;j<expression.length;j++){
+						var check=0;
+						for(var k=0;k<promin_array.length;k++){
+							//式に含まれる変数と、promin_arrayのプロミンの名前が一致するものを探す
+							if(expression[j]===promin_array[k].name){
+								var Pspace = tm.app.Shape(80,80);
+								//Pspace.canvas.clearColor("red"); //デバッグ用にPspaceのcanvasを赤にする
+								Pspace.setPosition((between+(j*between))-150,space.canvas.centerY-130);
+								Pspace.Label = tm.app.Label(expression[j]).addChildTo(Pspace);
+								Pspace.Label
+									.setFillStyle("rgba(0,0,0,1)")
+									.setFontSize(20);
+								space.addChild(Pspace);
+								
+								if(promin_array[k].arrayFlag===true){
+									var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+								}else{
+									var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
+								}
+								Pspace.addChild(copy);
+								copy.setPosition(0,0);
+								Pspace.addChild(copy);
+								P.push(Pspace);
+								C.push(copy);
+								check = 1;
+								counter++;
+								break;	
+							}
+						}
+						if(check===0){ //テキストをそのまま出力
+							var Pspace = tm.app.Shape(80,80);
+							//Pspace.canvas.clearColor("red");
+							Pspace.setPosition((between+(j*between))-150,space.canvas.centerY-130);
+							Pspace.Label = tm.app.Label(expression[j]).addChildTo(Pspace);
+							Pspace.Label
+								.setFillStyle("rgba(0,0,0,1)")
+								.setFontSize(20);
+							space.addChild(Pspace);
+						}
+					}
+
+					if(C.length===1&&expression.length===1){
+						//x=yみたいなパターン
+						C[0].x = C[0].x-80;
+						P[0].Label.text="";
+						space.tweener
+							.clear()
+							.wait(1000*SPEED) 
+							.call(function(){
+								space.canvas.font = "20px center"; //フォントサイズ設定
+								space.Label = tm.app.Label("").addChildTo(space);
+								space.addChild(space.Label);
+
+								var promin;
+								for(var j=0;j<promin_array.length;j++){
+									if(name===promin_array[j].name){ 
+										promin = promin_array[j];
+										break;
+									}
+								}
+
+							})
+							.wait(6500*SPEED)
+							.call(function(){space.removeChildren();});
+					}else if(counter>0){
+						space.tweener
+							.clear()
+							.wait(1000*SPEED)
+							.call(function(){
+								for(var j=0;j<P.length;j++){
+									P[j].Label.text = C[j].value;
+									C[j].hide();
+								}
+							})
+							.wait(1000*SPEED) 
+							.call(function(){
+								space.removeChildren();
+
+								equalLabel = tm.app.Label("=").addChildTo(space);
+								equalLabel
+									.setPosition(space.canvas.centerX-350,space.canvas.centerY-130)
+									.setFillStyle("rgba(0,0,0,1)")
+									.setFontSize(25);
+
+								space.canvas.font = "20px center"; //フォントサイズ設定
+								space.Label = tm.app.Label(result).addChildTo(space);
+									space.Label
+										.setFillStyle("rgba(0,0,0,1)")
+										.setPosition(space.canvas.centerX-150,space.canvas.centerY-130)
+										.setFontSize(30);
+								space.addChild(space.Label);
+
+								var promin;
+								for(var j=0;j<promin_array.length;j++){
+									if(name===promin_array[j].name){
+										promin = promin_array[j];
+										break;
+									}
+								}
+							})
+							.wait(6500*SPEED)
+							.call(function(){space.removeChildren();})
+					}else{
+						space.tweener
+							.wait(1000*SPEED)
+							.call(function(){
+								for(var j=0;j<P.length;j++){
+									P[j].Label.text = C[j].value;
+									C[j].hide();
+								}
+							})
+							.wait(1000*SPEED) 
+							.call(function(){
+								space.removeChildren();
+
+								equalLabel = tm.app.Label("=").addChildTo(space);
+								equalLabel
+									.setPosition(space.canvas.centerX-350,space.canvas.centerY-130)
+									.setFillStyle("rgba(0,0,0,1)")
+									.setFontSize(25);
+
+								space.canvas.font = "20px center"; //フォントサイズ設定
+								space.Label = tm.app.Label(result).addChildTo(space);
+									space.Label
+										.setFillStyle("rgba(0,0,0,1)")
+										.setPosition(space.canvas.centerX-150,space.canvas.centerY-130)
+										.setFontSize(30);
+								space.addChild(space.Label);
+
+								var promin;
+								for(var j=0;j<promin_array.length;j++){
+									if(name===promin_array[j].name){
+										promin = promin_array[j];
+										break;
+									}
+								}
+							})
+							.wait(6500*SPEED)
+							.call(function(){space.removeChildren();})
+							.wait(2500*SPEED)
+					}
+				})
+
+				.wait(3000*SPEED)
+				.call(function(){
+					space.show();
+					promin.valueLabel.text="";
+					turn(promin,ERACE);
+				})
+				.wait(150*SPEED)
+				.call(function(){turn(promin,ERACE2);})
+				.wait(150*SPEED)
+				.call(function(){turn(promin,ERACE);})
+				.wait(150*SPEED)
+				.call(function(){turn(promin,ERACE2);})
+				.wait(150*SPEED)
+				.call(function(){turn(promin,ERACE);})
+				.wait(150*SPEED)
+
+				.call(function(){turn(promin,FRONT);})
+				.wait(250*SPEED)
+
+				//書くモーション
+				.call(function(){turn(promin,WRITE);})
+				.wait(150*SPEED)
+				.call(function(){turn(promin,WRITE2);})
+				.wait(150*SPEED)
+				.call(function(){turn(promin,WRITE);})
+				.wait(150*SPEED)
+				.call(function(){
+					promin.value = result;
+					promin.valueLabel.text = result;
+				})
+				.call(function(){turn(promin,WRITE2);})
+				.wait(150*SPEED)
+				.call(function(){turn(promin,WRITE);})
+				.wait(250*SPEED)
+				.call(function(){
+					turn(promin,FRONT);
+					app.currentScene.removeChild(space);
+				})
+				.wait(500*SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,/*185*SPEED*(train.value.length-train.value[i].index+1)*/800*SPEED)
+				.call(function(){
+					cnt++;
+					if(target_index+1==cnt){
+						sign = 1;BUTTON_ON();
+						//console.log("おわり")
+					}
+				});
+
+		}else if(i<target_index){
+			var t = train.value[i];
+			train.value[i].tweener
+				.clear()
+				.move(app.canvas.centerX,app.canvas.centerY,200*SPEED*(train.value[i].index+1))
+				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,150*SPEED*(train.value.length-train.value[i].index+1))
+				//.move(app.canvas.centerX+(target_index-i)*80,app.canvas.centerY+(target_index-i)*40,500*SPEED)
+				.wait((target_index*550)*SPEED-(225*SPEED*i))
+				.move(app.canvas.centerX,app.canvas.centerY,150*SPEED*(train.value.length-train.value[i].index+1))
+				.move(train.value[i].defaultX,train.value[i].defaultY,800*SPEED/**(train.value.length-train.value[i].index+1)*/)
+				.call(function(){
+					cnt++;
+					if(target_index+1==cnt){
+						sign = 1;BUTTON_ON();
+						//console.log("おわり")
+					}
+				})
+		}
+	}
 }
 
 
