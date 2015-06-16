@@ -114,32 +114,36 @@ function answer_check(num){
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 		break;
 		case 3:
-			var code_bmi = parser_judge.parse(text);
-			if(hantei(code_bmi,1,18.49,"やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
-			else if( hantei(code_bmi,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
-			else if( hantei(code_bmi,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
-			else if( hantei(code_bmi, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			var code_bmi = parser_judge.parse(codeOfUser);
+			if(hantei_2(code_bmi,1,18.49, "やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
+			else if( hantei_2(code_bmi,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
+			else if( hantei_2(code_bmi,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_2(code_bmi, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 421:
-			var code_bmi = parser_judge.parse(text);
-			if(hantei(code_bmi,1, 2,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei(code_bmi,1,1,4,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei(code_bmi,1, 1, 1, 6, "終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei(code_bmi, 1, 8,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			var code_bmi = parser_judge.parse(codeOfUser);
+			if(hantei_2(code_bmi,1, 2,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			else if( hantei_3(code_bmi,1,1,4,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			else if( hantei_4(code_bmi,1, 1, 1, 6, "終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			else if( hantei_2(code_bmi, 1, 8,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 422:
-			var code_bmi = parser_judge.parse(text);
-			if(hantei(code_bmi,1, 99, 1 ,"100を超えました。101です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
-			else if( hantei(code_bmi,10,20,77,"100を超えました。107です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
-			else if( hantei(code_bmi,99, 99, "100を超えました。198です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
-			else if( hantei(code_bmi, 12, 34, 56, "100を超えました。102です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
+			var code_bmi = parser_judge.parse(codeOfUser);
+			if(hantei_3(code_bmi,1, 99, 1 ,"100を超えました。101です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
+			else if( hantei_3(code_bmi,10,20,77,"100を超えました。107です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
+			else if( hantei_2(code_bmi,99, 99, "100を超えました。198です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
+			else if( hantei_3(code_bmi, 12, 34, 56, "100を超えました。102です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 4:
-			var code_bmi = parser_judge.parse(text);
-			if(hantei(code_bmi,1, 99, 0,"合計は100です") != true){ miss_answer("４章まとめ不正解！"); return 0;}
-			else if( hantei(code_bmi,10,20,77,0,"合計は107です") != true){ miss_answer("４章不正解！"); return 0;}
-			else if( hantei(code_bmi,99, 99,0, "合計は198です") != true){ miss_answer("４章不正解！"); return 0;}
-			else if( hantei(code_bmi, 12, 34, 56, 0, "合計は102です") != true){ miss_answer("４章不正解！"); return 0;}
+			var code_bmi = parser_judge.parse(codeOfUser);
+			if(hantei_3(code_bmi,1, 99, 0,"合計は100です") != true){ miss_answer("４章まとめ不正解！"); return 0;}
+			else if( hantei_4(code_bmi,10,20,77,0,"合計は107です") != true){ miss_answer("４章不正解！"); return 0;}
+			else if( hantei_3(code_bmi,99, 99,0, "合計は198です") != true){ miss_answer("４章不正解！"); return 0;}
+			else if( hantei_4(code_bmi, 12, 34, 56, 0, "合計は102です") != true){ miss_answer("４章不正解！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 	}
 	var flen = flagArr.length;
