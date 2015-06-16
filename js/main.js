@@ -27,11 +27,11 @@ function disTexetarea(){
 	var resultlength = result.length;
 	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
 	result2 = ucode.match(/(.+);$/)[1].split(";");
-	arr_check("パーサー結果配列",result2);
+	//arr_check("パーサー結果配列",result2);
 	var result2length = result2.length;
 	evalfunction(0,result2);
 	jsOfAnimes.push('line_reset();');
-	arr_check("アニメ配列",jsOfAnimes);
+	//arr_check("アニメ配列",jsOfAnimes);
 	sign =1;
 	if(syntaxErrorFlag){R();}
 	else{ANIME_reset();ANIME_error(syntaxStr);}
@@ -59,7 +59,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	SPEED=0.25;
+	SPEED=1;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -82,11 +82,11 @@ function evalfunction(index,rArr){
 }
 
 function R(){
-	////console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
+	//console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
 	if(animeStartIndex<jsOfAnimes.length){
 		if(sign===1){
 			sign=0;
-			////console.log(jsOfAnimes[animeStartIndex]);
+			//console.log(jsOfAnimes[animeStartIndex]);
 			eval(jsOfAnimes[animeStartIndex]);
 			if(jsOfAnimes[animeStartIndex].match(/ANIME_scanf/)){
 				sign=1;animeStartIndex++;
@@ -103,33 +103,33 @@ function createSyntaxError(str){
 }
 
 function arr_check(str,uArr){
-	//console.log("--------------------"+str+"配列の中身一覧-------------------------");
+	console.log("--------------------"+str+"配列の中身一覧-------------------------");
 	var ulen = uArr.length;
-	for(var i = 0;i < ulen;i++)//console.log(str+"Arr["+i+"] = "+uArr[i]);
-	//console.log("----------------------------------------------------");
+	for(var i = 0;i < ulen;i++)console.log(str+"Arr["+i+"] = "+uArr[i]);
+	console.log("----------------------------------------------------");
 }
 
 function arr_init(str,uArr){
-	//console.log("--------------------"+str+"配列を初期化しました。-------------------------");
+	console.log("--------------------"+str+"配列を初期化しました。-------------------------");
 	var ulen = uArr.length;
 	for(var i = 0;i < ulen;i++)uArr.shift();
 }
 
 function check_obj(name){
-	//console.log("--------------------"+name+"オブジェクトのスターテス-------------------------");
+	console.log("--------------------"+name+"オブジェクトのスターテス-------------------------");
 	var len = variables.length;
 	for(var i = 0;i<len;i++){
 		if(variables[i].name==name){
-		//console.log("型："+variables[i].data_type);
-		//console.log("名前："+variables[i].name);
-		//console.log("値列："+variables[i].value);
+		console.log("型："+variables[i].data_type);
+		console.log("名前："+variables[i].name);
+		console.log("値列："+variables[i].value);
 			if(variables[i].status=="a"){
-				//console.log("長さ："+variables[i].length);
-				//console.log("対応番号："+variables[i].number);
+				console.log("長さ："+variables[i].length);
+				console.log("対応番号："+variables[i].number);
 			}
 		}
 	}
-	//console.log("----------------------------------------------------");
+	console.log("----------------------------------------------------");
 }
 
 function CheckLength(str){//半角だとtrueを返す
@@ -154,13 +154,13 @@ function random_number(type){
 	var vDou = new Array(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9);
 	var vCha = new Array("a","b","c","d","e","f","g","h","i","j");
 	var rnd = Math.floor(Math.random()*10);
-	if(type == "int"){//console.log("random_number内の出力。int型に"+vInt[rnd]+"を代入させます。");
+	if(type == "int"){console.log("random_number内の出力。int型に"+vInt[rnd]+"を代入させます。");
 		jsOfAnimes.push("setPrintf("+vInt[rnd]+")");
 		return vInt[rnd];
-	}else if(type == "double"){//console.log("random_number内の出力。double型に"+vDou[rnd]+"を代入させます。");
+	}else if(type == "double"){console.log("random_number内の出力。double型に"+vDou[rnd]+"を代入させます。");
 		jsOfAnimes.push("setPrintf("+vDou[rnd]+")");
 		return vDou[rnd];
-	}else if(type == "char"){//console.log("random_number内の出力。int型に"+vCha[rnd]+"を代入させます。");
+	}else if(type == "char"){console.log("random_number内の出力。int型に"+vCha[rnd]+"を代入させます。");
 		jsOfAnimes.push("setPrintf("+vCha[rnd]+")");
 		return vCha[rnd];
 	}
@@ -206,7 +206,6 @@ function codeArrayInit(){
 		scanf_flag=false;
 		document.getElementById("console").value="";
 		codeFinishFlag = false;
-		arr_init("result",result);
 		arr_init("result2",result2);
 		arr_init("variable",variables);
 		arr_init("ifの条件",if_conditions);
@@ -294,7 +293,7 @@ function duplication_judge(data_type,name,value){
 if(action_frag == true&&for_flag){
 		variable_declare(data_type,name,value);
 }else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'duplication_judge("'+data_type+'","'+name+'","'+value+'");');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'duplication_judge("'+data_type+'","'+name+'","'+value+'");');
 		for_contexts_array[for_cnt-1]+='duplication_judge("'+data_type+'","'+name+'","'+value+'");';
 		
 	}
@@ -441,7 +440,7 @@ if(action_frag == true&&for_flag){
 		}
 	}
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'substitute('+name+','+value+');');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'substitute('+name+','+value+');');
 		for_contexts_array[for_cnt-1]+='substitute("'+name+'","'+value+'");';
 		for(var fi = 0;fi < for_cnt-1;fi++){
 			for_contexts_array[fi] += 'for_next;';
@@ -453,13 +452,13 @@ function push_line(line_i){
 	if(action_frag	&&for_flag){
 		jsOfAnimes.push('line(' + line_i + ');');
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'push_line('+line_i+');');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'push_line('+line_i+');');
 		for_contexts_array[for_cnt-1]+='push_line("'+line_i+'");';
 	}
 }
 
 function return_js(value){
-	//console.log("return受領。")
+	console.log("return受領。")
 	jsOfAnimes.push("ANIME_finish()");
 	codeFinishFlag = true;
 }
@@ -476,23 +475,23 @@ function if_js(condition){
 	if(for_flag){
 	if_cnt++;scopeLevel++;
 	if_conditions.push(assess(condition));
-	//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
+	console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
 	if(if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
-		//console.log("if_js内の出力：実行しようぜ！");
+		console.log("if_js内の出力：実行しようぜ！");
 		if_end_flag.push(true);
 		action_frag=true;
-		//console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}else{
-		//console.log("if_js内の出力：実行しないぜ！");
+		console.log("if_js内の出力：実行しないぜ！");
 		action_frag=false;
 		if_conditions[if_cnt]=false;
 		//if_end_flag.push(true);
 		if_end_flag.push(false);
-		//console.log(if_end_flag.length);
-		//console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		console.log(if_end_flag.length);
+		console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'if_js("'+condition+'");');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'if_js("'+condition+'");');
 		for_contexts_array[for_cnt-1]+='if_js("'+condition+'");';
 		
 	}
@@ -501,21 +500,21 @@ function if_js(condition){
 function else_if_js(condition){
 	if(for_flag){
 	if_conditions[if_cnt]=assess(condition);
-	//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+	console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	if(!(if_end_flag[if_cnt])&&if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
-	//console.log("else_if_js内の出力：実行しようぜ！");
+	console.log("else_if_js内の出力：実行しようぜ！");
 		if_end_flag[if_cnt]=true;
 		action_frag=true;
-		//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}else{
-	//console.log("else_if_js内の出力：実行しないぜ！");
+	console.log("else_if_js内の出力：実行しないぜ！");
 		action_frag=false;
 		if_conditions[if_cnt]=false;
 		//if_end_flag[if_cnt]=false;
-		//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'else_if_js("'+condition+'");');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'else_if_js("'+condition+'");');
 		for_contexts_array[for_cnt-1]+='else_if_js("'+condition+'");';
 		
 	}
@@ -524,7 +523,7 @@ function else_if_js(condition){
 function else_js(){
 	if(for_flag){
 	if_conditions[if_cnt] = true;
-	//console.log("else_js内での出力：第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
+	console.log("else_js内での出力：第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
 	if(!(if_end_flag[if_cnt])&&if_conditions[if_cnt-1]){
 		if_end_flag[if_cnt]=true;
 		action_frag=true
@@ -533,7 +532,7 @@ function else_js(){
 		if_end_flag[if_cnt]=true;
 	}
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'else_js();');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'else_js();');
 		for_contexts_array[for_cnt-1]+='else_js();';
 		
 	}
@@ -546,7 +545,7 @@ function end_of_if(){
 	scopeLevel=scopeLevel-1;
 	if_end_flag.splice((if_end_flag.length-1),1);
 	if_conditions.splice((if_conditions.length-1),1);
-	//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
+	console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
 	if(if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
 		action_frag=true;
 	}else if(if_cnt==0){
@@ -555,7 +554,7 @@ function end_of_if(){
 		action_frag=false;
 	}
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'end_of_if();');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'end_of_if();');
 		for_contexts_array[for_cnt-1]+='end_of_if();';
 		
 	}
@@ -606,7 +605,7 @@ if(action_frag == true){
 	push_line(line_num);
 	for_flag = false;
 	for_cnt++;
-	//console.log("現在、for文の第"+for_cnt+"階層目(for_cnt)、"+for_contexts_array.length+"である。(fca.length)")
+	console.log("現在、for文の第"+for_cnt+"階層目(for_cnt)、"+for_contexts_array.length+"である。(fca.length)")
 	for_conditions_array.push(cond);
 	for_alt_array.push(alt);
 	}
@@ -621,10 +620,10 @@ if(action_frag == true){
 }
 
 function evalContexts(cnt){
-	//console.log("evalcontext実行開始");
-	//console.log("条件："+for_conditions_array[cnt]+"、変化式："+for_alt_array[cnt]+"、文群："+for_contexts_array[cnt])
+	console.log("evalcontext実行開始");
+	console.log("条件："+for_conditions_array[cnt]+"、変化式："+for_alt_array[cnt]+"、文群："+for_contexts_array[cnt])
 	var forcontextarraylength = for_contexts_array.length;
-	for(var fi = 0;fi < forcontextarraylength;fi++)//console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");
+	for(var fi = 0;fi < forcontextarraylength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");
 	var context = for_contexts_array[cnt].match(/(.*);$/)[1];
 	var forArray = for_init_array[cnt].split(",");
 	for_flag=true;
@@ -638,10 +637,10 @@ function evalContexts(cnt){
 	while(assess(for_conditions_array[cnt])&&temoi<50){
 		for(var eci = 0;eci < contexts.length;eci++){
 			if(contexts[eci].match(/for_next/)){
-				//console.log("次の階層があるみたいですね！");
+				console.log("次の階層があるみたいですね！");
 					evalContexts(cnt+1);
 			}else{
-				//console.log("第"+cnt+"階層の「"+contexts[eci]+"」を実行します。");
+				console.log("第"+cnt+"階層の「"+contexts[eci]+"」を実行します。");
 				eval(contexts[eci]);
 			}
 		}
@@ -653,23 +652,23 @@ function evalContexts(cnt){
 	if(temoi >=50){
 		return createSyntaxError("for文の回数が多すぎるよ！");
 	}
-	//console.log(cnt+"層の実行終了。");
-	//console.log("evalcontext実行完了");
+	console.log(cnt+"層の実行終了。");
+	console.log("evalcontext実行完了");
 }
 
 function plural_declaration(type,variable){
 if(action_frag == true&&for_flag){
-	//console.log(variable);
+	console.log(variable);
 	//variable = variable.replace(/\x20/g,"");
 	var v = variable.split(",");
 	for(var i=0; i < v.length; i++){
-		//console.log(v[i]);
+		console.log(v[i]);
 		if(v[i].indexOf("=", 0) == -1){
-			//console.log("ただの宣言！");
+			console.log("ただの宣言！");
 			user_pattern_array.push('duplication_judge("'+type+'","'+v[i]+'", '+null+' )');
 			duplication_judge(type,v[i], null );
 		}else{
-			//console.log("式の宣言！");
+			console.log("式の宣言！");
 			var x = v[i].split("=");
 			if(x[1].indexOf(":", 0) == -1){
 				user_pattern_array.push('duplication_judge("'+type+'","'+x[0]+'","'+x[1]+'")');
@@ -682,7 +681,7 @@ if(action_frag == true&&for_flag){
 		}
 	}
 }else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'plural_declaration("'+type+'","'+value+'");');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'plural_declaration("'+type+'","'+value+'");');
 		for_contexts_array[for_cnt-1]+='plural_declaration("'+type+'","'+value+'");';
 		
 	}
@@ -758,7 +757,7 @@ if(action_frag == true&&for_flag){
 	scanftype = type;
 	jsOfAnimes.push("ANIME_scanf()");
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'scanf_js("'+name+'","'+type+'");');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'scanf_js("'+name+'","'+type+'");');
 		for_contexts_array[for_cnt-1]+='scanf_js("'+name+'","'+type+'")';
 		
 	}
@@ -835,7 +834,7 @@ if(action_frag == true&&for_flag){
 	jsOfAnimes.push(methodstr);
 	jsOfAnimes.push('setPrintf("'+pstr+'");');
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'printf_js("'+name+'","'+value+'");');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'printf_js("'+name+'","'+value+'");');
 		for_contexts_array[for_cnt-1]+='printf_js("'+name+'","'+value+'");';
 		
 	}
@@ -851,7 +850,7 @@ if(action_frag == true&&for_flag){
 	jsOfAnimes.push('setPrintf("'+dstr+'");');
 	consoleStatus = document.getElementById("console").value;
 	}else if(!for_flag){
-		//console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'printf_djs('+dstr+');');
+		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'printf_djs('+dstr+');');
 		for_contexts_array[for_cnt-1]+='printf_djs("'+dstr+'");';
 		for(var fi = 0;fi < for_cnt-1;fi++){
 			for_contexts_array[fi] += 'for_next;';
@@ -897,14 +896,14 @@ function doSampleCode(){
 	for(var si = 0;si < samplecode1.length;si++){
 			sampleOfAnimes.push(samplecode1[si]);
 		}
-		//console.log(sampleOfAnimes.length);
+		console.log(sampleOfAnimes.length);
 		sign = 1;
 		sampleR();
 }
 var sampleAnimeIndex = 0;
 function sampleR(){
-	////console.log("現在のanimeStartIndex："+animeStartIndex)
-	//console.log("サンプル実行中…現在のIndex："+sampleAnimeIndex+"現在実行中："+sampleOfAnimes[sampleAnimeIndex]);
+	//console.log("現在のanimeStartIndex："+animeStartIndex)
+	console.log("サンプル実行中…現在のIndex："+sampleAnimeIndex+"現在実行中："+sampleOfAnimes[sampleAnimeIndex]);
 	if(sampleAnimeIndex<sampleOfAnimes.length){
 		if(sign===1){
 			sign=0;
@@ -957,7 +956,7 @@ function hantei_c3(code,scan1,scan2,seikai){
  scan_data[1] = scan2;
  var scan_i = 0;
  var r_c = hantei_eval(code,scan_data,scan_i);
- //console.log( "正解：" + seikai + "　結果：" + r_c );
+ console.log( "正解：" + seikai + "　結果：" + r_c );
  if(r_c  == seikai){ return true;}
 }
 function hantei_331(code,scan,seikai){
@@ -965,7 +964,7 @@ function hantei_331(code,scan,seikai){
  scan_data[0] = scan;
  var scan_i = 0;
  var r_c = hantei_eval(code,scan_data,scan_i);
- //console.log( "正解：" + seikai + "　結果：" + r_c );
+ console.log( "正解：" + seikai + "　結果：" + r_c );
  if(r_c  == seikai){ return true;}
 }
 function hantei_eval(code, scan_data,scan_i){
