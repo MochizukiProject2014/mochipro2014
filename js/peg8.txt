@@ -125,7 +125,15 @@ repetition_for
     }
   
 repetition_while
- =  "while"  space "(" space comparison:(logical/additive) space ")" space block:block space { return "while(" + comparison + "){" + block + "}"; }
+ =  "while"  space "(" space comparison:(logical/additive) space ")" space block:block space {
+         var a = block[0];
+        if(block.length == 0){
+          a = "";
+        }
+       for(var k=1; k < block.length; k++){
+         a = a + block[k];
+       }
+        return "while(" + comparison + "){" + a + "}"; }
 
 
 break
@@ -212,10 +220,10 @@ substitution
 //for文で用いる代入・演算
 substitution_for
   = left:variable space "=" space right:additive space { return left + " = " + right ; } 
-  /   left:variable "++" space { return left + "++" ; }
-  /   left:variable "--" space { return left + "--" ; }
-  /   left:variable "+=" right:additive space space { return left + "+=" + right ; }
-  /   left:variable "-=" right:additive space space { return left + "-=" + right ; }
+  /   left:variable "++" space { return left + ":+:1" ; }
+  /   left:variable "--" space { return left + ":-:1" ; }
+  /   left:variable "+=" right:additive space space { return left + ":+:" + right ; }
+  /   left:variable "-=" right:additive space space { return left + ":-:" + right ; }
 
 //------------------------------------------------------------
 

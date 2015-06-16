@@ -134,7 +134,15 @@ parser = (function() {
             },
         peg$c77 = "while",
         peg$c78 = { type: "literal", value: "while", description: "\"while\"" },
-        peg$c79 = function(comparison, block) { return "while(" + comparison + "){" + block + "}"; },
+        peg$c79 = function(comparison, block) {
+                 var a = block[0];
+                if(block.length == 0){
+                  a = "";
+                }
+               for(var k=1; k < block.length; k++){
+                 a = a + block[k];
+               }
+                return "while(" + comparison + "){" + a + "}"; },
         peg$c80 = "break",
         peg$c81 = { type: "literal", value: "break", description: "\"break\"" },
         peg$c82 = function() {return "break" ;},
