@@ -1,6 +1,3 @@
-//グローバル変数をなるべくさける
-//lengthによる配列オブジェクトへのアクセスを無くす。
-//メモ：yeuman、bower、grunt…JSの便利ツール
 var cEditor,lines;
 var result2 = new Array();
 var user_pattern_array = new Array();
@@ -19,13 +16,7 @@ var scopeLevel = 1;				//変数のスコープの管理用
 function disTexetarea(){
 	cEditor.markText({line: 0 , ch: 0}, {line: 100, ch: 100}, {className: "styled-background-null"});
 	cEditor.save();
-	if(encodeTime>0){
-		codeArrayInit();ANIME_reset();
-		consoleStatus="";action_frag = true;if_cnt = 0;syntaxErrorFlag = true;animeStartIndex=0;
-		document.getElementById("console").value="";codeFinishFlag = false
-		if_conditions.push(true);if_end_flag.push(true);
-		for_flag = true;for_cnt = 0;
-	}
+	if(encodeTime>0)codeArrayInit();
 	encodeTime++;
 	codeOfUser = document.getElementById('text').value;
 	consoleStatus = document.getElementById("console").value;
@@ -36,11 +27,11 @@ function disTexetarea(){
 	var resultlength = result.length;
 	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
 	result2 = ucode.match(/(.+);$/)[1].split(";");
-	arr_check("パーサー結果配列",result2);
+	//arr_check("パーサー結果配列",result2);
 	var result2length = result2.length;
 	evalfunction(0,result2);
 	jsOfAnimes.push('line_reset();');
-	arr_check("アニメ配列",jsOfAnimes);
+	//arr_check("アニメ配列",jsOfAnimes);
 	sign =1;
 	if(syntaxErrorFlag){R();}
 	else{ANIME_reset();ANIME_error(syntaxStr);}
@@ -68,7 +59,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	SPEED=0.5;
+	//SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -81,8 +72,8 @@ scanfSetStr+="<font color = red>「値」「enterキー」「値」「enterキ�
 function evalfunction(index,rArr){
 	var len = rArr.length;
 	for(var i = index ;i < len ;i++){
-		console.log(rArr[i]);
-		if(!rArr[i].match(/push_line/))user_pattern_array.push(rArr[i]);
+		//console.log(rArr[i]);
+		if(!(rArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(rArr[i]);
 		eval(rArr[i]);
 		if(rArr[i].match(/^scanf_js.*/)){
 			rindex = i;break;
@@ -206,7 +197,15 @@ if(action_frag == true){
 }
 
 function codeArrayInit(){
-		arr_init("result",result);
+		ANIME_reset();codeOfUser ="";
+		consoleStatus="";action_frag = true;
+		if_cnt = 0;syntaxErrorFlag = true;
+		animeStartIndex=0;scopeLevel = 1;
+		for_flag = true;for_cnt = 0;
+		uArr_num = 0;rindex=0;
+		scanf_flag=false;
+		document.getElementById("console").value="";
+		codeFinishFlag = false;
 		arr_init("result2",result2);
 		arr_init("variable",variables);
 		arr_init("ifの条件",if_conditions);
@@ -217,6 +216,8 @@ function codeArrayInit(){
 		arr_init("for_alt_array",for_alt_array);
 		arr_init("for_line_array",for_line_array);
 		arr_init("アニメ",jsOfAnimes);
+		arr_init("ユーザパターンアレイ",user_pattern_array);
+		if_conditions.push(true);if_end_flag.push(true);
 }
 
 function getVariableExist(name){
@@ -270,11 +271,6 @@ function getVariableValue(name){
 //変数や配列を格納する配列
 var variables = [];
 //ユーザーが使用できる配列と配列オブジェクトを格納する配列
-var uArr_1 = [];
-var uArr_2 = []
-var uArr_3 = [];
-var uArr_4 = [];
-var uArr_5 = [];
 var uArr_num = 0;
 //変数のクラス
 function Variable(data_type,name,value,scopeLevel){
@@ -335,47 +331,53 @@ function variable_declare(data_type,name,value){
 function array_declare(data_type,name,value,length){
 if(action_frag == true){
 	var alen = variables.length;
-	var init_flag = true;
+	var init_flag = false;
+	var calc_flag = false;
 	var valuelen = length;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)
-		return createSyntaxError("すでに同じ名前の配列があるよ！");
-	if(!(value=="undefined")){
-		var valuearr = value.split(":");
+		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
+	if(value!="undefined"){
+		var valuearr = value.split("@");
 		valuelen = valuearr.length;
-		init_flag=false;
-		for(var i = 0;i < valuelen ;i++)if(!type_judge(data_type,valuearr[i]))
+		init_flag = true;
+		var str = "[";
+		arr_check("デバック",valuearr);
+		for(var i = 0;i < valuelen ;i++)if(/:/.test(valuearr[i]))calc_flag = true;
+		if(!calc_flag){
+			for(var i = 0;i < valuelen ;i++)if(!type_judge(data_type,valuearr[i]))
 			return createSyntaxError("配列に代入する値が変だよ！");
+		}
 	}
 	uArr_num++;
-	var v = new Arr(data_type,name,value,valuelen,uArr_num);
-	if(init_flag){
-		jsOfAnimes.push('ANIME_array_sengen("'+data_type+'","'+name+'","'+valuelen+'");');
+	if(init_flag&&calc_flag){
+		var exp = "[";
+		for(var i = 0;i < valuelen ;i++){
+			exp += ('"'+valuearr[i]+'"');
+			if(i<valuelen-1){exp += ',';}else{exp +=']';}
+		}
+		for(var i = 0;i < valuelen ;i++){
+			str += ('"'+calc(valuearr[i])+'"');
+			if(i<valuelen-1){str += ',';}else{str +=']';}
+		}
+		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+valuelen+','+exp+','+str+');');
+		value = "";
+		for(var i = 0;i < valuelen ;i++){
+			value += (''+calc(valuearr[i])+'');
+			if(i<valuelen-1)value += ':';
+		}
+	}else if(init_flag){
+		for(var i = 0;i < valuelen ;i++){
+			str += ('"'+valuearr[i]+'"');
+			if(i<valuelen-1){str += ',';}else{str +=']';}
+		}
+		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+valuelen+','+str+','+str+');');
 	}else{
-		var tempArr = value.split(":");
-		var len=tempArr.length;
-		switch(uArr_num){
-			case 1: uArr_1 = value.split(":");
-			break;
-			case 2: uArr_2 = value.split(":");
-			break;
-			case 3: uArr_3 = value.split(":");
-			break;
-			case 4: uArr_4 = value.split(":");
-			break;
-			case 5: uArr_5 = value.split(":");
-			break;
-		}
-		var str = "[";	
-		for(var i = 0;i < len ;i++){
-			str += (''+tempArr[i]+'');
-			if(i<len-1){str += ',';}else{str +=']';}
-		}
-		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'","'+valuelen+'",'+str+');');
+		jsOfAnimes.push('ANIME_array_sengen("'+data_type+'","'+name+'","'+valuelen+'");');
 	}
+	var v = new Arr(data_type,name,value,valuelen,uArr_num);
 	variables.push(v);
 }
 }
-
 function substitute(name,value){//変数に数字を代入するメソッド
 if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
@@ -421,7 +423,7 @@ if(action_frag == true&&for_flag){
 		break;
 		case "a":
 			if(cvflag){jsOfAnimes.push('ANIME_enzan_dainyu("'+name+'['+index+']'+'",'+str+',"'+value+'")');}
-			else{jsOfAnimes.push('ANIME_dainyu("'+name+'['+index+']'+'","'+value+'")');}
+			else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index+']'+'","'+value+'")');}
 			variables[i].value = value;
 			var str="";
 			var tempArr = [];
@@ -461,9 +463,9 @@ function return_js(value){
 	codeFinishFlag = true;
 }
 function ANIME_finish(){
-	answer_check(htmlversion);
+	if(htmlversion!="free"){answer_check(htmlversion);}
+	else{answer_check("431");}
 }
-
 
 var if_conditions = new Array();if_conditions.push(true);
 var action_frag = true;
@@ -898,7 +900,6 @@ function doSampleCode(){
 		sign = 1;
 		sampleR();
 }
-
 var sampleAnimeIndex = 0;
 function sampleR(){
 	//console.log("現在のanimeStartIndex："+animeStartIndex)
@@ -934,7 +935,6 @@ if(action_frag == true){
 	substitute(name,generatedValue);
 }
 }
-
 function alertScanf(){
 	alert("コンソールに文字を代入してください。");
 	sign = 1;
@@ -950,7 +950,6 @@ function line_2(line_i){
 	cEditor.markText({line: line_i-1, ch: 0}, {line: line_i-1, ch: 100}, {className: "styled-background-red"});
 	cEditor.markText({line: 0 , ch: 0}, {line: line_i -2, ch: 100}, {className: "styled-background-null"});
 }
-//code=コード、scan_data[]=scanfで入力するデータ、re_eval=入力の結果
 function hantei_c3(code,scan1,scan2,seikai){
  var scan_data = new Array;
  scan_data[0] = scan1;

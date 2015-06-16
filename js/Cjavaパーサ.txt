@@ -341,7 +341,7 @@ primary
   / decimal
   / variable_array
   / variable
-  / "(" additive:additive ")" { return "(" + ":" + additive + ":" + ")"; }
+  / "(" additive:additive ")" { return "(" + additive + ")"; }
 
 //マイナス
 minus

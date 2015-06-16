@@ -1,5 +1,6 @@
+
 //入力数２
-function hantei(code,scan0,scan1,seikai){
+function hantei_2(code,scan0,scan1,seikai){
 	var scan_data = new Array;
 	scan_data[0] = scan0;
 	scan_data[1] = scan1;
@@ -10,7 +11,7 @@ function hantei(code,scan0,scan1,seikai){
 }
 
 //入力数３
-function hantei(code,scan0, scan1, scan2, seikai){
+function hantei_3(code,scan0, scan1, scan2, seikai){
 	var scan_data = new Array;
 	scan_data[0] = scan0;
 	scan_data[1] = scan1;
@@ -22,7 +23,7 @@ function hantei(code,scan0, scan1, scan2, seikai){
 }
 
 //入力数４
-function hantei(code,scan0, scan1, scan2, scan3, seikai){
+function hantei_4(code,scan0, scan1, scan2, scan3, seikai){
 	var scan_data = new Array;
 	scan_data[0] = scan0;
 	scan_data[1] = scan1;
