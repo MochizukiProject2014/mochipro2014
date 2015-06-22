@@ -414,8 +414,10 @@ character
 variable
   = variable:([a-zA-Z][a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
 
+//配列
 variable_array
- = variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
+ = variable:variable "[" num1:(variable/integer) "]" space "[" num2:(variable/integer) "]" { return variable + "[" + num1 + "][" + num2 + "]"  }
+ / variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
 
 //改行・コメント
 space
