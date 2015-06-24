@@ -22,8 +22,9 @@ script
 statement
   = statement_int
   / statement_double
-  / statement_array_int
   / statement_char
+  / statement_array_int_2
+  / statement_array_int
 
 statement_int
   =  "int " space variable:variable space ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("int","' + variable + '", null );' ;}
@@ -80,15 +81,38 @@ statement_array_int
 /  "int " space name:variable "[" space "]" space "=" variable:array_contents  ";" space {
 		return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","' + variable + '");'  }
 
- 
+//二次元配列
 statement_array_int_2
-  =  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  ";" space { return "intの配列： " + variable + "　大きさ：" + length1 + "," + length2 + ';'  }
-  /  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  space "=" space "{" space contents:additive space "}" space  ";" space { return "intの配列：" + variable + "　大きさ：" + length1 + "," + length2 + "　中身：" + contents + ';'  }
- /  "int " space variable:variable "[" space length:additive space "]" space "=" space "{" space contents:(array_contents* additive) space "}" space  ";" space { return "intの配列：" + variable + "　大きさ：" + length + "　中身：" + contents + ';'  }
+  =  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]" space ";" space { 
+  return 'multiarray_declare("int","' + variable +'","undefined","' + length1 + '","' + length2 + '");'  }
+  /  "int " space variable:variable "[" space length1:additive space "]" "[" space "]" space ";" space { 
+  return 'multiarray_declare("int","' + variable +'","undefined","' + length1 + '","undefined");'  }
+  /  "int " space variable:variable "[" space "]" "[" space length2:additive space "]" space ";" space { 
+  return 'multiarray_declare("int","' + variable +'","undefined","undefined","' + length2 + '");'  }
+  //上から　a[1][2];　a[1][];　a[][2];　のとき
+  
+  /  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  space "=" space contents:array_contents2 space  ";" space { 
+  return 'multiarray_declare("int","' + variable +'","' + contents + '","' + length1 + '","' + length2 + '");' }
+  /  "int " space variable:variable "[" space length1:additive space "]" "[" space "]"  space "=" space contents:array_contents2 space  ";" space { 
+  return 'multiarray_declare("int","' + variable +'","' + contents + '","' + length1 + '","undefined");' }
+  /  "int " space variable:variable "[" space "]" "[" space length2:additive space "]"  space "=" space contents:array_contents2 space  ";" space { 
+  return 'multiarray_declare("int","' + variable +'","' + contents + '","undefined","' + length2 + '");' }
+  //a[1][2] = {{3,4}{5,6}}のとき
+
+  /  "int " space variable:variable "[" space "]" "[" space "]" space ";" space { 
+  return 'multiarray_declare("int","' + variable +'","undefined","undefined","undefined");'  }
+  /  "int " space variable:variable "[" space "]" "[" space "]"  space "=" space contents:array_contents2 space  ";" space { return 'multiarray_declare("int","' + variable +'","' + contents + '","undefined","undefined");'  }
+  //長さ指定なし
+
 
 //配列の初期化{1,2,3,4}みたいなやつ
 array_contents
  =space  "{"space contents:additive_plural_array space "}" space {return contents}
+ 
+//二次元配列のとき
+array_contents2
+ = space  "{"space left:array_contents space "," space right:array_contents2 space "}" space {return left + "¥" + right;}
+ /array_contents
  
  additive_plural_array
  = space left:additive space "," space right:additive_plural_array {return left + "@" + right;}
@@ -390,8 +414,10 @@ character
 variable
   = variable:([a-zA-Z][a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
 
+//配列
 variable_array
- = variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
+ = variable:variable "[" num1:(variable/integer) "]" space "[" num2:(variable/integer) "]" { return variable + "[" + num1 + "][" + num2 + "]"  }
+ / variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
 
 //改行・コメント
 space
