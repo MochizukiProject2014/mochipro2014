@@ -227,19 +227,19 @@ tm.define("MainScene", {
         	 	}
         	 }
     	};
-    	
-    	/*window.setTimeout(function(){
+    	/*
+    	window.setTimeout(function(){
     		ANIME_sengen_dainyu("int","x",9);
-    		//ANIME_sengen("int","y");
-    		//ANIME_sengen("int","z");
-    		//ANIME_sengen("int","aa");
+    		ANIME_sengen("int","y");
+    		ANIME_sengen("int","z");
+    		ANIME_sengen("int","aa");
     		//ANIME_sengen("int","bb");
     	},1000);
-		
+		/*
 		window.setTimeout(function(){
 			ANIME_array_sengen("int","a",10);
 		},2000);
-		
+		*/
 		/*
 		window.setTimeout(function(){
 			ANIME_array_sengen_dainyu("int","a",2,["100","200"],["100","200"]);
@@ -268,7 +268,12 @@ tm.define("MainScene", {
 		*/
 		/*
 		window.setTimeout(function(){
-			ANIME_array_dainyu("a[4]","9");
+			ANIME_array_enzan_dainyu("a[7]","x:+:1","10");
+		},10000);
+		*/
+		/*
+		window.setTimeout(function(){
+			ANIME_array_dainyu("a[7]","10");
 		},10000);
 		*/
     },
@@ -949,69 +954,12 @@ function ANIME_array_dainyu(name,value){
 	space.hide();
 
 
-	var time = 250;
+	var time = 200;
 
 	var cnt = 0;
 	//trainに所属するプロミンを動かす
 	for(var i=0;i<train.value.length;i++){
 		if(i===target_index){
-			/*train.value[i].tweener
-				.clear()
-				.move(app.canvas.centerX,app.canvas.centerY,200*SPEED*(train.value[i].index+1))
-				.wait(1000*SPEED)
-
-				.call(function(){
-					space.show();
-					promin.valueLabel.text="";
-					turn(promin,ERACE);
-				})
-				.wait(150*SPEED)
-				.call(function(){turn(promin,ERACE2);})
-				.wait(150*SPEED)
-				.call(function(){turn(promin,ERACE);})
-				.wait(150*SPEED)
-				.call(function(){turn(promin,ERACE2);})
-				.wait(150*SPEED)
-				.call(function(){turn(promin,ERACE);})
-				.wait(150*SPEED)
-
-				.call(function(){turn(promin,FRONT);})
-				.wait(250*SPEED)
-
-				//書くモーション
-				.call(function(){turn(promin,WRITE);})
-				.wait(150*SPEED)
-				.call(function(){turn(promin,WRITE2);})
-				.wait(150*SPEED)
-				.call(function(){turn(promin,WRITE);})
-				.wait(150*SPEED)
-				.call(function(){
-					promin.value = value;
-					promin.valueLabel.text = value;
-				})
-				.call(function(){turn(promin,WRITE2);})
-				.wait(150*SPEED)
-				.call(function(){turn(promin,WRITE);})
-				.wait(250*SPEED)
-				.call(function(){
-					turn(promin,FRONT);
-					//space.hide();
-					app.currentScene.removeChild(space);
-				})
-				.wait(500*SPEED)
-				//.move(app.canvas.centerX,app.canvas.centerY,180*SPEED*(train.value[i].index+1))
-				//.move(app.canvas.centerX,app.canvas.centerY,200*SPEED*(train.value.length-train.value[i].index+1))
-				.move(train.value[i].defaultX,train.value[i].defaultY,800*SPEED)
-				.call(function(){
-					cnt++;
-					if(target_index+1==cnt){
-						sign = 1;BUTTON_ON();
-					}
-				})
-
-				//.move(0,0,1000)
-				;
-			*/
 			train.value[i].tweener
 				.clear()
 				.wait(i*time*SPEED)
@@ -1065,11 +1013,7 @@ function ANIME_array_dainyu(name,value){
 					if(target_index+1==cnt){
 						sign = 1;BUTTON_ON();
 					}
-				})
-
-				//.move(0,0,1000)
-				;
-
+				});
 
 		}else if(i<target_index){
 			var t = train.value[i];
@@ -1078,7 +1022,6 @@ function ANIME_array_dainyu(name,value){
 				.wait(i*time*SPEED)
 				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
 				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,(target_index-i)*time*SPEED)
-				//.move(app.canvas.centerX+(target_index-i)*80,app.canvas.centerY+(target_index-i)*40,500*SPEED)
 				.wait(3450*SPEED)
 				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*SPEED)
 				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
@@ -1088,6 +1031,36 @@ function ANIME_array_dainyu(name,value){
 						sign = 1;BUTTON_ON();
 					}
 				})
+		}else if(i>target_index && target_index+3>i){
+			//代入対象のインデックス+1のインデックスをもつ配列プロミン
+			if(i===target_index+1){
+				train.value[i].tweener
+				.clear()
+				.wait(i*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,2.7*time*SPEED)
+				.wait(3450*SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED)
+				.call(function(){
+					cnt++;
+					if(target_index+1==cnt){
+						sign = 1;BUTTON_ON();
+					}
+				})
+			//代入対象のインデックス+1のインデックスをもつ配列プロミン
+			}else if(i===target_index+2){
+				train.value[i].tweener
+				.clear()
+				.wait(i*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,1.7*time*SPEED)
+				.wait(3450*SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*SPEED)
+				.call(function(){
+					cnt++;
+					if(target_index+1==cnt){
+						sign = 1;BUTTON_ON();
+					}
+				})
+			}
 		}
 	}
 }
@@ -1126,6 +1099,7 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 	//space.hide();
 
 	var cnt = 0;
+	var time = 200;
 
 	//trainに所属するプロミンを動かす
 	for(var i=0;i<train.value.length;i++){
@@ -1133,8 +1107,9 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 		if(i===target_index){
 			train.value[i].tweener
 				.clear()
-				.move(app.canvas.centerX,app.canvas.centerY,200*SPEED*(train.value[i].index+1))
-				.wait(1000*SPEED)
+				.wait(i*time*SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
+				.wait(i*time*SPEED)
 				.call(function(){
 					equalLabel = tm.app.Label("=").addChildTo(space);
 					equalLabel
@@ -1292,7 +1267,7 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 					}
 				})
 
-				.wait(3000*SPEED)
+				.wait(2500*SPEED)
 				.call(function(){
 					space.show();
 					promin.valueLabel.text="";
@@ -1331,7 +1306,7 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 					app.currentScene.removeChild(space);
 				})
 				.wait(500*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,/*185*SPEED*(train.value.length-train.value[i].index+1)*/800*SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
 				.call(function(){
 					cnt++;
 					if(target_index+1==cnt){
@@ -1339,24 +1314,52 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 						//console.log("おわり")
 					}
 				});
-
 		}else if(i<target_index){
 			var t = train.value[i];
 			train.value[i].tweener
 				.clear()
-				.move(app.canvas.centerX,app.canvas.centerY,200*SPEED*(train.value[i].index+1))
-				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,150*SPEED*(train.value.length-train.value[i].index+1))
-				//.move(app.canvas.centerX+(target_index-i)*80,app.canvas.centerY+(target_index-i)*40,500*SPEED)
-				.wait((target_index*550)*SPEED-(225*SPEED*i))
-				.move(app.canvas.centerX,app.canvas.centerY,150*SPEED*(train.value.length-train.value[i].index+1))
-				.move(train.value[i].defaultX,train.value[i].defaultY,800*SPEED/**(train.value.length-train.value[i].index+1)*/)
+				.wait(i*time*SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
+				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,(target_index-i)*time*SPEED)
+				.wait(6350*SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
 				.call(function(){
 					cnt++;
 					if(target_index+1==cnt){
 						sign = 1;BUTTON_ON();
-						//console.log("おわり")
 					}
 				})
+		}else if(i>target_index && target_index+3>i){
+			//代入対象のインデックス+1のインデックスをもつ配列プロミン
+			if(i===target_index+1){
+				train.value[i].tweener
+				.clear()
+				.wait(i*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,2.7*time*SPEED)
+				.wait(6350*SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED)
+				.call(function(){
+					cnt++;
+					if(target_index+1==cnt){
+						sign = 1;BUTTON_ON();
+					}
+				})
+			//代入対象のインデックス+1のインデックスをもつ配列プロミン
+			}else if(i===target_index+2){
+				train.value[i].tweener
+				.clear()
+				.wait(i*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,1.7*time*SPEED)
+				.wait(6350*SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*SPEED)
+				.call(function(){
+					cnt++;
+					if(target_index+1==cnt){
+						sign = 1;BUTTON_ON();
+					}
+				})
+			}
 		}
 	}
 }
