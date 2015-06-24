@@ -34,41 +34,41 @@ parser = (function() {
 
         peg$c0 = peg$FAILED,
         peg$c1 = "#include",
-        peg$c2 = { type: "literal", value: "#include", description: "¥"#include¥"" },
+        peg$c2 = { type: "literal", value: "#include", description: "\"#include\"" },
         peg$c3 = "<stdio.h>",
-        peg$c4 = { type: "literal", value: "<stdio.h>", description: "¥"<stdio.h>¥"" },
+        peg$c4 = { type: "literal", value: "<stdio.h>", description: "\"<stdio.h>\"" },
         peg$c5 = [],
         peg$c6 = "int",
-        peg$c7 = { type: "literal", value: "int", description: "¥"int¥"" },
+        peg$c7 = { type: "literal", value: "int", description: "\"int\"" },
         peg$c8 = "main",
-        peg$c9 = { type: "literal", value: "main", description: "¥"main¥"" },
+        peg$c9 = { type: "literal", value: "main", description: "\"main\"" },
         peg$c10 = "(void)",
-        peg$c11 = { type: "literal", value: "(void)", description: "¥"(void)¥"" },
+        peg$c11 = { type: "literal", value: "(void)", description: "\"(void)\"" },
         peg$c12 = function(block) {return block;},
         peg$c13 = "{",
-        peg$c14 = { type: "literal", value: "{", description: "¥"{¥"" },
+        peg$c14 = { type: "literal", value: "{", description: "\"{\"" },
         peg$c15 = "}",
-        peg$c16 = { type: "literal", value: "}", description: "¥"}¥"" },
+        peg$c16 = { type: "literal", value: "}", description: "\"}\"" },
         peg$c17 = function(script) {return script;},
         peg$c18 = "int ",
-        peg$c19 = { type: "literal", value: "int ", description: "¥"int ¥"" },
+        peg$c19 = { type: "literal", value: "int ", description: "\"int \"" },
         peg$c20 = ";",
-        peg$c21 = { type: "literal", value: ";", description: "¥";¥"" },
+        peg$c21 = { type: "literal", value: ";", description: "\";\"" },
         peg$c22 = function(variable) {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("int","' + variable + '", null );' ;},
         peg$c23 = /^[,]/,
         peg$c24 = { type: "class", value: "[,]", description: "[,]" },
         peg$c25 = function(variable1, variable2) {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("int","' + variable1 + '", null ); duplication_judge("int","' + variable2 + '", null );' ;},
         peg$c26 = "=",
-        peg$c27 = { type: "literal", value: "=", description: "¥"=¥"" },
+        peg$c27 = { type: "literal", value: "=", description: "\"=\"" },
         peg$c28 = function(left, right) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("int","' + left + '","' + right + '");' ;},
         peg$c29 = function(contents) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');plural_declaration("int"' + ',"' + contents + '");' ;},
         peg$c30 = "double ",
-        peg$c31 = { type: "literal", value: "double ", description: "¥"double ¥"" },
+        peg$c31 = { type: "literal", value: "double ", description: "\"double \"" },
         peg$c32 = function(variable) {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("double","' + variable + '", null );' ;},
         peg$c33 = function(left, right) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("double","' + left + '","' + right + '");' ;},
         peg$c34 = function(contents) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');plural_declaration("double"' + ',"' + contents + '");' ;},
         peg$c35 = "char ",
-        peg$c36 = { type: "literal", value: "char ", description: "¥"char ¥"" },
+        peg$c36 = { type: "literal", value: "char ", description: "\"char \"" },
         peg$c37 = function(variable) {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("char","' + variable + '", null );' ;},
         peg$c38 = /^[']/,
         peg$c39 = { type: "class", value: "[']", description: "[']" },
@@ -77,13 +77,13 @@ parser = (function() {
         peg$c42 = function(left, right) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');duplication_judge("char","' + left + '","' + right + '");' ;},
         peg$c43 = function(contents) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');plural_declaration("char"' + ',"' + contents + '");' ;},
         peg$c44 = ",",
-        peg$c45 = { type: "literal", value: ",", description: "¥",¥"" },
+        peg$c45 = { type: "literal", value: ",", description: "\",\"" },
         peg$c46 = function(contents) {return contents;},
         peg$c47 = function(ar, cnt) { return ar + "=" + cnt ; },
         peg$c48 = "[",
-        peg$c49 = { type: "literal", value: "[", description: "¥"[¥"" },
+        peg$c49 = { type: "literal", value: "[", description: "\"[\"" },
         peg$c50 = "]",
-        peg$c51 = { type: "literal", value: "]", description: "¥"]¥"" },
+        peg$c51 = { type: "literal", value: "]", description: "\"]\"" },
         peg$c52 = function(variable) { return variable + "[]" ; },
         peg$c53 = function(left, right) { return left + "=" + right ; },
         peg$c54 = function(name, length) { return  'push_line(' + peg$computePosDetails(peg$reportedPos).line +');array_declare("int","' + name + '","undefined",' + length + ');'  },
@@ -113,14 +113,14 @@ parser = (function() {
           return 'multiarray_declare("int","' + variable +'","undefined","undefined","undefined");'  },
         peg$c67 = function(variable, contents) { return 'multiarray_declare("int","' + variable +'","' + contents + '","undefined","undefined");'  },
         peg$c68 = function(contents) {return contents},
-        peg$c69 = function(left, right) {return left + "ﾂ･" + right;},
+        peg$c69 = function(left, right) {return left + "¥" + right;},
         peg$c70 = function(left, right) {return left + "@" + right;},
         peg$c71 = "for",
-        peg$c72 = { type: "literal", value: "for", description: "¥"for¥"" },
+        peg$c72 = { type: "literal", value: "for", description: "\"for\"" },
         peg$c73 = "(",
-        peg$c74 = { type: "literal", value: "(", description: "¥"(¥"" },
+        peg$c74 = { type: "literal", value: "(", description: "\"(\"" },
         peg$c75 = ")",
-        peg$c76 = { type: "literal", value: ")", description: "¥")¥"" },
+        peg$c76 = { type: "literal", value: ")", description: "\")\"" },
         peg$c77 = function(left, right, comparison, substitution, block) {
                 var a = block[0];
                 if(block.length == 0){
@@ -132,9 +132,9 @@ parser = (function() {
             return 'for_js("false,' + left + ',' + right + '","' + comparison + '","' + substitution + '","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; 
           },
         peg$c78 = "double",
-        peg$c79 = { type: "literal", value: "double", description: "¥"double¥"" },
+        peg$c79 = { type: "literal", value: "double", description: "\"double\"" },
         peg$c80 = "char",
-        peg$c81 = { type: "literal", value: "char", description: "¥"char¥"" },
+        peg$c81 = { type: "literal", value: "char", description: "\"char\"" },
         peg$c82 = function(va, left, right, comparison, substitution, block) {
                 var a = block[0];
                 if(block.length == 0){
@@ -146,7 +146,7 @@ parser = (function() {
             return 'for_js("true,' + va + ',' + left + ',' + right + '","' + comparison + '","' + substitution + '","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; 
             },
         peg$c83 = "while",
-        peg$c84 = { type: "literal", value: "while", description: "¥"while¥"" },
+        peg$c84 = { type: "literal", value: "while", description: "\"while\"" },
         peg$c85 = function(comparison, block) {
                  var a = block[0];
                 if(block.length == 0){
@@ -157,11 +157,11 @@ parser = (function() {
                }
                 return "while(" + comparison + "){" + a + "}"; },
         peg$c86 = "break",
-        peg$c87 = { type: "literal", value: "break", description: "¥"break¥"" },
+        peg$c87 = { type: "literal", value: "break", description: "\"break\"" },
         peg$c88 = function() {return "break" ;},
         peg$c89 = function(result) { return result + 'end_of_if();' ;  },
         peg$c90 = "else",
-        peg$c91 = { type: "literal", value: "else", description: "¥"else¥"" },
+        peg$c91 = { type: "literal", value: "else", description: "\"else\"" },
         peg$c92 = function(left, block) {
              var a = block[0];
                 if(block.length == 0){
@@ -172,9 +172,9 @@ parser = (function() {
                }
              return left + 'else_js();' + a;},
         peg$c93 = "else ",
-        peg$c94 = { type: "literal", value: "else ", description: "¥"else ¥"" },
+        peg$c94 = { type: "literal", value: "else ", description: "\"else \"" },
         peg$c95 = "if",
-        peg$c96 = { type: "literal", value: "if", description: "¥"if¥"" },
+        peg$c96 = { type: "literal", value: "if", description: "\"if\"" },
         peg$c97 = function(left, comparison, block, right) {
                 var a = block[0];
                 if(block.length == 0){
@@ -217,59 +217,59 @@ parser = (function() {
                 return 'if_js("' + comparison + '");' + a ;},
         peg$c101 = function(left, right) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; },
         peg$c102 = "++",
-        peg$c103 = { type: "literal", value: "++", description: "¥"++¥"" },
+        peg$c103 = { type: "literal", value: "++", description: "\"++\"" },
         peg$c104 = function(left) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:1'+ '");' ; },
         peg$c105 = "--",
-        peg$c106 = { type: "literal", value: "--", description: "¥"--¥"" },
+        peg$c106 = { type: "literal", value: "--", description: "\"--\"" },
         peg$c107 = function(left) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:1' + '");' ; },
         peg$c108 = "+=",
-        peg$c109 = { type: "literal", value: "+=", description: "¥"+=¥"" },
+        peg$c109 = { type: "literal", value: "+=", description: "\"+=\"" },
         peg$c110 = function(left, right) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:' + right + '");' ; },
         peg$c111 = "-=",
-        peg$c112 = { type: "literal", value: "-=", description: "¥"-=¥"" },
+        peg$c112 = { type: "literal", value: "-=", description: "\"-=\"" },
         peg$c113 = function(left, right) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:' + right + '");' ; },
         peg$c114 = "'",
-        peg$c115 = { type: "literal", value: "'", description: "¥"'¥"" },
+        peg$c115 = { type: "literal", value: "'", description: "\"'\"" },
         peg$c116 = function(left, right) { return left + " = " + right ; },
         peg$c117 = function(left) { return left + ":+:1" ; },
         peg$c118 = function(left) { return left + ":-:1" ; },
         peg$c119 = function(left, right) { return left + ":+:" + right ; },
         peg$c120 = function(left, right) { return left + ":-:" + right ; },
         peg$c121 = "&&",
-        peg$c122 = { type: "literal", value: "&&", description: "¥"&&¥"" },
+        peg$c122 = { type: "literal", value: "&&", description: "\"&&\"" },
         peg$c123 = function(left, right) { return left + " && " + right ; },
         peg$c124 = "||",
-        peg$c125 = { type: "literal", value: "||", description: "¥"||¥"" },
+        peg$c125 = { type: "literal", value: "||", description: "\"||\"" },
         peg$c126 = function(left, right) {return left + " || " + right ; },
         peg$c127 = "!",
-        peg$c128 = { type: "literal", value: "!", description: "¥"!¥"" },
+        peg$c128 = { type: "literal", value: "!", description: "\"!\"" },
         peg$c129 = function(comparison_same) { return "!" + comparison_same ;},
         peg$c130 = "==",
-        peg$c131 = { type: "literal", value: "==", description: "¥"==¥"" },
+        peg$c131 = { type: "literal", value: "==", description: "\"==\"" },
         peg$c132 = function(left, right) { return left + " == " + right ; },
         peg$c133 = ">",
-        peg$c134 = { type: "literal", value: ">", description: "¥">¥"" },
+        peg$c134 = { type: "literal", value: ">", description: "\">\"" },
         peg$c135 = function(left, right) { return left + " > " + right ; },
         peg$c136 = "<",
-        peg$c137 = { type: "literal", value: "<", description: "¥"<¥"" },
+        peg$c137 = { type: "literal", value: "<", description: "\"<\"" },
         peg$c138 = function(left, right) { return left + " < " + right ; },
         peg$c139 = ">=",
-        peg$c140 = { type: "literal", value: ">=", description: "¥">=¥"" },
+        peg$c140 = { type: "literal", value: ">=", description: "\">=\"" },
         peg$c141 = function(left, right) { return left + " >= " + right ; },
         peg$c142 = "<=",
-        peg$c143 = { type: "literal", value: "<=", description: "¥"<=¥"" },
+        peg$c143 = { type: "literal", value: "<=", description: "\"<=\"" },
         peg$c144 = function(left, right) { return left + " <= " + right ; },
         peg$c145 = "!=",
-        peg$c146 = { type: "literal", value: "!=", description: "¥"!=¥"" },
+        peg$c146 = { type: "literal", value: "!=", description: "\"!=\"" },
         peg$c147 = function(left, right) { return left + " != " + right ; },
         peg$c148 = "scanf",
-        peg$c149 = { type: "literal", value: "scanf", description: "¥"scanf¥"" },
+        peg$c149 = { type: "literal", value: "scanf", description: "\"scanf\"" },
         peg$c150 = /^["]/,
-        peg$c151 = { type: "class", value: "[¥"]", description: "[¥"]" },
+        peg$c151 = { type: "class", value: "[\"]", description: "[\"]" },
         peg$c152 = "&",
-        peg$c153 = { type: "literal", value: "&", description: "¥"&¥"" },
-        peg$c154 = /^[¥n]/,
-        peg$c155 = { type: "class", value: "[¥¥n]", description: "[¥¥n]" },
+        peg$c153 = { type: "literal", value: "&", description: "\"&\"" },
+        peg$c154 = /^[\n]/,
+        peg$c155 = { type: "class", value: "[\\n]", description: "[\\n]" },
         peg$c156 = function(type, variable) { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');scanf_js("' + variable + '","' + type + '");' ;  },
         peg$c157 = function(contents, variable) {
            contents = contents.replace(/::::/g,":: ::")
@@ -279,76 +279,76 @@ parser = (function() {
         peg$c160 = function(left, type, right) { return "::" + type + "::" + right; },
         peg$c161 = function() { return ""; },
         peg$c162 = "%",
-        peg$c163 = { type: "literal", value: "%", description: "¥"%¥"" },
+        peg$c163 = { type: "literal", value: "%", description: "\"%\"" },
         peg$c164 = "d",
-        peg$c165 = { type: "literal", value: "d", description: "¥"d¥"" },
+        peg$c165 = { type: "literal", value: "d", description: "\"d\"" },
         peg$c166 = "o",
-        peg$c167 = { type: "literal", value: "o", description: "¥"o¥"" },
+        peg$c167 = { type: "literal", value: "o", description: "\"o\"" },
         peg$c168 = "x",
-        peg$c169 = { type: "literal", value: "x", description: "¥"x¥"" },
+        peg$c169 = { type: "literal", value: "x", description: "\"x\"" },
         peg$c170 = "X",
-        peg$c171 = { type: "literal", value: "X", description: "¥"X¥"" },
+        peg$c171 = { type: "literal", value: "X", description: "\"X\"" },
         peg$c172 = "c",
-        peg$c173 = { type: "literal", value: "c", description: "¥"c¥"" },
+        peg$c173 = { type: "literal", value: "c", description: "\"c\"" },
         peg$c174 = "s",
-        peg$c175 = { type: "literal", value: "s", description: "¥"s¥"" },
+        peg$c175 = { type: "literal", value: "s", description: "\"s\"" },
         peg$c176 = "f",
-        peg$c177 = { type: "literal", value: "f", description: "¥"f¥"" },
+        peg$c177 = { type: "literal", value: "f", description: "\"f\"" },
         peg$c178 = "lf",
-        peg$c179 = { type: "literal", value: "lf", description: "¥"lf¥"" },
+        peg$c179 = { type: "literal", value: "lf", description: "\"lf\"" },
         peg$c180 = function(type) {return "%" + type;},
         peg$c181 = function(left, right) {return left + "," + right;},
         peg$c182 = function(add) {return add},
         peg$c183 = "printf",
-        peg$c184 = { type: "literal", value: "printf", description: "¥"printf¥"" },
+        peg$c184 = { type: "literal", value: "printf", description: "\"printf\"" },
         peg$c185 = function(type, variable) {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_js("' + variable + '","' + type + '");' ;  },
         peg$c186 = function(contents, variable) {
-            if(contents.indexOf("¥¥") != -1){
-          	contents = contents.replace(/¥¥/g,"¥¥¥¥");
+            if(contents.indexOf("\\") != -1){
+          	contents = contents.replace(/\\/g,"\\\\");
           }
            return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_js("' + variable + '","' + contents + '");' ; },
         peg$c187 = function(contents) {    
-        	if(contents.indexOf("¥¥") != -1){
-          		contents = contents.replace(/¥¥/g,"¥¥¥¥");
+        	if(contents.indexOf("\\") != -1){
+          		contents = contents.replace(/\\/g,"\\\\");
          	} 
           	return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_djs("' + contents + '");' ; },
         peg$c188 = function(left, type, right) {
           		return left + ":@:" + type + ":@:" + right; },
         peg$c189 = "u",
-        peg$c190 = { type: "literal", value: "u", description: "¥"u¥"" },
+        peg$c190 = { type: "literal", value: "u", description: "\"u\"" },
         peg$c191 = "e",
-        peg$c192 = { type: "literal", value: "e", description: "¥"e¥"" },
+        peg$c192 = { type: "literal", value: "e", description: "\"e\"" },
         peg$c193 = "E",
-        peg$c194 = { type: "literal", value: "E", description: "¥"E¥"" },
+        peg$c194 = { type: "literal", value: "E", description: "\"E\"" },
         peg$c195 = "g",
-        peg$c196 = { type: "literal", value: "g", description: "¥"g¥"" },
+        peg$c196 = { type: "literal", value: "g", description: "\"g\"" },
         peg$c197 = "G",
-        peg$c198 = { type: "literal", value: "G", description: "¥"G¥"" },
+        peg$c198 = { type: "literal", value: "G", description: "\"G\"" },
         peg$c199 = /^[^"%,+]/,
-        peg$c200 = { type: "class", value: "[^¥"%,+]", description: "[^¥"%,+]" },
+        peg$c200 = { type: "class", value: "[^\"%,+]", description: "[^\"%,+]" },
         peg$c201 = function(letter) { return letter.join("").replace(/,/g,""); },
         peg$c202 = /^[^"]/,
-        peg$c203 = { type: "class", value: "[^¥"]", description: "[^¥"]" },
+        peg$c203 = { type: "class", value: "[^\"]", description: "[^\"]" },
         peg$c204 = "return",
-        peg$c205 = { type: "literal", value: "return", description: "¥"return¥"" },
+        peg$c205 = { type: "literal", value: "return", description: "\"return\"" },
         peg$c206 = function(result) {return "push_line(" + peg$computePosDetails(peg$reportedPos).line +");return_js(" + result + ");" ;},
         peg$c207 = "+",
-        peg$c208 = { type: "literal", value: "+", description: "¥"+¥"" },
+        peg$c208 = { type: "literal", value: "+", description: "\"+\"" },
         peg$c209 = function(left, right) { return left + ":" + "+" + ":" + right; },
         peg$c210 = "*",
-        peg$c211 = { type: "literal", value: "*", description: "¥"*¥"" },
+        peg$c211 = { type: "literal", value: "*", description: "\"*\"" },
         peg$c212 = function(left, right) { return left + ":" + "*" + ":" + right; },
         peg$c213 = "-",
-        peg$c214 = { type: "literal", value: "-", description: "¥"-¥"" },
+        peg$c214 = { type: "literal", value: "-", description: "\"-\"" },
         peg$c215 = function(left, right) {  return left + ":" + "-" + ":" + right;  },
         peg$c216 = "/",
-        peg$c217 = { type: "literal", value: "/", description: "¥"/¥"" },
+        peg$c217 = { type: "literal", value: "/", description: "\"/\"" },
         peg$c218 = function(left, right) {  return left + ":" + "/" + ":" + right;  },
         peg$c219 = function(left, right) {  return left + ":" + "%" + ":" + right;  },
         peg$c220 = function(additive) { return "(" + ":" + additive + ":" + ")"; },
         peg$c221 = function(result) {return "-" + result},
         peg$c222 = ".",
-        peg$c223 = { type: "literal", value: ".", description: "¥".¥"" },
+        peg$c223 = { type: "literal", value: ".", description: "\".\"" },
         peg$c224 = function(left, right) { return parseFloat(left + "." + right) },
         peg$c225 = { type: "other", description: "integer" },
         peg$c226 = /^[0-9]/,
@@ -361,12 +361,12 @@ parser = (function() {
         peg$c233 = function(variable) { return variable.join("").replace(/,/g,""); },
         peg$c234 = function(variable, num1, num2) { return variable + "[" + num1 + "][" + num2 + "]"  },
         peg$c235 = function(variable, num) { return variable + "[" + num + "]" },
-        peg$c236 = /^[ ¥n¥t]/,
-        peg$c237 = { type: "class", value: "[ ¥¥n¥¥t]", description: "[ ¥¥n¥¥t]" },
+        peg$c236 = /^[ \n\t]/,
+        peg$c237 = { type: "class", value: "[ \\n\\t]", description: "[ \\n\\t]" },
         peg$c238 = "//",
-        peg$c239 = { type: "literal", value: "//", description: "¥"//¥"" },
-        peg$c240 = /^[^¥n]/,
-        peg$c241 = { type: "class", value: "[^¥¥n]", description: "[^¥¥n]" },
+        peg$c239 = { type: "literal", value: "//", description: "\"//\"" },
+        peg$c240 = /^[^\n]/,
+        peg$c241 = { type: "class", value: "[^\\n]", description: "[^\\n]" },
         peg$c242 = function() {return  "push_line(" + peg$computePosDetails(peg$reportedPos).line +");"},
 
         peg$currPos          = 0,
@@ -381,7 +381,7 @@ parser = (function() {
 
     if ("startRule" in options) {
       if (!(options.startRule in peg$startRuleFunctions)) {
-        throw new Error("Can't start parsing from rule ¥"" + options.startRule + "¥".");
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
       }
 
       peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
@@ -421,11 +421,11 @@ parser = (function() {
 
         for (p = startPos; p < endPos; p++) {
           ch = input.charAt(p);
-          if (ch === "¥n") {
+          if (ch === "\n") {
             if (!details.seenCR) { details.line++; }
             details.column = 1;
             details.seenCR = false;
-          } else if (ch === "¥r" || ch === "¥u2028" || ch === "¥u2029") {
+          } else if (ch === "\r" || ch === "\u2028" || ch === "\u2029") {
             details.line++;
             details.column = 1;
             details.seenCR = true;
@@ -487,17 +487,17 @@ parser = (function() {
           function hex(ch) { return ch.charCodeAt(0).toString(16).toUpperCase(); }
 
           return s
-            .replace(/¥¥/g,   '¥¥¥¥')
-            .replace(/"/g,    '¥¥"')
-            .replace(/¥x08/g, '¥¥b')
-            .replace(/¥t/g,   '¥¥t')
-            .replace(/¥n/g,   '¥¥n')
-            .replace(/¥f/g,   '¥¥f')
-            .replace(/¥r/g,   '¥¥r')
-            .replace(/[¥x00-¥x07¥x0B¥x0E¥x0F]/g, function(ch) { return '¥¥x0' + hex(ch); })
-            .replace(/[¥x10-¥x1F¥x80-¥xFF]/g,    function(ch) { return '¥¥x'  + hex(ch); })
-            .replace(/[¥u0180-¥u0FFF]/g,         function(ch) { return '¥¥u0' + hex(ch); })
-            .replace(/[¥u1080-¥uFFFF]/g,         function(ch) { return '¥¥u'  + hex(ch); });
+            .replace(/\\/g,   '\\\\')
+            .replace(/"/g,    '\\"')
+            .replace(/\x08/g, '\\b')
+            .replace(/\t/g,   '\\t')
+            .replace(/\n/g,   '\\n')
+            .replace(/\f/g,   '\\f')
+            .replace(/\r/g,   '\\r')
+            .replace(/[\x00-\x07\x0B\x0E\x0F]/g, function(ch) { return '\\x0' + hex(ch); })
+            .replace(/[\x10-\x1F\x80-\xFF]/g,    function(ch) { return '\\x'  + hex(ch); })
+            .replace(/[\u0180-\u0FFF]/g,         function(ch) { return '\\u0' + hex(ch); })
+            .replace(/[\u1080-\uFFFF]/g,         function(ch) { return '\\u'  + hex(ch); });
         }
 
         var expectedDescs = new Array(expected.length),
@@ -513,9 +513,9 @@ parser = (function() {
               + expectedDescs[expected.length - 1]
           : expectedDescs[0];
 
-        foundDesc = found ? "¥"" + stringEscape(found) + "¥"" : "end of input";
+        foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
 
-       var l = posDetails.line;
+        var l = posDetails.line;
         
         if(expectedDesc.indexOf(";") != -1){
         	l = l-1;
@@ -541,6 +541,7 @@ parser = (function() {
         }
 
         return "Expected " + expectedDesc + " but " + foundDesc + " found.";
+
       }
 
       var posDetails = peg$computePosDetails(pos),
