@@ -472,7 +472,7 @@ if(action_frag == true&&for_flag){
 			variables[i].value = value;
 		break;
 		case "a":
-			if(cvflag){jsOfAnimes.push('ANIME_enzan_dainyu("'+name+'['+index+']'+'",'+str+',"'+value+'")');}
+			if(cvflag){jsOfAnimes.push('ANIME_array_enzan_dainyu("'+name+'['+index+']'+'",'+str+',"'+value+'")');}
 			else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index+']'+'","'+value+'")');}
 			var str="";
 			var tempArr = [];
