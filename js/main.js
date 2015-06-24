@@ -27,10 +27,10 @@ function disTexetarea(){
 	var resultlength = result.length;
 	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
 	result2 = ucode.match(/(.+);$/)[1].split(";");
-	arr_check("パーサー結果配列",result2);
+	//arr_check("パーサー結果配列",result2);
 	var result2length = result2.length;
 	evalfunction(0,result2);
-	arr_check("アニメ配列",jsOfAnimes);
+	//arr_check("アニメ配列",jsOfAnimes);
 	sign =1;
 	if(syntaxErrorFlag){R();}
 	else{ANIME_reset();ANIME_error(syntaxStr);}
@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	SPEED=0.25;
+	//SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -71,7 +71,7 @@ scanfSetStr+="<font color = red>「値」「enterキー」「値」「enterキ�
 function evalfunction(index,rArr){
 	var len = rArr.length;
 	for(var i = index ;i < len ;i++){
-		console.log(rArr[i]);
+		//console.log(rArr[i]);
 		if(!(rArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(rArr[i]);
 		eval(rArr[i]);
 		if(rArr[i].match(/^scanf_js.*/)){
@@ -476,10 +476,7 @@ if(action_frag == true&&for_flag){
 			else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index+']'+'","'+value+'")');}
 			var str="";
 			var tempArr = [];
-			for(var i=0;i<len;i++)if(variables[i].name==name){
-			console.log(variables[i].value);
-				tempArr=variables[i].value.split("@");
-			}
+			for(var i=0;i<len;i++)if(variables[i].name==name)tempArr=variables[i].value.split("@");
 			tempArr[index] = value;
 			var templen = tempArr.length;
 			for(var i = 0;i<templen;i++){
