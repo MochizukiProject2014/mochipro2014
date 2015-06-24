@@ -266,11 +266,11 @@ tm.define("MainScene", {
 			ANIME_printf(["a[0]は","%d","です"],["a[0]"]);
 		},4000);
 		*/
-		
+		/*
 		window.setTimeout(function(){
 			ANIME_array_enzan_dainyu("a[7]","x:+:1","10");
 		},10000);
-		
+		*/
 		/*
 		window.setTimeout(function(){
 			ANIME_array_dainyu("a[7]","10");
