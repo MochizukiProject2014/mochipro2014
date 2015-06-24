@@ -289,6 +289,15 @@ function Arr(data_type,name,value,length,number){
 	this.status="a";
 }
 
+function MultiArr(data_type,name,value,length1,length2){
+	this.data_type = data_type;	//型
+	this.name = name;				//名前
+	this.value = value;				//値
+	this.length1 = length1;			//長さ1
+	this.length2 = length2;			//長さ2
+	this.status="ma";
+}
+
 function duplication_judge(data_type,name,value){
 if(action_frag == true&&for_flag){
 		variable_declare(data_type,name,value);
@@ -333,15 +342,15 @@ if(action_frag == true){
 	var alen = variables.length;
 	var init_flag = false;
 	var calc_flag = false;
-	var valuelen = length;
+	var value1len = length;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)
 		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
 	if(value!="undefined"){
 		var valuearr = value.split("@");
 		valuelen = valuearr.length;
+		if(length < valuelen)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;
 		init_flag = true;
 		var str = "[";
-		arr_check("デバック",valuearr);
 		for(var i = 0;i < valuelen ;i++)if(/:/.test(valuearr[i]))calc_flag = true;
 		if(!calc_flag){
 			for(var i = 0;i < valuelen ;i++)if(!type_judge(data_type,valuearr[i]))
@@ -363,7 +372,7 @@ if(action_frag == true){
 		value = "";
 		for(var i = 0;i < valuelen ;i++){
 			value += (''+calc(valuearr[i])+'');
-			if(i<valuelen-1)value += ':';
+			if(i<valuelen-1)value += '@';
 		}
 	}else if(init_flag){
 		for(var i = 0;i < valuelen ;i++){
@@ -374,10 +383,51 @@ if(action_frag == true){
 	}else{
 		jsOfAnimes.push('ANIME_array_sengen("'+data_type+'","'+name+'","'+valuelen+'");');
 	}
-	var v = new Arr(data_type,name,value,valuelen,uArr_num);
+	if(valuelen<length){
+		for(var i = valuelen;i < length;i++)value+="@?";
+	}
+	var v = new Arr(data_type,name,value,length,uArr_num);
 	variables.push(v);
 }
 }
+
+function multiarray_declare(data_type,name,value,length1,length2){
+if(action_frag == true){
+	var alen = variables.length;
+	var init_flag = false;
+	var calc_flag = false;
+	if(length2=="undefined")return createSyntaxError("２つめの長さは必ず指定してね！") ;
+	for(var i =0;i <alen;i++)if(variables[i].name == name)
+		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
+	if(value!="undefined"){
+		var value1arr = value.split("^");
+		var len1 = value1arr.length;
+		if(length1 < len1)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;
+		init_flag = true;
+		var str = "[";
+		for(var j = 0;i < len1;i++){
+			var value2arr = value1arr[j].split("@");
+			var len2 = value2length;
+			if(length2 > len2)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;
+			for(var k = 0;i < len2;k++)if(/:/.test(value2arr[k]))calc_flag = true;
+			if(!calc_flag){
+				for(var k = 0;i < len2 ;k++)if(!type_judge(data_type,value2arr[k]))
+				return createSyntaxError("配列に代入する値が変だよ！");
+			}
+		}
+	}
+	if(init_flag&&calc_flag){
+		//jsOfAnimes.push();
+	}else if(init_flag){
+		//jsOfAnimes.push();
+	}else{
+		//jsOfAnimes.push();
+	}
+	var v = new Arr(data_type,name,value,uArr_num);
+	variables.push(v);
+}
+}
+
 function substitute(name,value){//変数に数字を代入するメソッド
 if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
@@ -458,13 +508,11 @@ function push_line(line_i){
 }
 
 function return_js(value){
-	console.log("return受領。")
 	jsOfAnimes.push("ANIME_finish()");
 	codeFinishFlag = true;
 }
 function ANIME_finish(){
 	if(htmlversion!="free"){answer_check(htmlversion);}
-	else{answer_check("431");}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
