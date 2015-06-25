@@ -9,6 +9,7 @@ var trainport = []; ///配列プロミンをそれぞれの所属する配列に
  *			size : 配列の大きさ(=車両の数)
  *			value : 配列プロミンが格納された配列
  */
+var bars = [];
 var DEFAULT_SPEED = 1.3;
 var SPEED = DEFAULT_SPEED;
 var SPEED_BOARD = null;
@@ -219,63 +220,26 @@ tm.define("MainScene", {
 			.setFontSize(13)
 			.setPosition(app.canvas.centerX,430);
 		SPEED_BOARD = this.Label;
-
-		app.currentScene.update = function(app) {
-        	 for(var i=0;i<promin_array.length;i++){
-        	 	if(promin_array[i].arrayFlag){
-        	 		promin_array[i].joint.update();
-        	 	}
-        	 }
-    	};
-    	/*
-    	window.setTimeout(function(){
-    		ANIME_sengen_dainyu("int","x",9);
-    		ANIME_sengen("int","y");
-    		ANIME_sengen("int","z");
-    		ANIME_sengen("int","aa");
-    		//ANIME_sengen("int","bb");
-    	},1000);
-		/*
-		window.setTimeout(function(){
-			ANIME_array_sengen("int","a",10);
-		},2000);
-		*/
-		/*
-		window.setTimeout(function(){
-			ANIME_array_sengen_dainyu("int","a",2,["100","200"],["100","200"]);
-		},2000);
-		*/
-		/*
-		window.setTimeout(function(){
-			ANIME_array_dainyu("a[2]",9);
-		},8000);
-		*/
 		
-		/*window.setTimeout(function(){
-			ANIME_sengen_dainyu("int","y",5);
-		},1000);
-
-		window.setTimeout(function(){
-			ANIME_sengen_enzan("int","a",["x[2]","+","y"],15);
-		},10000);*/
 		/*
-		window.setTimeout(function(){
-			ANIME_array_sengen_dainyu("int","a",1,["2"],["2"]);
-		});
-		window.setTimeout(function(){
-			ANIME_printf(["a[0]は","%d","です"],["a[0]"]);
-		},4000);
-		*/
-		/*
-		window.setTimeout(function(){
-			ANIME_array_enzan_dainyu("a[7]","x:+:1","10");
-		},10000);
-		*/
-		/*
-		window.setTimeout(function(){
-			ANIME_array_dainyu("a[7]","10");
-		},10000);
-		*/
+		// スターを生成
+    	var star = tm.display.StarShape();
+    	star.setPosition(100,100);
+    	this.addChild(star);
+    	this.update = function(app) {
+        	// クルクル回す
+        	star.rotation += 16;
+    	};
+    	*/
+    	window.setTimeout(function(){
+    		//ANIME_sengen_dainyu("int","x",9);
+    		//ANIME_sengen("int","y");
+    		//ANIME_sengen("int","z");
+    		//ANIME_sengen("int","aa");
+    		//ANIME_sengen("int","bb");
+    		//ANIME_array_sengen("int","a",10);
+    	},1000);
+		
     },
 });
 
@@ -344,6 +308,7 @@ tm.define("MiniPromin",{
 		}else if(this.dataType==="char"){
 			this.imgSet=CharProminImg;
 		}
+
 
 
 	},
@@ -432,6 +397,15 @@ tm.define("ArrayPromin",{
 			this.imgSet=DoubleArrayImg;
 		}else if(this.dataType==="char"){
 			this.imgSet=CharArrayImg;
+		}
+
+		if(this.index>0){
+			var bar = tm.display.RectangleShape();
+			bar.canvas.clearColor("black");
+	    	bar.setPosition(0,40);
+	    	bar.setHeight(2);
+	    	this.addChild(bar);	
+	    	bar.hide();
 		}
 
 	},
@@ -960,6 +934,7 @@ function ANIME_array_dainyu(name,value){
 	//trainに所属するプロミンを動かす
 	for(var i=0;i<train.value.length;i++){
 		if(i===target_index){
+			var t = train.value[i];
 			train.value[i].tweener
 				.clear()
 				.wait(i*time*SPEED)
@@ -1005,18 +980,17 @@ function ANIME_array_dainyu(name,value){
 					app.currentScene.removeChild(space);
 				})
 				.wait(500*SPEED)
-				//.move(app.canvas.centerX,app.canvas.centerY,180*SPEED*(train.value[i].index+1))
-				//.move(app.canvas.centerX,app.canvas.centerY,200*SPEED*(train.value.length-train.value[i].index+1))
 				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
+				.wait(1000*SPEED)
 				.call(function(){
 					cnt++;
-					if(target_index+1==cnt){
-						sign = 1;BUTTON_ON();
+					if(train.value[0].x===train.value[0].defaultX){
+						sign = 1;BUTTON_ON();//console.log("おわた")
 					}
 				});
 
 		}else if(i<target_index){
-			var t = train.value[i];
+			var t = train.value[i].index;
 			train.value[i].tweener
 				.clear()
 				.wait(i*time*SPEED)
@@ -1025,10 +999,11 @@ function ANIME_array_dainyu(name,value){
 				.wait(3450*SPEED)
 				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*SPEED)
 				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
+				.wait(1000*SPEED)
 				.call(function(){
 					cnt++;
-					if(target_index+1==cnt){
-						sign = 1;BUTTON_ON();
+					if(train.value[0].x===train.value[0].defaultX){
+						sign = 1;BUTTON_ON();//console.log("おわり")
 					}
 				})
 		}else if(i>target_index && target_index+3>i){
@@ -1037,29 +1012,19 @@ function ANIME_array_dainyu(name,value){
 				train.value[i].tweener
 				.clear()
 				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,2.7*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,time*4*SPEED*2/3)//2.7*time*SPEED)
 				.wait(3450*SPEED)
 				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED)
-				.call(function(){
-					cnt++;
-					if(target_index+1==cnt){
-						sign = 1;BUTTON_ON();
-					}
-				})
+	
 			//代入対象のインデックス+1のインデックスをもつ配列プロミン
 			}else if(i===target_index+2){
 				train.value[i].tweener
 				.clear()
 				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,1.7*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,time*4*SPEED*1/3)//1.7*time*SPEED)
 				.wait(3450*SPEED)
 				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*SPEED)
-				.call(function(){
-					cnt++;
-					if(target_index+1==cnt){
-						sign = 1;BUTTON_ON();
-					}
-				})
+	
 			}
 		}
 	}
@@ -1109,7 +1074,7 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 				.clear()
 				.wait(i*time*SPEED)
 				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
-				.wait(i*time*SPEED)
+				.wait(1000*SPEED)
 				.call(function(){
 					equalLabel = tm.app.Label("=").addChildTo(space);
 					equalLabel
@@ -1305,11 +1270,12 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 					turn(promin,FRONT);
 					app.currentScene.removeChild(space);
 				})
-				.wait(500*SPEED)
+				.wait(900*SPEED)
 				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
+				.wait(1000*SPEED)
 				.call(function(){
 					cnt++;
-					if(target_index+1==cnt){
+					if(train.value[0].x === train.value[0].defaultX){
 						sign = 1;BUTTON_ON();
 						//console.log("おわり")
 					}
@@ -1324,10 +1290,12 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 				.wait(6350*SPEED)
 				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*SPEED)
 				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
+				.wait(1000*SPEED)
 				.call(function(){
 					cnt++;
-					if(target_index+1==cnt){
+					if(train.value[0].x === train.value[0].defaultX){
 						sign = 1;BUTTON_ON();
+						//console.log("おわり")
 					}
 				})
 		}else if(i>target_index && target_index+3>i){
@@ -1336,29 +1304,19 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 				train.value[i].tweener
 				.clear()
 				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,2.7*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,time*4*SPEED*2/3)//2.7*time*SPEED)
 				.wait(6350*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED)
-				.call(function(){
-					cnt++;
-					if(target_index+1==cnt){
-						sign = 1;BUTTON_ON();
-					}
-				})
+				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED);
+
 			//代入対象のインデックス+1のインデックスをもつ配列プロミン
 			}else if(i===target_index+2){
 				train.value[i].tweener
 				.clear()
 				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,1.7*time*SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,time*4*SPEED*1/3)//1.7*time*SPEED)
 				.wait(6350*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*SPEED)
-				.call(function(){
-					cnt++;
-					if(target_index+1==cnt){
-						sign = 1;BUTTON_ON();
-					}
-				})
+				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*SPEED);
+
 			}
 		}
 	}
