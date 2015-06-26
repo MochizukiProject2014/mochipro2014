@@ -27,10 +27,10 @@ function disTexetarea(){
 	var resultlength = result.length;
 	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
 	result2 = ucode.match(/(.+);$/)[1].split(";");
-	//arr_check("パーサー結果配列",result2);
+	arr_check("パーサー結果配列",result2);
 	var result2length = result2.length;
 	evalfunction(0,result2);
-	//arr_check("アニメ配列",jsOfAnimes);
+	arr_check("アニメ配列",jsOfAnimes);
 	sign =1;
 	if(syntaxErrorFlag){R();}
 	else{ANIME_reset();ANIME_error(syntaxStr);}
@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	//SPEED=0.25;
+	SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -71,7 +71,7 @@ scanfSetStr+="<font color = red>「値」「enterキー」「値」「enterキ�
 function evalfunction(index,rArr){
 	var len = rArr.length;
 	for(var i = index ;i < len ;i++){
-		//console.log(rArr[i]);
+		console.log(rArr[i]);
 		if(!(rArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(rArr[i]);
 		eval(rArr[i]);
 		if(rArr[i].match(/^scanf_js.*/)){
@@ -81,18 +81,19 @@ function evalfunction(index,rArr){
 }
 
 function R(){
-	//console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
 	if(animeStartIndex<jsOfAnimes.length){
 		if(sign===1){
 			sign=0;
-			//console.log(jsOfAnimes[animeStartIndex]);
 			eval(jsOfAnimes[animeStartIndex]);
 			if(jsOfAnimes[animeStartIndex].match(/ANIME_scanf/)){
 				sign=1;animeStartIndex++;
 				document.getElementById("com").innerHTML= scanfSetStr ;scanf_flag=true;
-			}else{animeStartIndex++;document.getElementById("com").innerHTML="";}
+			}else{
+				animeStartIndex++;
+				document.getElementById("com").innerHTML="";
+			}
+		}
 		if(animeStartIndex < jsOfAnimes.length)setTimeout(R,0);
-		}else{if(animeStartIndex < jsOfAnimes.length)setTimeout(R,0);}
 	}
 }
 
@@ -122,10 +123,7 @@ function check_obj(name){
 		console.log("型："+variables[i].data_type);
 		console.log("名前："+variables[i].name);
 		console.log("値列："+variables[i].value);
-			if(variables[i].status=="a"){
-				console.log("長さ："+variables[i].length);
-				console.log("対応番号："+variables[i].number);
-			}
+			if(variables[i].status=="a")console.log("長さ："+variables[i].length);
 		}
 	}
 	console.log("----------------------------------------------------");
@@ -200,8 +198,7 @@ function codeArrayInit(){
 		consoleStatus="";action_frag = true;
 		if_cnt = 0;syntaxErrorFlag = true;
 		animeStartIndex=0;scopeLevel = 1;
-		for_flag = true;for_cnt = 0;
-		uArr_num = 0;rindex=0;
+		for_flag = true;for_cnt = 0;rindex=0;
 		scanf_flag=false;
 		document.getElementById("console").value="";
 		codeFinishFlag = false;
@@ -256,7 +253,7 @@ function getVariableValue(name){
 			switch(variables[i].status){
 				case "v":	result = variables[i].value;	break;
 				case "a":
-					var temp = variables[i].value.split(":");
+					var temp = variables[i].value.split("@");
 					result = temp[index];
 				break;
 			}
@@ -269,8 +266,6 @@ function getVariableValue(name){
 /*↓------------------------------------コア------------------------------------↓*/
 //変数や配列を格納する配列
 var variables = [];
-//ユーザーが使用できる配列と配列オブジェクトを格納する配列
-var uArr_num = 0;
 //変数のクラス
 function Variable(data_type,name,value,scopeLevel){
 	this.data_type = data_type;	//型
@@ -279,12 +274,11 @@ function Variable(data_type,name,value,scopeLevel){
 	this.scopeLevel = scopeLevel;
 	this.status="v";
 };
-function Arr(data_type,name,value,length,number){
+function Arr(data_type,name,value,length){
 	this.data_type = data_type;	//型
 	this.name = name;				//名前
 	this.value = value;				//値
 	this.length = length;			//長さ
-	this.number = number;			//対応番号
 	this.status="a";
 }
 
@@ -359,7 +353,6 @@ if(action_frag == true){
 		value = "?";
 		valuelen=1;
 	}
-	uArr_num++;
 	if(init_flag&&calc_flag){
 		var exp = "[";
 		for(var i = 0;i < valuelen ;i++){
@@ -386,7 +379,7 @@ if(action_frag == true){
 		jsOfAnimes.push('ANIME_array_sengen("'+data_type+'","'+name+'","'+length+'");');
 	}
 	if(valuelen<length)for(var i = valuelen;i < length;i++)value+="@?";
-	var v = new Arr(data_type,name,value,length,uArr_num);
+	var v = new Arr(data_type,name,value,length);
 	variables.push(v);
 	check_obj(name);
 }
@@ -424,7 +417,7 @@ if(action_frag == true){
 	}else{
 		//jsOfAnimes.push();
 	}
-	var v = new Arr(data_type,name,value,uArr_num);
+	var v = new Arr(data_type,name,value);
 	variables.push(v);
 }
 }
@@ -442,16 +435,13 @@ if(action_frag == true&&for_flag){
 	var vtype = getVariableType(name);
 	if(value.match(/:/)){//代入する値が計算式の場合
 		cvflag = true;
+		str = '"'+value+'"';
 		var fArray = value.split(":");
 		value = calc(value);//計算結果
-		str = "[";		//animejsに渡すための計算式を作成
-		for(var si = 0;si < fArray.length;si++){
-			str += ('"'+fArray[si]+'"');
-			if(si<fArray.length-1){str += ',';}else{str +=']';}
-		}
 		if(type_judge(vtype,value))value = regulate_js(vtype,value);
 	}else if(value.match(/^[a-z]\w*/)){//代入する値が一つの変数の場合
 		var vvalue = getVariableValue(value);
+			console.log(value+"："+vvalue);
 		cvflag = true;
 		if(!type_judge(vtype,value))return createSyntaxError("型の会わない変数同士を代入しようとしてるよ！");
 		if(vvalue=="?")return createSyntaxError("中身のない変数を代入しようとしてるよ！")
@@ -472,11 +462,16 @@ if(action_frag == true&&for_flag){
 			variables[i].value = value;
 		break;
 		case "a":
-			if(cvflag){jsOfAnimes.push('ANIME_array_enzan_dainyu("'+name+'['+index+']'+'",'+str+',"'+value+'")');}
-			else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index+']'+'","'+value+'")');}
 			var str="";
 			var tempArr = [];
-			for(var i=0;i<len;i++)if(variables[i].name==name)tempArr=variables[i].value.split("@");
+			for(var i=0;i<len;i++){
+				if(variables[i].name==name){
+					if(variables[i].length<index)return createSyntaxError("配列の長さ以上のインデックスに代入しようとしてるよ！");
+					tempArr=variables[i].value.split("@");
+				}
+			}
+			if(cvflag){jsOfAnimes.push('ANIME_array_enzan_dainyu("'+name+'['+index+']'+'",'+str+',"'+value+'")');}
+			else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index+']'+'","'+value+'")');}
 			tempArr[index] = value;
 			var templen = tempArr.length;
 			for(var i = 0;i<templen;i++){
