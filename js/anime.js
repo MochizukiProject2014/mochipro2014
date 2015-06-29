@@ -26,6 +26,7 @@ var ERACE2 = 6;
 var WRITE2 = 7;
 var HERE = null;
 var Pnum = 0;
+var bigCanvas =null;
 
 /*
  *		画像の設定
@@ -221,16 +222,44 @@ tm.define("MainScene", {
 			.setPosition(app.canvas.centerX,430);
 		SPEED_BOARD = this.Label;
 		
-		/*
 		// スターを生成
-    	var star = tm.display.StarShape();
+    	/*var star = tm.display.StarShape();
     	star.setPosition(100,100);
     	this.addChild(star);
+    	var starXspeed = 10;
+    	var starYspeed = 4;
+		*/
+    	var texture = tm.graphics.Canvas().resize(740,440);//.resize(100 * 12, 100);
+	    //texture.drawLine(0,0,740,440);
+	    var bar = tm.display.Sprite(texture,740,440);
+	    bar.setPosition(370, 220).addChildTo(this);
+
+	    var x = 740;
     	this.update = function(app) {
         	// クルクル回す
-        	star.rotation += 16;
+        	/*star.rotation += 16;
+        	star.x += starXspeed;
+        	star.y += starYspeed;
+        	if(star.x<0 || star.x>740){
+        		starXspeed = starXspeed*-1;
+        	}
+        	if(star.y<0 || star.y>440){
+        		starYspeed = starYspeed*-1;
+        	}*/
+        	texture.clear();
+
+        	for(var i=0;i<trainport.length;i++){
+        		var train = trainport[i]
+        		for(var k=0;k<train.value.length-1;k++){
+        			promin1 = trainport[i].value[k];
+        			promin2 = trainport[i].value[k+1];
+        			texture.drawLine(promin1.x,promin1.y+10,promin2.x,promin2.y+10);
+        		}
+	        	
+        	}
+
     	};
-    	*/
+    	
     	window.setTimeout(function(){
     		//ANIME_sengen_dainyu("int","x",9);
     		//ANIME_sengen("int","y");
@@ -239,7 +268,7 @@ tm.define("MainScene", {
     		//ANIME_sengen("int","bb");
     		//ANIME_array_sengen("int","a",10);
     	},1000);
-		
+    	
     },
 });
 
@@ -355,9 +384,6 @@ tm.define("ArrayPromin",{
 
 		this.arrayName = arrayName;
 
-		var canvas = tm.graphics.Canvas("#world");
-		canvas.resize(740,440);
-
 		var plus = 0;
 		if(index>0 && 5>index){
 			plus = index*2;
@@ -399,22 +425,35 @@ tm.define("ArrayPromin",{
 			this.imgSet=CharArrayImg;
 		}
 
+		var pre = null;
+		var train = null;
+		for(var k=0;k<trainport.length;k++){
+			if(trainport[k].name===arrayName){
+				train = trainport[k];
+				pre = trainport[k].value[index-1];
+				break;
+			}
+		}
+
 		if(this.index>0){
+			/*
 			var bar = tm.display.RectangleShape();
+			//var bar = tm.display.PolygonShape();
 			bar.canvas.clearColor("black");
-	    	bar.setPosition(0,40);
-	    	bar.setHeight(2);
+			bar.setPosition(0,0);
+	    	bar.x = 65;
+	    	bar.y = 20;
+	    	bar.setHeight(1.5);
 	    	this.addChild(bar);	
-	    	bar.hide();
+	    	//bar.hide();
+	    	*/
+	    	//app.canvas.drawLine(100, 100, 100, 100);
+	    	var bar = tm.app.CanvasElement();
+	    	var star = tm.display.StarShape();
+	    	bar.addChild(star);
 		}
 
 	},
-});
-
-tm.define("ArrayJoint",{
-	superClass: "tm.app.Sprite",
-	init:function(){
-	}
 });
 
 
