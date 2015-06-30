@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	//SPEED=0.25;
+	SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -74,8 +74,8 @@ function evalfunction(index,rArr){
 		//console.log(rArr[i]);
 		if(!(rArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(rArr[i]);
 		eval(rArr[i]);
-		if(rArr[i].match(/^scanf_js.*/)&&for_flag){rindex = i;break;}
-		if(rArr[i].match(/^end_of_for.*/)){rindex = i;break;}
+		if(rArr[i].match(/^scanf_js.*/)&&for_flag&&action_frag){rindex = i;break;}
+		if(rArr[i].match(/^end_of_for.*/)&&action_frag){rindex = i;break;}
 	}
 }
 
@@ -291,13 +291,8 @@ function MultiArr(data_type,name,value,length1,length2){
 }
 
 function duplication_judge(data_type,name,value){
-if(action_frag == true&&for_flag){
-		variable_declare(data_type,name,value);
-}else if(!for_flag){
-		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'duplication_judge("'+data_type+'","'+name+'","'+value+'");');
-		for_contexts_array[for_cnt-1]+='duplication_judge("'+data_type+'","'+name+'","'+value+'");';
-		
-	}
+if(action_frag == true&&for_flag){variable_declare(data_type,name,value);}
+else if(!for_flag){add_forcontext('duplication_judge("'+data_type+'","'+name+'","'+value+'");');}
 }
 
 function variable_declare(data_type,name,value){
@@ -330,7 +325,7 @@ function variable_declare(data_type,name,value){
 }
 
 function array_declare(data_type,name,value,length){
-if(action_frag == true){
+if(action_frag == true&&for_flag){
 	var alen = variables.length;
 	var init_flag = false;
 	var calc_flag = false;
@@ -380,12 +375,11 @@ if(action_frag == true){
 	if(valuelen<length)for(var i = valuelen;i < length;i++)value+="@?";
 	var v = new Arr(data_type,name,value,length);
 	variables.push(v);
-	check_obj(name);
-}
+}else if(!for_flag){add_forcontext('array_declare("'+data_type+'","'+name+'","'+value+','+length+'");');}
 }
 
 function multiarray_declare(data_type,name,value,length1,length2){
-if(action_frag == true){
+if(action_frag){
 	var alen = variables.length;
 	var init_flag = false;
 	var calc_flag = false;
@@ -434,13 +428,12 @@ if(action_frag == true&&for_flag){
 	var vtype = getVariableType(name);
 	if(value.match(/:/)){//代入する値が計算式の場合
 		cvflag = true;
-		str = '"'+value+'"';
+		str = '"'+value.replace(/:/g,"")+'"';
 		var fArray = value.split(":");
 		value = calc(value);//計算結果
 		if(type_judge(vtype,value))value = regulate_js(vtype,value);
 	}else if(value.match(/^[a-z]\w*/)){//代入する値が一つの変数の場合
 		var vvalue = getVariableValue(value);
-			console.log(value+"："+vvalue);
 		cvflag = true;
 		if(!type_judge(vtype,value))return createSyntaxError("型の会わない変数同士を代入しようとしてるよ！");
 		if(vvalue=="?")return createSyntaxError("中身のない変数を代入しようとしてるよ！")
@@ -461,7 +454,6 @@ if(action_frag == true&&for_flag){
 			variables[i].value = value;
 		break;
 		case "a":
-			var str="";
 			var tempArr = [];
 			for(var i=0;i<len;i++){
 				if(variables[i].name==name){
@@ -473,12 +465,12 @@ if(action_frag == true&&for_flag){
 			else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index+']'+'","'+value+'")');}
 			tempArr[index] = value;
 			var templen = tempArr.length;
+			var str="";
 			for(var i = 0;i<templen;i++){
 				str+=tempArr[i];
 				if(i<templen-1)str += '@';
 			}
 			for(var i=0;i<len;i++)if(variables[i].name==name)tempArr=variables[i].value = str;
-			check_obj(name);
 			break;
 			}
 		}
@@ -487,11 +479,8 @@ if(action_frag == true&&for_flag){
 }
 
 function push_line(line_i){
-	if(action_frag	&&for_flag){
-		jsOfAnimes.push('line(' + line_i + ');');
-	}else if(!for_flag){
-		add_forcontext('push_line("'+line_i+'");' );
-	}
+	if(action_frag	&&for_flag){jsOfAnimes.push('line(' + line_i + ');');}
+	else if(!for_flag){add_forcontext('push_line("'+line_i+'");' );}
 }
 
 function return_js(value){
@@ -511,26 +500,19 @@ function if_js(condition){
 	if(for_flag){
 	if_cnt++;scopeLevel++;
 	if_conditions.push(assess(condition));
-	console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
+	//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
 	if(if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
-		console.log("if_js内の出力：実行しようぜ！");
 		if_end_flag.push(true);
 		action_frag=true;
-		console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		//console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}else{
-		console.log("if_js内の出力：実行しないぜ！");
 		action_frag=false;
 		if_conditions[if_cnt]=false;
-		//if_end_flag.push(true);
 		if_end_flag.push(false);
-		console.log(if_end_flag.length);
-		console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		//console.log(if_end_flag.length);
+		//console.log("END第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}
-	}else if(!for_flag){
-		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'if_js("'+condition+'");');
-		for_contexts_array[for_cnt-1]+='if_js("'+condition+'");';
-		
-	}
+	}else if(!for_flag){add_forcontext('if_js("'+condition+'");');}
 }
 
 function else_if_js(condition){
@@ -549,11 +531,7 @@ function else_if_js(condition){
 		//if_end_flag[if_cnt]=false;
 		console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}
-	}else if(!for_flag){
-		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'else_if_js("'+condition+'");');
-		for_contexts_array[for_cnt-1]+='else_if_js("'+condition+'");';
-		
-	}
+	}else if(!for_flag){add_forcontext('else_if_js("'+condition+'");');}
 }
 
 function else_js(){
@@ -588,11 +566,7 @@ function end_of_if(){
 	}else{
 		action_frag=false;
 	}
-	}else if(!for_flag){
-		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'end_of_if();');
-		for_contexts_array[for_cnt-1]+='end_of_if();';
-		
-	}
+	}else if(!for_flag){add_forcontext('end_of_if();');}
 }
 
 function assess(condition){
@@ -684,7 +658,7 @@ function for_eval(){
 				eval(tempArr[i]);
 				for_index_array[for_now_cnt]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
-				if(tempArr[i].match(/^scanf_js./)){for_rindex = i;breakflag = true;break;}
+				if(tempArr[i].match(/^scanf_js./)&&action_frag){for_rindex = i;breakflag = true;break;}
 			}
 		}
 		if(breakflag){break;}
@@ -694,7 +668,7 @@ function for_eval(){
 			for_context_finish =true;//もし今のfor群の全てを実行し終えたら
 			evalfunction(rindex+1,result2);
 		}else if(for_now_cnt!=0&&!(assess(for_conditions_array[for_now_cnt]))){
-			console.log("一個さげるよ");
+			//console.log("一個さげるよ");
 			for_now_cnt-=1;
 		}
 		forlimit++;
