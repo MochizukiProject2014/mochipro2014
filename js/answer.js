@@ -131,7 +131,7 @@ function answer_check(num){
 		break;
 		case 422:
 			var code_bmi = parser_judge.parse(codeOfUser);
-			if(hantei_3(code_bmi,1, 99, 1 ,"100を超えました。101です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
+			if(hantei_3(code_bmi, 1, 99, 1, "100を超えました。101です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
 			else if( hantei_3(code_bmi,10,20,77,"100を超えました。107です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
 			else if( hantei_2(code_bmi,99, 99, "100を超えました。198です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
 			else if( hantei_3(code_bmi, 12, 34, 56, "100を超えました。102です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
