@@ -27,11 +27,11 @@ function disTexetarea(){
 	var resultlength = result.length;
 	for(var deb = 0;deb < resultlength;deb++)ucode += result[deb];
 	result2 = ucode.match(/(.+);$/)[1].split(";");
-	//arr_check("パーサー結果配列",result2);
+	arr_check("パーサー結果配列",result2);
 	var result2length = result2.length;
 	evalfunction(0,result2);
-	//arr_check("アニメ配列",jsOfAnimes);
-	sign =1;
+	arr_check("アニメ配列",jsOfAnimes);
+	sign = 1;
 	if(syntaxErrorFlag){R();}
 	else{ANIME_reset();ANIME_error(syntaxStr);}
 }
@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	//SPEED=0.25;
+	SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -72,7 +72,7 @@ function evalfunction(index,rArr){
 	var len = rArr.length;
 	for(var i = index ;i < len ;i++){
 		if(!(rArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(rArr[i]);
-				//console.log("実行"+i+"個目："+rArr[i]+"最大"+len+"、"+/^end_of_for.*/.test(rArr[i])+"、"+action_frag+"、"+(for_cnt==0));
+				console.log("実行"+i+"個目："+rArr[i]);
 		eval(rArr[i]);
 		if(rArr[i].match(/^scanf_js.*/)&&for_flag&&action_frag){rindex = i;break;}
 		if(rArr[i].match(/^end_of_for.*/)&&action_frag&&for_cnt==0){rindex = i;startContexts(0);break;}
@@ -816,21 +816,24 @@ if(action_frag == true&&for_flag){
 	var inputTypeArray =new Array();
 	var namelen = nameArray.length;
 	var valuelen = valueArray.length;
-	for(var i = 0;i < namelen;i++)if(nameArray[i].match(":"))
-		return createSyntaxError("このアプリではprintf文内で計算はできないよ！！ごめんね！");
 	for(var i = 0;i < valueArray.length;i++)if(valueArray[i].match(/^%[a-z]/))
 		inputTypeArray.push(valueArray[i]);
 	if(inputTypeArray.length!=nameArray.length)return createSyntaxError("変数の数と変換指定文字列の数があってないよ！");
-	for(var i = 0;i < inputTypeArray.length;i++){
-		switch(getVariableType(nameArray[i])){
-			case "int":		if(inputTypeArray[i]!="%d")typeMissErrorFlag = true;	break;
-			case "double":	if(inputTypeArray[i]!="%f")typeMissErrorFlag = true;	break;
-			case "char":	if(inputTypeArray[i]!="%c")typeMissErrorFlag = true;	break;
+	if(!(/:/.test(nameArray[i]))){
+		for(var i = 0;i < inputTypeArray.length;i++){
+			switch(getVariableType(nameArray[i])){
+				case "int":		if(inputTypeArray[i]!="%d")typeMissErrorFlag = true;	break;
+				case "double":	if(inputTypeArray[i]!="%f")typeMissErrorFlag = true;	break;
+				case "char":	if(inputTypeArray[i]!="%c")typeMissErrorFlag = true;	break;
+			}
 		}
 	}
 	var variableNumCounter = 0,pstr = "";
 	for(var i = 0;i<valuelen;i++){
-		if(valueArray[i].match(/^%[a-z]/)){
+		if(/:/.test(nameArray[i])){
+			pstr += calc(nameArray[i]);
+			variableNumCounter++;
+		}else if(valueArray[i].match(/^%[a-z]/)){
 			pstr += getVariableValue(nameArray[variableNumCounter]);
 			variableNumCounter++;
 		}else{
@@ -850,6 +853,7 @@ if(action_frag == true&&for_flag){
 		if(pi<nameArray.length-1){methodstr += ',';
 		}else{methodstr +=']';}
 	}methodstr += ');';
+	
 	jsOfAnimes.push(methodstr);
 	jsOfAnimes.push('setPrintf("'+pstr+'");');
 	}else if(!for_flag){
