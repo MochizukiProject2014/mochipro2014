@@ -153,7 +153,7 @@ parser = (function() {
                for(var k=1; k < block.length; k++){
                  a = a + block[k];
                }
-            return 'duplication_judge("int","i", null );for_js("false,i,0","i < 10","i:+:1","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; },
+            return 'for_js("while","' + comparison + '","","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; },
         peg$c84 = "break",
         peg$c85 = { type: "literal", value: "break", description: "\"break\"" },
         peg$c86 = function() {return "break_kari();" ;},
@@ -539,6 +539,7 @@ parser = (function() {
         }
 
         return "Expected " + expectedDesc + " but " + foundDesc + " found.";
+
       }
 
       var posDetails = peg$computePosDetails(pos),

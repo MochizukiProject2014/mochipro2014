@@ -157,7 +157,7 @@ repetition_while
        for(var k=1; k < block.length; k++){
          a = a + block[k];
        }
-    return 'duplication_judge("int","i", null );for_js("false,i,0","i < 10","i:+:1","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; }
+    return 'for_js("while","condition","","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; }
 
 
 break
