@@ -221,33 +221,15 @@ tm.define("MainScene", {
 			.setFontSize(13)
 			.setPosition(app.canvas.centerX,430);
 		SPEED_BOARD = this.Label;
-		
-		// スターを生成
-    	/*var star = tm.display.StarShape();
-    	star.setPosition(100,100);
-    	this.addChild(star);
-    	var starXspeed = 10;
-    	var starYspeed = 4;
-		*/
+
     	var texture = tm.graphics.Canvas().resize(740,440);//.resize(100 * 12, 100);
-	    //texture.drawLine(0,0,740,440);
+	    texture.lineWidth = 1.5; //線の太さ
+	    //texture.strokeStyle="dimgray"; //線の色
 	    var bar = tm.display.Sprite(texture,740,440);
 	    bar.setPosition(370, 220).addChildTo(this);
 
-	    var x = 740;
     	this.update = function(app) {
-        	// クルクル回す
-        	/*star.rotation += 16;
-        	star.x += starXspeed;
-        	star.y += starYspeed;
-        	if(star.x<0 || star.x>740){
-        		starXspeed = starXspeed*-1;
-        	}
-        	if(star.y<0 || star.y>440){
-        		starYspeed = starYspeed*-1;
-        	}*/
         	texture.clear();
-
         	for(var i=0;i<trainport.length;i++){
         		var train = trainport[i]
         		for(var k=0;k<train.value.length-1;k++){
@@ -255,7 +237,6 @@ tm.define("MainScene", {
         			promin2 = trainport[i].value[k+1];
         			texture.drawLine(promin1.x,promin1.y+10,promin2.x,promin2.y+10);
         		}
-	        	
         	}
 
     	};
@@ -266,8 +247,12 @@ tm.define("MainScene", {
     		//ANIME_sengen("int","z");
     		//ANIME_sengen("int","aa");
     		//ANIME_sengen("int","bb");
-    		//ANIME_array_sengen("int","a",10);
+    		//ANIME_array_sengen("int","a",4);
     	},1000);
+    	window.setTimeout(function(){
+    		//ANIME_array_sengen("int","a",10);
+    		//ANIME_array_enzan_dainyu("a[2]",["1","+","1"],"2");
+    	},7000);
     	
     },
 });
@@ -424,35 +409,97 @@ tm.define("ArrayPromin",{
 		}else if(this.dataType==="char"){
 			this.imgSet=CharArrayImg;
 		}
+	},
+});
 
-		var pre = null;
-		var train = null;
-		for(var k=0;k<trainport.length;k++){
-			if(trainport[k].name===arrayName){
-				train = trainport[k];
-				pre = trainport[k].value[index-1];
-				break;
-			}
+//二次元配列プロミンクラス
+tm.define("twoDArrayPromin",{ 
+	superClass: "tm.app.Sprite",
+	init:function(dataType,name,index,LIndex,RIndex,value,arrayName){
+		if(dataType==="int"){
+			this.superInit("intArray_front");
+		}else if(dataType==="double"){
+			this.superInit("Gpromin_front");
+		}else if(dataType==="char"){
+			this.superInit("Opromin_front");
+		};
+
+		//お手本でプロミンに丸印をつけるための丸印の設定
+		var circle = tm.app.Shape(80,80);
+		circle.canvas.setStrokeStyle("rgba(220,30,0,0.8)");
+		circle.canvas.lineWidth = 10;
+		circle.canvas.strokeCircle(40,40,35);
+		this.addChild(circle);
+		circle.hide(); //デフォルトは非表示
+		this.circle = circle;
+
+		//データ型の設定
+		this.dataType = dataType;
+
+		//値の設定
+		this.value = value;
+
+		//名前の設定("a[hoge][hoge]"など)
+		this.name = name;
+
+		//変数の通し番号の設定
+		this.num = Pnum;
+
+		//二次元配列における左インデックスの設定(a[0][1]の0)
+		this.RIndex = RIndex;
+
+		//二次元配列における左インデックスの設定(a[0][1]の0)
+		this.LIndex = LIndex;
+
+		//配列フラグの付加
+		this.twoDarrayFlag = true;
+
+		//所属する二次元配列の名前の設定(a[0][0]なら"a")
+		this.twoDarrayName = arrayName;
+
+		this.index = index;
+
+		var plus = 0;
+		
+		if(index>0 && 5>index){
+			plus = index*2;
 		}
 
-		if(this.index>0){
-			/*
-			var bar = tm.display.RectangleShape();
-			//var bar = tm.display.PolygonShape();
-			bar.canvas.clearColor("black");
-			bar.setPosition(0,0);
-	    	bar.x = 65;
-	    	bar.y = 20;
-	    	bar.setHeight(1.5);
-	    	this.addChild(bar);	
-	    	//bar.hide();
-	    	*/
-	    	//app.canvas.drawLine(100, 100, 100, 100);
-	    	var bar = tm.app.CanvasElement();
-	    	var star = tm.display.StarShape();
-	    	bar.addChild(star);
-		}
+		//プロミンのデフォルト（ベンチ時）座標の設定
+		if(this.num<5){
+			this.defaultX = 50+plus; //プロミンを縦向きに並べる場合のx座標
+  		  	this.defaultY = (0.6+this.num)*79-plus; //上記のy座標
+  		}else{
+  			this.defaultX = 150+plus;
+  			this.defaultY = (0.6+this.num-5)*79-plus;
+  		}
 
+  		//プロミンの初期位置設定（画面外）
+		this.setPosition(900+(this.index*100),app.canvas.centerY); 
+		
+		// ラベル(プロミンに描画されるvalueとname)の設定 
+		this.nameLabel = tm.app.Label(name).addChildTo(this);
+		this.nameLabel
+			.setFillStyle("rgba(45,45,45,1)")
+			.setFontSize(15)
+			.setPosition(5,-15);
+		this.valueLabel = tm.app.Label(value).addChildTo(this);
+		this.valueLabel
+			.setFillStyle("rgba(0,0,0,1)")
+			.setFontSize(13)
+			.setPosition(0,20);
+		if(this.value.length>6){
+			this.valueLabel.setFontSize(10);
+		}
+		
+		//そのプロミンの型にあわせてイメージセットを登録
+		if(this.dataType==="int"){ 
+			this.imgSet=IntArrayImg;
+		}else if(this.dataType==="double"){
+			this.imgSet=DoubleArrayImg;
+		}else if(this.dataType==="char"){
+			this.imgSet=CharArrayImg;
+		}
 	},
 });
 
@@ -605,6 +652,63 @@ function here(){
 		HERE.isHide=1;
 	}
 }
+
+/*
+ *  二次元配列関連の関数
+ */
+
+function ANIME_twoDarray_sengen(dataType,name,size1,size2){
+	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
+
+	var LIndex = 0;
+	var RIndex = 0;
+    var a_SPEED = 1*SPEED;
+    if(size1*size2>=20){
+    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    }else if(size1*size2>=50){
+    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    }
+
+    //プロミン車両をまとめておく、列車オブジェクト
+    var train = { 
+    	name : name, 
+    	value : [],
+    	size : size1*size2
+    }
+    
+    for(LIndex=size1-1;LIndex>=0;LIndex--){
+	    for(RIndex=size2-1;RIndex>=0;RIndex--){
+	    	//配列プロミンオブジェクトを生成
+	    	var promin = new twoDArrayPromin(dataType,name+"["+LIndex+"]"+"["+RIndex+"]",(size1*LIndex)+RIndex,LIndex,RIndex,"?",name); //MiniProminオブジェクトを作成
+		    //生成したオブジェクトをpromin_arrayに追加
+		    promin_array.push(promin);
+		    //生成したオブジェクトをtrainオブジェクトのvalueプロパティ（配列）に追加
+		    train.value[(size1*LIndex)+RIndex] = promin;
+		   	app.currentScene.addChild(promin); //currentScene(MainScene)に作成したオブジェクトを追加
+		    movePromin(promin);
+	    }
+	}
+	
+    trainport.push(train);
+    Pnum++;
+
+    function movePromin(promin){ //プロミンを動かすfunction
+		promin.tweener
+			.clear()
+			.call(function(){turn(promin,LEFT);})
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,1000*SPEED) //move( x, y, duration, fn )
+			.call(function(){turn(promin,FRONT);})
+			.wait(500*SPEED)
+			.call(function(){turn(promin,LEFT);})
+			.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
+			.move(promin.defaultX,promin.defaultY,500*SPEED)
+			.call(function(){turn(promin,FRONT);})
+			.wait(500*SPEED)
+			.call(function(){if(promin.index===(size1*size2)-1){sign = 1;BUTTON_ON();console.log("おわり")}});
+	}
+
+}
+
 
 /*
  *	配列関連の関数
@@ -1069,7 +1173,7 @@ function ANIME_array_dainyu(name,value){
 	}
 }
 
-function ANIME_array_enzan_dainyu(name,ex,result){ 
+function ANIME_array_enzan_dainyu(name,expression,result){ 
 	//nameは代入対象の変数の要素名(a[0]など)、valueは代入値
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
 	
@@ -1123,7 +1227,7 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 
 
 					counter = 0;
-					var expression = String(ex).split(":");
+					//var expression = String(ex).split(":");
 					var between = 400/(expression.length+1);
 					var P=[]; //Pspaceオブジェクトの配列(プロミンのcopy用の描画スペース)
 					var C=[]; //copyオブジェクトの配列
@@ -1360,7 +1464,6 @@ function ANIME_array_enzan_dainyu(name,ex,result){
 		}
 	}
 }
-
 
 /*
  *	変数関連の関数 (0 0)←プロミン
