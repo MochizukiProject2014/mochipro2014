@@ -27,6 +27,7 @@ var WRITE2 = 7;
 var HERE = null;
 var Pnum = 0;
 var bigCanvas =null;
+var texture = null;
 
 /*
  *		画像の設定
@@ -222,7 +223,7 @@ tm.define("MainScene", {
 			.setPosition(app.canvas.centerX,430);
 		SPEED_BOARD = this.Label;
 
-    	var texture = tm.graphics.Canvas().resize(740,440);//.resize(100 * 12, 100);
+    	texture = tm.graphics.Canvas().resize(740,440);//.resize(100 * 12, 100);
 	    texture.lineWidth = 1.5; //線の太さ
 	    //texture.strokeStyle="dimgray"; //線の色
 	    var bar = tm.display.Sprite(texture,740,440);
@@ -573,7 +574,12 @@ function ANIME_start(){
 function ANIME_reset(){
 	app.currentScene.removeChildren();
 	promin_array=[];
+	trainport = [];
 	Pnum = 0;
+
+	var bar = tm.display.Sprite(texture,740,440);
+	bar.setPosition(370, 220).addChildTo(app.currentScene);
+
 	app.currentScene.addChild(SAMPLE);
 	app.currentScene.addChild(ERROR);
 	app.currentScene.addChild(HERE);
@@ -956,7 +962,6 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 										}
 										space.canvas.font = "20px center"; //フォントサイズ設定
 										
-										console.log("配列の長さ："+expression.length);
 										if(expression.length>1){
 											space.Label = tm.app.Label(values[promin.index]).addChildTo(space);
 												space.Label
