@@ -249,6 +249,7 @@ tm.define("MainScene", {
     		//ANIME_sengen("int","aa");
     		//ANIME_sengen("int","bb");
     		//ANIME_array_sengen("int","a",4);
+    		//ANIME_array_sengen_dainyu("int","a",8,["1"],["1"]);
     	},1000);
     	window.setTimeout(function(){
     		//ANIME_array_sengen("int","a",10);
@@ -1026,10 +1027,34 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 						turn(promin,LEFT);
 					})
 					//.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
-					.move(promin.defaultX,promin.defaultY,250*SPEED)
-					.call(function(){turn(promin,FRONT);})
-					.wait(250*SPEED)
-					.call(function(){if(promin.index===size-1){sign = 1;BUTTON_ON();}});
+					.call(function(){
+						if(promin.index===size-1){
+							promin.tweener
+								.move(promin.defaultX,promin.defaultY,500*SPEED)
+								.call(function(){turn(promin,FRONT);})
+								.wait(250*SPEED)
+								.call(function(){sign = 1;BUTTON_ON();});
+						}else if(promin.index===size-2){
+							promin.tweener
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
+								.wait(2700*SPEED)
+								//.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
+								//.wait(2700*SPEED)
+								.move(promin.defaultX,promin.defaultY,375*SPEED)
+								.call(function(){turn(promin,FRONT);})
+								.wait(250*SPEED);
+						}else{
+							promin.tweener
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
+								.wait(2700*SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
+								.wait(2700*SPEED)
+								.move(promin.defaultX,promin.defaultY,250*SPEED)
+								.call(function(){turn(promin,FRONT);})
+								.wait(250*SPEED);
+						}
+					})
+					
 				});
 	}
 }
@@ -1456,7 +1481,7 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 				.wait(6350*SPEED)
 				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED);
 
-			//代入対象のインデックス+1のインデックスをもつ配列プロミン
+			//代入対象のインデックス+2のインデックスをもつ配列プロミン
 			}else if(i===target_index+2){
 				train.value[i].tweener
 				.clear()
@@ -1658,7 +1683,7 @@ function ANIME_printf(contents,variables){
 	var C=[];
 
 	for(var i=0;i<contents.length;i++){
-		if(contents[i]==="%d"||contents[i]==="%f"||contents[i]==="%c"||contents[i]==="%s"){//整数型を10進数で表示(int型)
+		if(contents[i]==="%d"||contents[i]==="%f"||contents[i]==="%c"||contents[i]==="%s"){
 			for(var k=0;k<promin_array.length;k++){
 				if(variables[cnt]===promin_array[k].name){
 					var Pspace = tm.app.Shape(80,80);
@@ -1694,6 +1719,10 @@ function ANIME_printf(contents,variables){
 					C.push(copy);
 					cnt++;
 					break;	
+				}else if(variables[i].match(/:/)){ //variablesに演算を含む場合
+					console.log(variables[i]);
+					var expression = String(variables[i]).split(":");
+
 				}
 			}
 		}/*else if(contents[i]==="%f"){  //double型とか？浮動小数点型のデータ型用
