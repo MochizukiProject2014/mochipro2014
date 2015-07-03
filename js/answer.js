@@ -1,5 +1,5 @@
 function answer_check(num){
-	console.log(num+"のanswe_checkに入ります。");
+	console.log(num+"の正誤判定に入ります。");
 	var version = Number(num),re;
 	var answer_pattern_array = [];
 	var flagArr = [];
@@ -147,7 +147,6 @@ function answer_check(num){
 			re = new RegExp(/substitute\("x","(i:*:k)|(k:*:i)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs\("\\\\n"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
-			
 			temp = getPatternLine(user_pattern_array,answer_pattern_array,temp);flagArr.push(temp);
 		break;
 		case 4:
@@ -169,12 +168,20 @@ function answer_check(num){
 	}
 	if(flen == index&&flen!=0){
 		console.log("All OK!!!");
-		correct_answer();movenext();
+		correct_answer();
+		console.log(codeOfUser);
+		ajaxPostFunc(htmlversion,"1",codeOfUser);
+		movenext();
 	}else{
 		miss_answer()
+		ajaxPostFunc(htmlversion,"0",codeOfUser);
 		console.log("GAME OVER...");
 	}
 	line_reset();
+}
+
+function ajaxPostFunc(param1, param2, param3){
+    $.post("post.php", {input1:param1, input2:param2, input3:param3}, function(json){alert("パラメータを3つPOSTしました");});
 }
 
 function getPatternLine(uArr,aArr,line){
@@ -212,7 +219,7 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 		if(index == alen)break;
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
-	if(index == alen){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	if(index == alen){console.log("受け取ったアンサーパターンの全マッチを確認しました");return true;}
 	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
 }
 
@@ -234,7 +241,7 @@ function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時の
 		if(index == alen)break;
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
-	if(index == alen){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
+	if(index == alen){console.log("受け取ったアンサーパターンの全マッチを確認しました");return true;}
 	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
 }
 
