@@ -153,7 +153,7 @@ perser = (function() {
                for(var k=1; k < block.length; k++){
                  a = a + block[k];
                }
-            return 'for_js("while","condition","","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; },
+            return 'for_js("while","' + comparison + '","","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; },
         peg$c84 = "break",
         peg$c85 = { type: "literal", value: "break", description: "\"break\"" },
         peg$c86 = function() {return "break_js();" ;},
@@ -513,7 +513,7 @@ perser = (function() {
 
         foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
 
-       var l = posDetails.line;
+        var l = posDetails.line;
         
         if(expectedDesc.indexOf(";") != -1){
         	l = l-1;
