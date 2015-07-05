@@ -639,7 +639,7 @@ function startContexts(cnt){
 	/*for(var fi = 0;fi < fcalength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");*/
 	var context = for_contexts_array[cnt].match(/(.*);$/)[1];
 	for_flag=true;
-	if(for_init_array[cnt]!="while")
+	if(for_init_array[cnt]!="while"){
 		var forArray = for_init_array[cnt].split(",");
 		if(forArray[0]=="true"){return createSyntaxError("for文のカッコの中では変数を宣言できないよ！");}
 		else if(forArray[0]=="false"){substitute(forArray[1],forArray[2]);}
