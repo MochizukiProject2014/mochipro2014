@@ -157,11 +157,11 @@ repetition_while
        for(var k=1; k < block.length; k++){
          a = a + block[k];
        }
-    return 'for_js("while","condition","","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; }
+    return 'for_js("while","' + comparison + '","","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; }
 
 
 break
- =  "break" space ";" space {return "break_kari();" ;}
+ =  "break" space ";" space {return "break_js();" ;}
 
 //------------------------------------------------------------
   

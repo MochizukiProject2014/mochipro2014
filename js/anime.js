@@ -101,6 +101,8 @@ var ASSETS = {
     "charArray_writing2" : "img/array/charArray/charTrain_writing2.png",
     "charArray_eracing2" : "img/array/charArray/charTrain_eracing2.png",
 
+    //二次元配列用金具
+    "chain" : "img/array/kanagu.png",
     
     //健吾
     "kengo" : "img/character/kengo.png", 
@@ -234,9 +236,26 @@ tm.define("MainScene", {
         	for(var i=0;i<trainport.length;i++){
         		var train = trainport[i]
         		for(var k=0;k<train.value.length-1;k++){
-        			promin1 = trainport[i].value[k];
-        			promin2 = trainport[i].value[k+1];
-        			texture.drawLine(promin1.x,promin1.y+10,promin2.x,promin2.y+10);
+        			var promin1 = trainport[i].value[k];
+        			var promin2 = trainport[i].value[k+1];
+        			if(promin1 && promin2){
+        				texture.strokeStyle="black"; //線の色
+        				texture.lineWidth = 1.5; //線の太さ
+	        			texture.drawLine(promin1.x,promin1.y+10,promin2.x,promin2.y+10);
+	        			if(promin1.twoDarrayFlag && promin2.twoDarrayFlag &&promin1.LIndex===promin2.LIndex){
+	        				/*
+	        				var img = new Image();
+	        				img.src = "img/array/kanagu.png";
+	        				texture.drawImage(img,(promin1.x+promin2.x)/2,(promin1.y+promin2.y)/2);
+	        				*/
+	        				texture.lineWidth = 5; //線の太さ
+	        				texture.strokeStyle="darkgray"; //線の色
+	        				texture.drawLine(promin1.x-15,promin1.y+30,promin2.x-10,promin2.y+30);
+		        		}
+		        		if(promin1.twoDarrayFlag && promin1.index===0 && promin1.x===promin1.defaultX){
+		        			//texture.drawLine(promin1.x-50,promin1.y+30,promin2.x+50,promin2.y+30);
+		        		}
+	        		}
         		}
         	}
 
@@ -249,7 +268,7 @@ tm.define("MainScene", {
     		//ANIME_sengen("int","aa");
     		//ANIME_sengen("int","bb");
     		//ANIME_array_sengen("int","a",4);
-    		//ANIME_array_sengen_dainyu("int","a",8,["1"],["1"]);
+    		//ANIME_twoDarray_sengen("int","a",4,4);
     	},1000);
     	window.setTimeout(function(){
     		//ANIME_array_sengen("int","a",10);
@@ -682,15 +701,18 @@ function ANIME_twoDarray_sengen(dataType,name,size1,size2){
     	value : [],
     	size : size1*size2
     }
+
+    var trainIndex = size1*size2-1;
     
     for(LIndex=size1-1;LIndex>=0;LIndex--){
 	    for(RIndex=size2-1;RIndex>=0;RIndex--){
 	    	//配列プロミンオブジェクトを生成
-	    	var promin = new twoDArrayPromin(dataType,name+"["+LIndex+"]"+"["+RIndex+"]",(size1*LIndex)+RIndex,LIndex,RIndex,"?",name); //MiniProminオブジェクトを作成
+	    	var promin = new twoDArrayPromin(dataType,name+"["+LIndex+"]"+"["+RIndex+"]",trainIndex,LIndex,RIndex,"?",name); //MiniProminオブジェクトを作成
 		    //生成したオブジェクトをpromin_arrayに追加
 		    promin_array.push(promin);
 		    //生成したオブジェクトをtrainオブジェクトのvalueプロパティ（配列）に追加
-		    train.value[(size1*LIndex)+RIndex] = promin;
+		    train.value[trainIndex] = promin;
+		    trainIndex--;
 		   	app.currentScene.addChild(promin); //currentScene(MainScene)に作成したオブジェクトを追加
 		    movePromin(promin);
 	    }
@@ -711,9 +733,8 @@ function ANIME_twoDarray_sengen(dataType,name,size1,size2){
 			.move(promin.defaultX,promin.defaultY,500*SPEED)
 			.call(function(){turn(promin,FRONT);})
 			.wait(500*SPEED)
-			.call(function(){if(promin.index===(size1*size2)-1){sign = 1;BUTTON_ON();console.log("おわり")}});
+			.call(function(){if(promin.index===(size1*size2)-1){sign = 1;BUTTON_ON();/*console.log("おわり")*/}});
 	}
-
 }
 
 
