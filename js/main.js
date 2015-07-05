@@ -569,6 +569,8 @@ function end_of_if(){
 }
 
 function assess(condition){
+	if(/true/.test(condition)){return true;}
+	if(/false/.test(condition)){return false;}
 	var result = false;
 	var reg;
 	var numOfVariable;
@@ -664,10 +666,12 @@ function for_eval(){
 					if(for_now_cnt)console.log("戻ってきた");
 					for_index_array[for_now_cnt]++;
 			}else{
+			//console.log(tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt]));
 				eval(tempArr[i]);
 				for_index_array[for_now_cnt]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
 				if(tempArr[i].match(/^scanf_js./)&&action_frag){for_rindex = i;breakflag = true;break;}
+				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[for_now_cnt]=len;break;}
 			}
 		}
 		if(breakflag){break;}
@@ -688,6 +692,13 @@ function for_eval(){
 
 function add_forcontext(str){
 		for_contexts_array[for_cnt-1]+=str;
+}
+
+function break_js(){
+	if(action_frag == true&&for_flag){
+		for_conditions_array[for_now_cnt] = "false";
+	}else if(!for_flag){add_forcontext('break_js();');}
+
 }
 
 function plural_declaration(type,variable){
