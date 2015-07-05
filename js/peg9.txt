@@ -161,7 +161,7 @@ repetition_while
 
 
 break
- =  "break" space ";" space {return "break_kari();" ;}
+ =  "break" space ";" space {return "break_js();" ;}
 
 //------------------------------------------------------------
   
