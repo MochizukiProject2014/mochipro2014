@@ -356,7 +356,7 @@ if(action_frag == true&&for_flag){
 			str += ('"'+calc(valuearr[i])+'"');
 			if(i<valuelen-1){str += ',';}else{str +=']';}
 		}
-		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+valuelen+','+exp+','+str+');');
+		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+length+','+exp+','+str+');');
 		value = "";
 		for(var i = 0;i < valuelen ;i++){
 			value += (''+calc(valuearr[i])+'');
@@ -367,7 +367,7 @@ if(action_frag == true&&for_flag){
 			str += ('"'+valuearr[i]+'"');
 			if(i<valuelen-1){str += ',';}else{str +=']';}
 		}
-		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+valuelen+','+str+','+str+');');
+		jsOfAnimes.push('ANIME_array_sengen_dainyu("'+data_type+'","'+name+'",'+length+','+str+','+str+');');
 	}else{
 		jsOfAnimes.push('ANIME_array_sengen("'+data_type+'","'+name+'","'+length+'");');
 	}
