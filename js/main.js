@@ -266,11 +266,10 @@ function getVariableValue(name){
 //変数や配列を格納する配列
 var variables = [];
 //変数のクラス
-function Variable(data_type,name,value,scopeLevel){
+function Variable(data_type,name,value){
 	this.data_type = data_type;	//型
 	this.name = name;				//名前
 	this.value = value;				//値
-	this.scopeLevel = scopeLevel;
 	this.status="v";
 };
 function Arr(data_type,name,value,length){
@@ -320,7 +319,7 @@ function variable_declare(data_type,name,value){
 		value = "?";
 		jsOfAnimes.push('ANIME_sengen("'+data_type+'","'+name+'");');
 	}
-	var v = new Variable(data_type,name,value,scopeLevel);
+	var v = new Variable(data_type,name,value);
 	variables.push(v);
 }
 
@@ -609,8 +608,12 @@ var for_now_cnt = 0;							//現在どの階層のforcontextブロックを実�
 var for_index_array = [];						//ブロックごとにどこまで実行したか
 function for_js(init,cond,alt,line_num){
 if(action_frag == true){
-	var altArr = alt.split(":");
-	var alt = 'substitute("'+altArr[0]+'","'+altArr[0]+":+:"+altArr[2]+'")';
+	if(init!="while"){
+		var altArr = alt.split(":");
+		var alt = 'substitute("'+altArr[0]+'","'+altArr[0]+":+:"+altArr[2]+'")';
+	}else{
+		var alt = "";
+	}
 	for_contexts_array.push("");
 	for_init_array.push(init);
 	scopeLevel++;
@@ -635,10 +638,12 @@ function startContexts(cnt){
 	var fcalength = for_contexts_array.length;
 	/*for(var fi = 0;fi < fcalength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");*/
 	var context = for_contexts_array[cnt].match(/(.*);$/)[1];
-	var forArray = for_init_array[cnt].split(",");
 	for_flag=true;
-	if(forArray[0]=="true"){return createSyntaxError("for文のカッコの中では変数を宣言できないよ！");}
-	else if(forArray[0]=="false"){substitute(forArray[1],forArray[2]);}
+	if(for_init_array[cnt]!="while")
+		var forArray = for_init_array[cnt].split(",");
+		if(forArray[0]=="true"){return createSyntaxError("for文のカッコの中では変数を宣言できないよ！");}
+		else if(forArray[0]=="false"){substitute(forArray[1],forArray[2]);}
+	}
 	for_index_array.push(0);
 	for_index_array[for_now_cnt]=0;
 	for_eval();
