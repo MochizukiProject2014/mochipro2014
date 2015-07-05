@@ -109,15 +109,20 @@ statement_array_int_2
 array_contents
  =space  "{"space contents:additive_plural_array space "}" space {return contents}
  
-//二次元配列のとき
+//二次元配列のとき{{},{}}
 array_contents2
- = space  "{"space left:array_contents space "," space right:array_contents2 space "}" space {return left + "¥" + right;}
- /array_contents
+ = space  "{" contents:additive_plural_array2 space "}" space {return  contents;}
  
+//数値、数値....
  additive_plural_array
  = space left:additive space "," space right:additive_plural_array {return left + "@" + right;}
  /  additive
-
+ 
+ //{},{}...
+additive_plural_array2
+ = space left:array_contents space "," space right:additive_plural_array2 space {return left + "^" + right;}
+ /array_contents
+ 
 //------------------------------------------------------------
 
 //繰り返し
