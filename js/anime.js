@@ -835,7 +835,13 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 										if(promin_array[k].arrayFlag===true){
 											var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
 										}else if(promin_array[k].twoDarrayFlag===true){
-											var copy = new twoDArrayPromin(promin_array[k].dataType, promin_array[k].name, null,null,null,promin_array[k].value,null);
+											var copy = new twoDArrayPromin(promin_array[k].dataType, 
+												promin_array[k].name,
+												promin_array[k].index,
+												promin_array[k].LIndex,
+												promin_array[k].RIndex,
+												promin_array[k].value,
+												promin_array[k].arrayName);
 										}else{
 											var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
 										}
@@ -2032,6 +2038,14 @@ function ANIME_printf(contents,variables){
 					
 					if(promin_array[k].arrayFlag===true){
 						var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+					}else if(promin_array[k].twoDarrayFlag===true){
+						var copy = new twoDArrayPromin(promin_array[k].dataType, 
+							promin_array[k].name,
+							promin_array[k].index,
+							promin_array[k].LIndex,
+							promin_array[k].RIndex,
+							promin_array[k].value,
+							promin_array[k].arrayName);
 					}else{
 						var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
 					}
