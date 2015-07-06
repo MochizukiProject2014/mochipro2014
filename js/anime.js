@@ -267,17 +267,14 @@ tm.define("MainScene", {
     		//ANIME_sengen("int","z");
     		//ANIME_sengen("int","aa");
     		//ANIME_sengen("int","bb");
-    		//ANIME_array_sengen("int","a",4);
+    		//ANIME_array_sengen_dainyu("int","a",4,["0","1","2","3"],["0","1","2","3"]);
     		//ANIME_twoDarray_sengen("int","a",3,5);
-    		//ANIME_twoDarray_sengen_dainyu("int","a",3,2,[null,"1:+:1",null,null,null],[null,"2",null,null,null]);
+    		//ANIME_twoDarray_sengen_dainyu("int","a",2,2,["1"],["1"]);
+    		//ANIME_twoDarray_sengen_dainyu("int","a",2,2,["0","1","2","3"],["0","1","2","3"])
     	},1000);
     	window.setTimeout(function(){
-    		//ANIME_sengen_dainyu("int","x",9);
-    		//ANIME_array_sengen("int","a",10);
-    		//ANIME_array_enzan_dainyu("a[2]",["1","+","1"],"2");
-    		//ANIME_array_enzan_dainyu("a[1][1]",["4","+","5"],"9")
-    	},10000);
-    	
+    		//ANIME_enzan_dainyu("y",["a[0][0]","+","1"],"1","1")
+    	},10000)
     },
 });
 
@@ -771,6 +768,8 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 		    promin_array.push(promin);
 		    //生成したオブジェクトをtrainオブジェクトのvalueプロパティ（配列）に追加
 		    train.value[trainIndex] = promin;
+
+		    promin.value = values[trainIndex];
 		    trainIndex--;
 		   	app.currentScene.addChild(promin); //currentScene(MainScene)に作成したオブジェクトを追加
 		    movePromin(promin);
@@ -835,6 +834,8 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 										
 										if(promin_array[k].arrayFlag===true){
 											var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+										}else if(promin_array[k].twoDarrayFlag===true){
+											var copy = new twoDArrayPromin(promin_array[k].dataType, promin_array[k].name, null,null,null,promin_array[k].value,null);
 										}else{
 											var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
 										}
@@ -1174,6 +1175,14 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 										
 										if(promin_array[k].arrayFlag===true){
 											var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+										}else if(promin_array[k].twoDarrayFlag===true){
+											var copy = new twoDArrayPromin(promin_array[k].dataType, 
+												promin_array[k].name,
+												promin_array[k].index,
+												promin_array[k].LIndex,
+												promin_array[k].RIndex,
+												promin_array[k].value,
+												promin_array[k].arrayName);
 										}else{
 											var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
 										}
@@ -1588,6 +1597,14 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 								
 								if(promin_array[k].arrayFlag===true){
 									var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+								}else if(promin_array[k].twoDarrayFlag===true){
+									var copy = new twoDArrayPromin(promin_array[k].dataType, 
+										promin_array[k].name,
+										promin_array[k].index,
+										promin_array[k].LIndex,
+										promin_array[k].RIndex,
+										promin_array[k].value,
+										promin_array[k].arrayName);
 								}else{
 									var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
 								}
@@ -2149,6 +2166,14 @@ function ANIME_enzan_dainyu(name,expression,result){
 				
 				if(promin_array[k].arrayFlag===true){
 					var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+				}else if(promin_array[k].twoDarrayFlag===true){
+					var copy = new twoDArrayPromin(promin_array[k].dataType, 
+						promin_array[k].name,
+						promin_array[k].index,
+						promin_array[k].LIndex,
+						promin_array[k].RIndex,
+						promin_array[k].value,
+						promin_array[k].arrayName);
 				}else{
 					var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
 				}
@@ -2489,6 +2514,14 @@ function ANIME_sengen_enzan(dataType,name,expression,result){
 				
 				if(promin_array[k].arrayFlag===true){
 					var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+				}else if(promin_array[k].twoDarrayFlag===true){
+					var copy = new twoDArrayPromin(promin_array[k].dataType, 
+						promin_array[k].name,
+						promin_array[k].index,
+						promin_array[k].LIndex,
+						promin_array[k].RIndex,
+						promin_array[k].value,
+						promin_array[k].arrayName);
 				}else{
 					var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
 				}
