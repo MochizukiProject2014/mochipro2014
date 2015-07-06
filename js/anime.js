@@ -268,12 +268,15 @@ tm.define("MainScene", {
     		//ANIME_sengen("int","aa");
     		//ANIME_sengen("int","bb");
     		//ANIME_array_sengen("int","a",4);
-    		//ANIME_twoDarray_sengen("int","a",4,4);
+    		//ANIME_twoDarray_sengen("int","a",3,5);
+    		//ANIME_twoDarray_sengen_dainyu("int","a",3,2,[null,"1:+:1",null,null,null],[null,"2",null,null,null]);
     	},1000);
     	window.setTimeout(function(){
+    		//ANIME_sengen_dainyu("int","x",9);
     		//ANIME_array_sengen("int","a",10);
     		//ANIME_array_enzan_dainyu("a[2]",["1","+","1"],"2");
-    	},7000);
+    		//ANIME_array_enzan_dainyu("a[1][1]",["4","+","5"],"9")
+    	},10000);
     	
     },
 });
@@ -476,7 +479,7 @@ tm.define("twoDArrayPromin",{
 		this.twoDarrayFlag = true;
 
 		//所属する二次元配列の名前の設定(a[0][0]なら"a")
-		this.twoDarrayName = arrayName;
+		this.arrayName = arrayName;
 
 		this.index = index;
 
@@ -738,6 +741,295 @@ function ANIME_twoDarray_sengen(dataType,name,size1,size2){
 }
 
 
+function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
+	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
+    //配列走査用の変数arrayIndexを0で初期化
+    var arrayIndex = 0;
+
+    //宣言される配列の大きさが大きいときの対策として、本アニメーション用のSPEED値を設定
+    var a_SPEED = 1*SPEED;
+    if(size1*size2>=20){
+    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    }else if(size1*size2>=50){
+    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    }
+
+    //プロミン車両をまとめておく、列車オブジェクト
+    var train = { 
+    	name : name, 
+    	value : [],
+    	size : size1*size2
+    }
+
+    var trainIndex = size1*size2-1;
+    
+    for(LIndex=size1-1;LIndex>=0;LIndex--){
+	    for(RIndex=size2-1;RIndex>=0;RIndex--){
+	    	//配列プロミンオブジェクトを生成
+	    	var promin = new twoDArrayPromin(dataType,name+"["+LIndex+"]"+"["+RIndex+"]",trainIndex,LIndex,RIndex,"?",name); //MiniProminオブジェクトを作成
+		    //生成したオブジェクトをpromin_arrayに追加
+		    promin_array.push(promin);
+		    //生成したオブジェクトをtrainオブジェクトのvalueプロパティ（配列）に追加
+		    train.value[trainIndex] = promin;
+		    trainIndex--;
+		   	app.currentScene.addChild(promin); //currentScene(MainScene)に作成したオブジェクトを追加
+		    movePromin(promin);
+	    }
+	}
+
+    trainport.push(train);
+    Pnum++;
+
+    function movePromin(promin){ //プロミンを動かすアニメーションfunction
+		promin.tweener
+			.clear()
+			.call(function(){turn(promin,LEFT);})
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,250*SPEED)
+			.call(function(){turn(promin,FRONT);})
+			.wait(250*SPEED)
+			.call(function(){
+				for(var i=0;i<promin.index;i++){
+					promin.tweener
+						.wait(2700*SPEED)
+						.moveBy(-100,0,250*SPEED);
+						//.wait(1000*SPEED);	
+				}
+				promin.tweener
+					.wait(250*SPEED)
+					.call(function(){
+						if(values[promin.index]){ //初期化式が設定されているならば
+							var space = tm.app.Shape(400,200);
+							promin.space = space;
+							space.setPosition(510,410);
+							//space.canvas.clearColor("skyblue");
+							app.currentScene.addChild(space);
+							promin.image=promin.imgSet.lookdown;
+							promin.nameLabel.setPosition(5,-15);
+							
+							equalLabel = tm.app.Label("=").addChildTo(space);
+							equalLabel
+								.setPosition(space.canvas.centerX-350,space.canvas.centerY-120)
+								.setFillStyle("rgba(0,0,0,1)")
+								.setFontSize(25);
+
+							var expression = String(ex[promin.index]).split(":");
+
+							var between = 400/(expression.length+1);
+							cnt = 0;
+							var P=[]; //Pspaceオブジェクトの配列(プロミンのcopy用の描画スペース)
+							var C=[]; //copyオブジェクトの配列
+
+							for(var i=0;i<expression.length;i++){
+								var check=0;
+								for(var k=0;k<promin_array.length;k++){
+									//式に含まれる変数と、promin_arrayのプロミンの名前が一致するものを探す
+									if(expression[i]===promin_array[k].name){
+										var Pspace = tm.app.Shape(80,80);
+										//Pspace.canvas.clearColor("red"); //デバッグ用にPspaceのcanvasを赤にする
+										Pspace.setPosition((between+(i*between))-200,space.canvas.centerY-120);
+										Pspace.Label = tm.app.Label(expression[i]).addChildTo(Pspace);
+										Pspace.Label
+											.setFillStyle("rgba(0,0,0,1)")
+											.setFontSize(20);
+										space.addChild(Pspace);
+										
+										if(promin_array[k].arrayFlag===true){
+											var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+										}else{
+											var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
+										}
+										Pspace.addChild(copy);
+										copy.setPosition(0,0);
+										Pspace.addChild(copy);
+										P.push(Pspace);
+										C.push(copy);
+										check = 1;
+										cnt++;
+										break;
+									}
+								}
+								if(check===0){ //テキストをそのまま出力*/
+									var Pspace = tm.app.Shape(80,80);
+									//Pspace.canvas.clearColor("red");
+									Pspace.setPosition((between+(i*between))-200,space.canvas.centerY-120);
+									Pspace.Label = tm.app.Label(expression[i]).addChildTo(Pspace);
+									Pspace.Label
+										.setFillStyle("rgba(0,0,0,1)")
+										.setFontSize(20);
+									space.addChild(Pspace);
+									//space.canvas.fillText(expression[i],between+(i*between),space.canvas.centerY+20); //テキスト描画
+								}
+							}	
+
+							if(C.length===1&&expression.length===1){ //x=yみたいなパターン
+									//console.log("x=yみたいなパターン");
+									C[0].x = C[0].x+40;
+									P[0].Label.text="";
+									space.tweener
+										.clear()
+										.wait(1000*SPEED) 
+										.call(function(){
+											/*
+											space.canvas.font = "20px center"; //フォントサイズ設定
+											space.Label = tm.app.Label(values[promin.index]).addChildTo(space);
+											space.addChild(space.Label);*/
+										})
+										.wait(6500*SPEED)
+										.call(function(){space.removeChildren();})
+										.wait(1500*SPEED)
+										.call(function(){
+											app.currentScene.removeChild(space);
+										});
+							}else if(cnt>0){ //演算に変数が2つ以上使われるパターン
+								space.tweener
+									.clear()
+									.wait(500*SPEED)
+									.call(function(){
+									for(var i=0;i<P.length;i++){
+											P[i].Label.text = C[i].value;
+											C[i].hide();
+										}
+									})
+									.wait(500*SPEED) 
+									.call(function(){
+										space.removeChildren();
+											equalLabel = tm.app.Label("=").addChildTo(space);
+											equalLabel
+												.setPosition(space.canvas.centerX-350,space.canvas.centerY-120)
+												.setFillStyle("rgba(0,0,0,1)")
+												.setFontSize(25);
+										space.canvas.font = "20px center"; //フォントサイズ設定
+
+										space.Label = tm.app.Label(values[promin.index]).addChildTo(space);
+											space.Label
+												.setFillStyle("rgba(0,0,0,1)")
+												.setPosition(space.Label.centerX,space.Label.centerY-20)
+												.setFontSize(30);
+										space.addChild(space.Label);
+									})
+									.wait(4500*SPEED)
+									.call(function(){
+										space.removeChildren();
+									})
+									.wait(1500*SPEED)
+									.call(function(){
+										app.currentScene.removeChild(space);
+									});
+							}else{ //演算に使われる値がリテラルのみのパターン
+								space.tweener
+									.call(function(){
+										for(var i=0;i<P.length;i++){
+											P[i].Label.text = C[i].value;
+											C[i].hide();
+										}
+									})
+									.wait(1000*SPEED) 
+									.call(function(){
+										if(expression.length>1){
+											space.removeChildren();
+												equalLabel = tm.app.Label("=").addChildTo(space);
+												equalLabel
+													.setPosition(space.canvas.centerX-350,space.canvas.centerY-120)
+													.setFillStyle("rgba(0,0,0,1)")
+													.setFontSize(25);
+										}
+										space.canvas.font = "20px center"; //フォントサイズ設定
+										
+										if(expression.length>1){
+											space.Label = tm.app.Label(values[promin.index]).addChildTo(space);
+												space.Label
+													.setFillStyle("rgba(0,0,0,1)")
+													.setPosition(space.Label.centerX,space.Label.centerY-20)
+													.setFontSize(30);
+											space.addChild(space.Label);
+										}
+									})
+									.wait(6500*SPEED)
+									.call(function(){/*if(expression.length>1)space.removeChildren();*/})
+									.wait(2500*SPEED)
+									.call(function(){
+										space.removeChildren();
+										app.currentScene.removeChild(space);
+								});
+							}
+						}
+					})
+
+					//消すモーション
+					.wait(1000*SPEED)
+					.call(function(){
+						if(values[promin.index]){
+							promin.valueLabel.text="";
+							turn(promin,ERACE);
+						}
+					})
+					.wait(100*SPEED)
+					.call(function(){if(values[promin.index])turn(promin,ERACE2);})
+					.wait(100*SPEED)
+					.call(function(){if(values[promin.index])turn(promin,ERACE);})
+					.wait(100*SPEED)
+					.call(function(){if(values[promin.index])turn(promin,ERACE2);})
+					.wait(100*SPEED)
+					.call(function(){if(values[promin.index])turn(promin,ERACE);})
+					.wait(100*SPEED)
+
+					//書くモーション
+					.call(function(){if(values[promin.index])turn(promin,WRITE);})
+					.wait(100*SPEED)
+					.call(function(){if(values[promin.index])turn(promin,WRITE2);})
+					.wait(100*SPEED)
+					.call(function(){if(values[promin.index])turn(promin,WRITE);})
+					.wait(100*SPEED)
+					.call(function(){if(values[promin.index])turn(promin,WRITE2);})
+					.call(function(){
+						if(values[promin.index]){
+							promin.valueLabel.text=values[promin.index];
+						}
+					})
+					.wait(100*SPEED)
+					.call(function(){
+						turn(promin,FRONT);
+						/*app.currentScene.removeChild(promin.Label);*/
+					})
+
+					.wait(500*SPEED)
+					.call(function(){
+						app.currentScene.removeChild(promin.space);
+						turn(promin,LEFT);
+					})
+					//.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
+					.call(function(){
+						if(promin.index===(size1*size2)-1){
+							promin.tweener
+								.move(promin.defaultX,promin.defaultY,500*SPEED)
+								.call(function(){turn(promin,FRONT);})
+								.wait(250*SPEED)
+								.call(function(){sign = 1;BUTTON_ON();});
+						}else if(promin.index===(size1*size2)-2){
+							promin.tweener
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
+								.wait(2700*SPEED)
+								//.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
+								//.wait(2700*SPEED)
+								.move(promin.defaultX,promin.defaultY,375*SPEED)
+								.call(function(){turn(promin,FRONT);})
+								.wait(250*SPEED);
+						}else{
+							promin.tweener
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
+								.wait(2700*SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
+								.wait(2700*SPEED)
+								.move(promin.defaultX,promin.defaultY,250*SPEED)
+								.call(function(){turn(promin,FRONT);})
+								.wait(250*SPEED);
+						}
+					})
+					
+				});
+	}
+}
+
 /*
  *	配列関連の関数
  */
@@ -909,7 +1201,7 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 							}	
 
 							if(C.length===1&&expression.length===1){ //x=yみたいなパターン
-									console.log("x=yみたいなパターン");
+									//console.log("x=yみたいなパターン");
 									C[0].x = C[0].x+40;
 									P[0].Label.text="";
 									space.tweener
@@ -926,7 +1218,6 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 										.wait(1500*SPEED)
 										.call(function(){
 											app.currentScene.removeChild(space);
-											if(promin.index===size-1){sign = 1;BUTTON_ON();}
 										});
 							}else if(cnt>0){ //演算に変数が2つ以上使われるパターン
 								space.tweener
@@ -962,7 +1253,6 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 									.wait(1500*SPEED)
 									.call(function(){
 										app.currentScene.removeChild(space);
-										if(promin.index===size-1){sign = 1;BUTTON_ON();}
 									});
 							}else{ //演算に使われる値がリテラルのみのパターン
 								space.tweener
@@ -999,8 +1289,7 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 									.call(function(){
 										space.removeChildren();
 										app.currentScene.removeChild(space);
-										if(promin.index===size-1){sign = 1;BUTTON_ON();}
-								});
+									});
 							}
 						}
 					})
@@ -1887,7 +2176,7 @@ function ANIME_enzan_dainyu(name,expression,result){
 	}
 
 	if(C.length===1&&expression.length===1){
-		console.log("x=yみたいなパターン");
+		//console.log("x=yみたいなパターン");
 		C[0].x = C[0].x+40;
 		P[0].Label.text="";
 		space.tweener
