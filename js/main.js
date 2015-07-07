@@ -692,7 +692,7 @@ function for_eval(){
 }
 
 function add_forcontext(str){
-	console.log(str+"をfor実行群に追加します。");
+	//console.log(str+"をfor実行群に追加します。");
 	for_contexts_array[for_cnt-1]+=str;
 }
 
@@ -874,38 +874,27 @@ if(action_frag == true&&for_flag){
 	
 	jsOfAnimes.push(methodstr);
 	jsOfAnimes.push('setPrintf("'+pstr+'");');
-	}else if(!for_flag){
-		console.log(for_cnt+"階層目のfor文の中にあります。以下の文をこの階層のfor_contexts_arrayに追加します"+'printf_js("'+name+'","'+value+'");');
-		for_contexts_array[for_cnt-1]+='printf_js("'+name+'","'+value+'");';
-		
-	}
+	}else if(!for_flag){add_forcontext('printf_js("'+name+'","'+value+'");');}
 }
 
 function printf_djs(dstr){
-if(action_frag == true&&for_flag){
-	console.log(dstr);
-	var tempArray= dstr.split(/\n/);//改行で区切り
-	arr_check("デバック",tempArray);
-	var tempstr ="";
-	/*for(var pi = 0;pi<tempArray.length;pi++)tempstr += tempArray[pi];*/
-	console.log("dstr："+dstr+"、tempstr："+tempstr);
-	//dstr = tempstr;
-	console.log('ANIME_printf("'+dstr+'");')
-	jsOfAnimes.push('ANIME_printf("'+dstr+'");');
-	jsOfAnimes.push('setPrintf("'+dstr+'");');
-	consoleStatus = document.getElementById("console").value;
-	}else if(!for_flag){
-		console.log(dstr);
-		var tm = dstr.replace(/\n/g,"\\n");
-		console.log(tm);
-		add_forcontext('printf_djs("'+dstr+'");');
-	}
+	if(action_frag == true&&for_flag){
+		var tempstr = dstr.replace(/\/n/g,"\\n");
+		jsOfAnimes.push('ANIME_printf("'+tempstr+'");');
+		jsOfAnimes.push('setPrintf("'+dstr+'");');
+		consoleStatus = document.getElementById("console").value;
+	}else if(!for_flag){add_forcontext('printf_djs("'+dstr+'");');}
 }
 
 function setPrintf(value){
-	if(String(value).match(/null/))value = value.replace(/null/g,"?");
-	document.getElementById("console").value += (value);//+"\n";
-	consoleStatus = document.getElementById("console").value;
+	var setStrArr = value.split("/n");
+	var len = setStrArr.length;
+	for(var i = 0;i < len;i++){
+		if(String(setStrArr[i]).match(/null/))setStrArr[i] = setStrArr[i].replace(/null/g,"?");
+		document.getElementById("console").value += (setStrArr[i]);
+		consoleStatus = document.getElementById("console").value;
+		if(len-i>1)document.getElementById("console").value += "\n";
+	}
 	sign = 1;
 }
 
