@@ -489,6 +489,7 @@ function return_js(value){
 function ANIME_finish(){
 	line_reset();
 	if(htmlversion!="free"){answer_check(htmlversion);}
+	else{answer_check("412");}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
@@ -612,7 +613,7 @@ function for_js(init,cond,alt,line_num){
 if(action_frag == true){
 	if(init!="while"){
 		var altArr = alt.split(":");
-		var alt = 'substitute("'+altArr[0]+'","'+altArr[0]+":+:"+altArr[2]+'")';
+		var alt = 'substitute("'+altArr[0]+'","'+altArr[0]+":"+altArr[1]+":"+altArr[2]+'")';
 	}else{
 		var alt = "";
 	}
@@ -666,7 +667,7 @@ function for_eval(){
 					if(for_now_cnt)console.log("戻ってきた");
 					for_index_array[for_now_cnt]++;
 			}else{
-			//console.log(tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt]));
+			//console.log(tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt])+"、変化式："+for_alt_array[for_now_cnt]);
 				eval(tempArr[i]);
 				for_index_array[for_now_cnt]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
@@ -691,7 +692,8 @@ function for_eval(){
 }
 
 function add_forcontext(str){
-		for_contexts_array[for_cnt-1]+=str;
+	console.log(str+"をfor実行群に追加します。");
+	for_contexts_array[for_cnt-1]+=str;
 }
 
 function break_js(){
@@ -880,20 +882,29 @@ if(action_frag == true&&for_flag){
 }
 
 function printf_djs(dstr){
-var tempArray= dstr.split(/\r\n|\r|\n/);//改行で区切り
-var tempstr ="";
-for(var pi = 0;pi<tempArray.length;pi++)tempstr += tempArray[pi];
-dstr = tempstr;
 if(action_frag == true&&for_flag){
+	console.log(dstr);
+	var tempArray= dstr.split(/\n/);//改行で区切り
+	arr_check("デバック",tempArray);
+	var tempstr ="";
+	/*for(var pi = 0;pi<tempArray.length;pi++)tempstr += tempArray[pi];*/
+	console.log("dstr："+dstr+"、tempstr："+tempstr);
+	//dstr = tempstr;
+	console.log('ANIME_printf("'+dstr+'");')
 	jsOfAnimes.push('ANIME_printf("'+dstr+'");');
 	jsOfAnimes.push('setPrintf("'+dstr+'");');
 	consoleStatus = document.getElementById("console").value;
-	}else if(!for_flag){add_forcontext('printf_djs("'+dstr+'");');}
+	}else if(!for_flag){
+		console.log(dstr);
+		var tm = dstr.replace(/\n/g,"\\n");
+		console.log(tm);
+		add_forcontext('printf_djs("'+dstr+'");');
+	}
 }
 
 function setPrintf(value){
 	if(String(value).match(/null/))value = value.replace(/null/g,"?");
-	document.getElementById("console").value += (value)+"\n";
+	document.getElementById("console").value += (value);//+"\n";
 	consoleStatus = document.getElementById("console").value;
 	sign = 1;
 }

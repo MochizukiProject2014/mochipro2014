@@ -121,6 +121,20 @@ function answer_check(num){
 			else if( hantei_2(code_bmi, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
+		case 411:
+			re = new RegExp(/duplication_judge\(.+,"a",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,a,1","a <= 3","a:\+:1",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("わんわん.*"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
+			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
+		break;
+		case 412:
+			re = new RegExp(/duplication_judge\(.+,"b",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,b,3","b >= 1","b:-:1",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("にゃんにゃん.*"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
+			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
+		break;
 		case 421:
 			var code_bmi = parser_judge.parse(codeOfUser);
 			if(hantei_2(code_bmi,1, 2,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
@@ -169,12 +183,11 @@ function answer_check(num){
 	if(flen == index&&flen!=0){
 		console.log("All OK!!!");
 		correct_answer();
-		console.log(codeOfUser);
-		ajaxPostFunc(htmlversion,"1",codeOfUser);
-		movenext();
+		//ajaxPostFunc(htmlversion,"1",codeOfUser);
+		//movenext();
 	}else{
 		miss_answer()
-		ajaxPostFunc(htmlversion,"0",codeOfUser);
+		//ajaxPostFunc(htmlversion,"0",codeOfUser);
 		console.log("GAME OVER...");
 	}
 	line_reset();
