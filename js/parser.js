@@ -305,11 +305,17 @@ parser = (function() {
             if(contents.indexOf("\\") != -1){
           	contents = contents.replace(/\\/g,"\\\\");
           }
+           if(contents.indexOf("\\n") != -1){
+          	contents = contents.replace(/\\n/g,"/n");
+          }
            return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_js("' + variable + '","' + contents + '");' ; },
         peg$c186 = function(contents) {    
         	if(contents.indexOf("\\") != -1){
           		contents = contents.replace(/\\/g,"\\\\");
          	} 
+         	   if(contents.indexOf("\\n") != -1){
+          	contents = contents.replace(/\\n/g,"/n");
+          }
           	return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_djs("' + contents + '");' ; },
         peg$c187 = function(left, type, right) {
           		return left + ":@:" + type + ":@:" + right; },
