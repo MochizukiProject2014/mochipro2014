@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	SPEED=0.25;
+	SPEED=0.75;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -123,6 +123,10 @@ function check_obj(name){
 		console.log("名前："+variables[i].name);
 		console.log("値列："+variables[i].value);
 			if(variables[i].status=="a")console.log("長さ："+variables[i].length);
+			if(variables[i].status=="ma"){
+				console.log("長さ１[○][]："+variables[i].length1);
+				console.log("長さ２[][○]："+variables[i].length2);
+			}
 		}
 	}
 	console.log("----------------------------------------------------");
@@ -242,9 +246,15 @@ function getVariableType(name){
 function getVariableValue(name){
 	var vlen = variables.length;
 	var result;
-	if(/\[.+\]/.test(name)){
+	if(/\[.+\]\[.+\]/.test(name)){
+		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
+		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
+		if(/^[a-z]\w*/.test(index1)||/:/.test(index1))index1 =calc(index1);
+		if(/^[a-z]\w*/.test(index2)||/:/.test(index2))index2 =calc(index2);
+		name = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1];
+	}else if(/\[.+\]/.test(name)){
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
-		if(/^[a-z]\w*/.test(name)||/:/.test(name))index =calc(index);
+		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	for(i = 0; i < vlen; i++){
@@ -252,8 +262,17 @@ function getVariableValue(name){
 			switch(variables[i].status){
 				case "v":	result = variables[i].value;	break;
 				case "a":
+					if(variables[i].length < index-1)
+							return createSyntaxError("本来の長さ以上の値を参照しようとしているよ！");
 					var temp = variables[i].value.split("@");
 					result = temp[index];
+				break;
+				case "ma":
+					if((variables[i].length1 < index1-1)||(variables[i].length2 < index2-1))
+							return createSyntaxError("本来の長さ以上の値を参照しようとしているよ！");
+					var temp = variables[i].value.split("^");
+					var temp2 = temp[index1].split("@");
+					result = temp2[index2];
 				break;
 			}
 			break;
@@ -379,37 +398,88 @@ if(action_frag == true&&for_flag){
 
 function multiarray_declare(data_type,name,value,length1,length2){
 if(action_frag){
+	/*int a[2][3] = {{1,2,3},{4,5,6}};基本形
+	multiarray_declare("int","a","1@2@3^4@5@6","2","3");
+	①int a[3][5] → 全て不定値・・・・・・・・・・・・・・・・・・・・・・・・・おっけー
+	②int a[2][2] = {{},{}} → 全て0という値・・・・・・・・・・・・・・・・・おっけー
+	③int a[][2] = {{},{}} → 全て0という値・・・・・・・・・・・・・・・・・・未定
+	④int a[3][5] = {{1,2},{1,2}} → 初期化しきれてないところは0という値・・・おっけー
+	⑤int hoge[2][2] = {{1,2}}; → {1,2},{?,?}・・・・・・・・・・・・・・・おっけー*/
+	if(value=="undefined"&&length1=="undefined"&&length2=="undefined")//a[][];この対処
+		return createSyntaxError("二次元配列の宣言の仕方が間違ってるよ！") ;
 	var alen = variables.length;
 	var init_flag = false;
 	var calc_flag = false;
-	if(length2=="undefined")return createSyntaxError("２つめの長さは必ず指定してね！") ;
-	for(var i =0;i <alen;i++)if(variables[i].name == name)
+	var animeEx = "[";
+	var animeValue = "[";
+	var objValue = "";
+	var addStr = "?";
+	if(length2=="undefined")return createSyntaxError("２つめの長さは必ず指定してね！") ;//a[数字][];の対処
+	for(var i =0;i <alen;i++)if(variables[i].name == name)//変数名かぶりの対処
 		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
-	if(value!="undefined"){
+	if(value!="undefined"){//初期化されている時
+		var altvalue="";
+		if(value==""){
+			for(var i = 0;i < length1-1;i++)value+="^";
+			addStr = "0";
+		}
 		var value1arr = value.split("^");
 		var len1 = value1arr.length;
-		if(length1 < len1)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;
+		var len2 = length2;
+		for(var i = 0;i< len1;i++){
+			var value2arr = value1arr[i].split("@");
+			var value2arrlen = value2arr.length;
+			for(var j=0;j<value2arrlen;j++){
+				altvalue += value2arr[j];
+				if(value2arr[j]=="")altvalue+=addStr;
+				if(j<value2arrlen-1){altvalue += '@';}
+			}
+			if(len2>value2arrlen)for(var k = value2arrlen ;k < len2 ;k++)altvalue+=("@"+addStr);
+			if(i<len1-1){altvalue += '^';}
+		}
+		value = altvalue;
+		value1arr = value.split("^");//配列(大)の方
+		len1 = value1arr.length;//要するに[][]の左の方の長さ
+		if(length1=="undefined")length1 = len1;
+		if(length1 < len1)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;//左の値が指定より多い対処
 		init_flag = true;
-		var str = "[";
-		for(var j = 0;i < len1;i++){
-			var value2arr = value1arr[j].split("@");
-			var len2 = value2length;
-			if(length2 > len2)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;
-			for(var k = 0;i < len2;k++)if(/:/.test(value2arr[k]))calc_flag = true;
-			if(!calc_flag){
+		for(var i = 0;i < len1;i++){
+			value2arr = value1arr[i].split("@");//配列(小)の方
+			len2 = value2arr.length;//要するに[][]の左の方の長さ
+			if(length2 > len2)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;//右の値が指定より多い対処
+			for(var k = 0;k < len2;k++) {
+				if(/:/.test(value2arr[k]))calc_flag = true;
+				if(value2arr[k]!="?"){
+					animeEx+='"'+value2arr[k]+'"';
+					animeValue+='"'+calc(value2arr[k])+'"';
+					objValue += calc(value2arr[k]);
+				}else{
+					animeEx+='null';;
+					animeValue+='null';
+					objValue += value2arr[k];
+				}
+				if(k<len2-1){animeEx += ',';animeValue += ',';objValue += '@';}
+			}
+			/*if(!calc_flag){
 				for(var k = 0;i < len2 ;k++)if(!type_judge(data_type,value2arr[k]))
 				return createSyntaxError("配列に代入する値が変だよ！");
-			}
+			}*/
+			if(i<len1-1){animeEx += ',';animeValue += ',';objValue += '^';}
+			else{animeEx += ']';animeValue += ']';}
 		}
+	}else{//初期化なしの場合
+		if(length1=="undefined")
+			return createSyntaxError("初期化の際は両方長さを指定してね！") ;//a[][];この対処
+			for(var i = 0;i < length1;i++){
+				for(var j = 0;j < length2;j++){
+					objValue += "?";
+					if(j<length2-1){objValue += '@';}
+				}
+				if(i<length1-1){objValue += '^';}
+			}
 	}
-	if(init_flag&&calc_flag){
-		//jsOfAnimes.push();
-	}else if(init_flag){
-		//jsOfAnimes.push();
-	}else{
-		//jsOfAnimes.push();
-	}
-	var v = new Arr(data_type,name,value);
+	jsOfAnimes.push('ANIME_twoDarray_sengen_dainyu("'+data_type+'","'+name+'",'+len1+','+length2+','+animeEx+','+animeValue+")");
+	var v = new MultiArr(data_type,name,value,len1,length2);
 	variables.push(v);
 }
 }
@@ -419,9 +489,15 @@ if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
 	var str;
 	var len = variables.length;
-	if(/\[.+\]/.test(name)){//もし配列なら、nameとindex(indexが変数の場合数字になおし)を宣言。
+	if(/\[.+\]\[.+\]/.test(name)){//もし二重配列なら、nameとindex1と2(indexが変数の場合数字になおし)を宣言。
+		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
+		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
+		if(/^[a-z]\w*/.test(index1)||/:/.test(index1))index1 =calc(index1);
+		if(/^[a-z]\w*/.test(index2)||/:/.test(index2))index2 =calc(index2);
+		name = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1];
+	}else if(/\[.+\]/.test(name)){//もし配列なら、nameとindex(indexが変数の場合数字になおし)を宣言。
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
-		if(/^[a-z]\w*/.test(name)||/:/.test(name))index =calc(index);
+		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	var vtype = getVariableType(name);
@@ -470,6 +546,33 @@ if(action_frag == true&&for_flag){
 				if(i<templen-1)str += '@';
 			}
 			for(var i=0;i<len;i++)if(variables[i].name==name)tempArr=variables[i].value = str;
+			break;
+			case "ma":
+				var tempArr = [];
+				var temp2Arr = [];
+				var str="";//変数の値パラメータを上書きする用の文字列
+				var len1;//配列の長さ[○][]
+				var len2;//配列の長さ[][○]
+				for(var i=0;i<len;i++){
+					if(variables[i].name==name){
+						if((variables[i].length1 < index1-1)||(variables[i].length2 < index2-1))
+							return createSyntaxError("配列の長さ以上のインデックスに代入しようとしてるよ！");
+						tempArr=variables[i].value.split("^");
+						len1 = variables[i].length1;len2 =variables[i].length2;
+					}
+				}
+				if(cvflag){/*二次元配列の代入アニメメソッド(演算ver)*/}
+				else{/*二次元配列の代入アニメメソッド (普通ver)*/}
+				for(var i = 0;i < len1;i++){
+					temp2Arr = tempArr[i].split("@");
+					for(var j = 0;j < len2;j++){
+						if((index1==i)&&(index2==j)){str+=value;}
+						else{str+=temp2Arr[j];}
+						if(j<len2-1)str += '@';
+					}
+					if(i<len1-1)str += '^';
+				}
+				for(var i=0;i<len;i++)if(variables[i].name==name)variables[i].value = str;
 			break;
 			}
 		}
