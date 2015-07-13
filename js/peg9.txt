@@ -449,8 +449,8 @@ variable
 
 //配列
 variable_array
- = variable:variable "[" num1:(variable/integer) "]" space "[" num2:(variable/integer) "]" { return variable + "[" + num1 + "][" + num2 + "]"  }
- / variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
+ = variable:variable "[" num1:(variable/additive) "]" space "[" num2:(variable/integer) "]" { return variable + "[" + num1 + "][" + num2 + "]"  }
+ / variable:variable "[" num:(variable/additive) "]" { return variable + "[" + num + "]" }
 
 //改行・コメント
 space
