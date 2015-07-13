@@ -171,13 +171,32 @@ function answer_check(num){
 			else if( hantei_4(code_bmi, 12, 34, 56, 0, "合計は102です") != true){ miss_answer("４章不正解！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
+		case 42:
+			var temparr = document.getElementById("console").value.split("\n");
+			var str = "*";
+			var len = temparr.length;
+			for(var i = 0;i < len;i++)if(temparr.indexOf(str)>=0)str+="*";
+			if(str.length>2)flagArr.push(true);
+			re = new RegExp(/for.+/);answer_pattern_array.push(re);
+			re = new RegExp(/for.+/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("\*"\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
+		break;
+		case 511:
+			re = new RegExp(/array_declare\("int","a","1@2@3@4@5",5\)/);answer_pattern_array.push(re);
+			re = new RegExp(/plural_declaration\("int","i,sum=0"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\(("false,i,0","i < 5")|("false,i,1","i <= 5"),"i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("sum","sum:\+:a.i."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("sum","%d"\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
+		break;
 	}
 	var flen = flagArr.length;
-	console.log(flen+"つのtrueが必要です。");
+	//console.log(flen+"つのtrueが必要です。");
 	for(var i = 0;i < flen;i++){
 		if(flagArr[i]){
 			index++;
-			console.log(index+"個目のtrueです！");
+			//console.log(index+"個目のtrueです！");
 		}
 	}
 	if(flen == index&&flen!=0){
@@ -203,7 +222,7 @@ function getPatternLine(uArr,aArr,line){
 	var alen = aArr.length;
 	var rArr =['-1'];
 	for(var i = line;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			rArr.push(i);
@@ -217,13 +236,11 @@ function getPatternLine(uArr,aArr,line){
 }
 
 function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮したチェック、falseなら順序関係なしにチェック
-	if(flag){console.log("順序を考慮したチェックを始めます。");}
-	else{console.log("順序を考慮しないチェックを始めます。")}
 	var index = 0;
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			if(flag)i=-1;
@@ -233,7 +250,7 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
 	if(index == alen){console.log("受け取ったアンサーパターンの全マッチを確認しました");return true;}
-	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+	else{return false;}
 }
 
 function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時のチェック。！※！一文ずつ入れる事。
@@ -241,7 +258,7 @@ function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時の
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(keystr)){
 			console.log("！！！マッチしました！！！");
 			for(var j = 0;j < alen;j++){
@@ -255,7 +272,7 @@ function or_check(uArr,aArr,keystr){//どの場合でも正解にしたい時の
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
 	if(index == alen){console.log("受け取ったアンサーパターンの全マッチを確認しました");return true;}
-	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+	else{return false;}
 }
 
 function adjustable_check(uArr,aArr){//正誤判定に変数名が指定されていない場合のチェック
@@ -272,7 +289,7 @@ function adjustable_check(uArr,aArr){//正誤判定に変数名が指定され�
 	}
 	var uvlen = user_variable.length;
 	for(var i = 0; i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			for(var j = 0;j < uvlen;j++){
@@ -290,11 +307,11 @@ function adjustable_check(uArr,aArr){//正誤判定に変数名が指定され�
 			for(var k = 0;k < tvlen;k++)temp_variable.shift();
 			uvlen = user_variable.length;
 			index++;i=-1;
-			console.log("次のアンサーパターンに写ります。");
+			//console.log("次のアンサーパターンに写ります。");
 		}
 		if(index == alen)break;
 	}
 	for(var i = 0;i < alen;i++)aArr.shift();
 	if(index == alen&&user_variable.length>0){console.log("受け取ったアンサーパターンのクリアを確認しました");return true;}
-	else{console.log("は？wwwwwwwwwwwwwwww");return false;}
+	else{return false;}
 }
