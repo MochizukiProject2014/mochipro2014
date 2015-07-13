@@ -8865,7 +8865,7 @@ parser = (function() {
         if (s2 !== peg$FAILED) {
           s3 = peg$parsevariable();
           if (s3 === peg$FAILED) {
-            s3 = peg$parseinteger();
+            s3 = peg$parseadditive();
           }
           if (s3 !== peg$FAILED) {
             if (input.charCodeAt(peg$currPos) === 93) {
@@ -8948,7 +8948,7 @@ parser = (function() {
           if (s2 !== peg$FAILED) {
             s3 = peg$parsevariable();
             if (s3 === peg$FAILED) {
-              s3 = peg$parseinteger();
+              s3 = peg$parseadditive();
             }
             if (s3 !== peg$FAILED) {
               if (input.charCodeAt(peg$currPos) === 93) {
