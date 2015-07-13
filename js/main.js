@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	SPEED=0.75;
+	SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -262,7 +262,7 @@ function getVariableValue(name){
 			switch(variables[i].status){
 				case "v":	result = variables[i].value;	break;
 				case "a":
-					if(variables[i].length < index-1)
+					if(variables[i].length <= index)
 							return createSyntaxError("本来の長さ以上の値を参照しようとしているよ！");
 					var temp = variables[i].value.split("@");
 					result = temp[index];
@@ -501,7 +501,11 @@ if(action_frag == true&&for_flag){
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	var vtype = getVariableType(name);
-	if(value.match(/:/)){//代入する値が計算式の場合
+	if(/\[.+\]/.test(value)){
+		var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
+		valueindex = calc(valueindex);
+		value = getVariableValue(value);
+	}else if(value.match(/:/)){//代入する値が計算式の場合
 		cvflag = true;
 		str = '"'+value.replace(/:/g,"")+'"';
 		var fArray = value.split(":");
@@ -592,7 +596,7 @@ function return_js(value){
 function ANIME_finish(){
 	line_reset();
 	if(htmlversion!="free"){answer_check(htmlversion);}
-	else{answer_check("412");}
+	//else{answer_check("511");}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
