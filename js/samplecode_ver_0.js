@@ -27,6 +27,108 @@ var sample331 = '#include <stdio.h>int main(void){int score;scanf("%d",&score);i
 
 var sampleMatome3 = '#include <stdio.h>int main(void){double height,weight,bmi;printf("あなたの身長(m)を入力してください。");scanf("%lf",&height);printf("あなたの体重(kg)を入力してください。");scanf("%lf",&weight);bmi = weight / (height * height);if(bmi >= 18.5 && bmi <= 25.0){printf("あなたは適正です。");}else if(bmi > 25.0){printf("あなたは太り気味です");}else{printf("あなたはやせ気味です");}return 0;}'
 
+var sample411 = 
+'#include <stdio.h>
+int main(void){
+    int a;
+    for(a=1; a<=3; a++){
+       printf("わんわん\n");
+	}
+	return 0;
+}'
+
+var sample412 =
+'#include <stdio.h>
+int main(void){
+    int b;
+    for(b=3; b>=1; b--){
+       printf("にゃんにゃん\n");
+    }
+    return 0;
+}'
+
+var sample421 =
+'#include <stdio.h>
+int main(void){
+   int a;
+   while(1){
+       printf("数字を入力：");
+       scanf("%d",&a);
+       if(a % 2 == 0){
+           printf("終了");
+           break;
+       }
+       printf("もう1回");
+  }
+   return 0;
+}'
+
+var sample422 =
+'#include <stdio.h>
+int main(void){
+   int a,ans = 0;
+   while(ans <= 100){
+       printf("数字を入力:");
+       scanf("%d",&a);
+       ans += a;
+   }
+   printf("100を超えました。%dです。",ans);
+   return 0;
+}'
+
+var sample431 =
+'#include <stdio.h>
+int main(void){
+    int x,i,k;
+    for(i=1;i<=9;i++){
+        for(k=1; k<=9;k++){
+            x=i*k;
+            printf("%d ",x);
+        }
+        printf("\n");
+    }
+    return 0;
+}'
+
+var sampleMatome41 =
+'#include <stdio.h>
+int main(void){
+ int i,sum,count;
+ i = 0;
+ sum = 0;
+ count = 0;
+ printf("入力した数値を足していきます、0を入力したら終了します\n");
+ while(1){
+   printf("足したい数を入力して下さい\n");
+   scanf("%d", &i);
+   sum +=i;
+   count++;
+   printf("現在の合計は%dです\n", sum);
+   printf("現在、%d回足しましたn", count);
+   if(i==0){
+     break;
+   }
+ }
+ printf("合計は%dです",sum);
+ return 0;
+}'
+
+var sampleMatome42 =
+'#include <stdio.h>
+int main(void){
+    int x,i,k;
+    int y=1;
+    scanf("%d",&x);
+    for(i=1;i<=x;i++){
+       for(k=1;k<=y;k++){
+           printf("*");
+       }
+       y++;
+       printf("\n");
+    }
+    return 0;
+}'
+
 var Exsample111 ='line(1);line(2);line(3);ANIME_printf("Hello World!");setPrintf("Hello World!");line(4);line(5)';
 var Exsample211 ='line(1);line(2);line(3);ANIME_sengen("int","x");line(4);ANIME_sengen("double","y");line(5);ANIME_sengen("char","z");line(6);ANIME_sengen("int","kengo");line(7);line(8)'
 var Exsample221 ='line(1);line(2);line(3);ANIME_sengen("int","x");line(4);ANIME_scanf();setPrintf(100);ANIME_dainyu("x","100");line(5);line(6)';
