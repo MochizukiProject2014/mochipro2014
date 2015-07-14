@@ -978,14 +978,14 @@ function ANIME_compare(expressions,bools,total){
 
 function ANIME_twoDarray_sengen(dataType,name,size1,size2){
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
-
+	var LOCAL_SPEED = SPEED;
 	var LIndex = 0;
 	var RIndex = 0;
-    var a_SPEED = 1*SPEED;
+    var aspe = 1*LOCAL_SPEED;
     if(size1*size2>=20){
-    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    	aspe = 0.3*LOCAL_SPEED; //配列の長さが20以上なら３倍速
     }else if(size1*size2>=50){
-    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    	aspe = 0.01*LOCAL_SPEED; //配列の長さが50以上なら10倍速
     }
 
     //プロミン車両をまとめておく、列車オブジェクト
@@ -1018,14 +1018,14 @@ function ANIME_twoDarray_sengen(dataType,name,size1,size2){
 		promin.tweener
 			.clear()
 			.call(function(){turn(promin,LEFT);})
-			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,1000*SPEED) //move( x, y, duration, fn )
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,1000*LOCAL_SPEED) //move( x, y, duration, fn )
 			.call(function(){turn(promin,FRONT);})
-			.wait(500*SPEED)
+			.wait(500*LOCAL_SPEED)
 			.call(function(){turn(promin,LEFT);})
-			.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
-			.move(promin.defaultX,promin.defaultY,500*SPEED)
+			.move(app.canvas.centerX,app.canvas.centerY,175*aspe*(promin.index+1))
+			.move(promin.defaultX,promin.defaultY,500*LOCAL_SPEED)
 			.call(function(){turn(promin,FRONT);})
-			.wait(500*SPEED)
+			.wait(500*LOCAL_SPEED)
 			.call(function(){if(promin.index===(size1*size2)-1){sign = 1;BUTTON_ON();/*console.log("おわり")*/}});
 	}
 }
@@ -1035,13 +1035,14 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
     //配列走査用の変数arrayIndexを0で初期化
     var arrayIndex = 0;
+    var LOCAL_SPEED = SPEED;
 
-    //宣言される配列の大きさが大きいときの対策として、本アニメーション用のSPEED値を設定
-    var a_SPEED = 1*SPEED;
+    //宣言される配列の大きさが大きいときの対策として、本アニメーション用のLOCAL_SPEED値を設定
+    var aspe = 1*LOCAL_SPEED;
     if(size1*size2>=20){
-    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    	aspe = 0.3*LOCAL_SPEED; //配列の長さが20以上なら３倍速
     }else if(size1*size2>=50){
-    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    	aspe = 0.01*LOCAL_SPEED; //配列の長さが50以上なら10倍速
     }
 
     //プロミン車両をまとめておく、列車オブジェクト
@@ -1076,18 +1077,18 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 		promin.tweener
 			.clear()
 			.call(function(){turn(promin,LEFT);})
-			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,250*SPEED)
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,250*LOCAL_SPEED)
 			.call(function(){turn(promin,FRONT);})
-			.wait(250*SPEED)
+			.wait(250*LOCAL_SPEED)
 			.call(function(){
 				for(var i=0;i<promin.index;i++){
 					promin.tweener
-						.wait(2700*SPEED)
-						.moveBy(-100,0,250*SPEED);
-						//.wait(1000*SPEED);	
+						.wait(2700*LOCAL_SPEED)
+						.moveBy(-100,0,250*LOCAL_SPEED);
+						//.wait(1000*LOCAL_SPEED);	
 				}
 				promin.tweener
-					.wait(250*SPEED)
+					.wait(250*LOCAL_SPEED)
 					.call(function(){
 						if(values[promin.index]){ //初期化式が設定されているならば
 							var space = tm.app.Shape(400,200);
@@ -1167,30 +1168,30 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 									P[0].Label.text="";
 									space.tweener
 										.clear()
-										.wait(1000*SPEED) 
+										.wait(1000*LOCAL_SPEED) 
 										.call(function(){
 											/*
 											space.canvas.font = "20px center"; //フォントサイズ設定
 											space.Label = tm.app.Label(values[promin.index]).addChildTo(space);
 											space.addChild(space.Label);*/
 										})
-										.wait(6500*SPEED)
+										.wait(6500*LOCAL_SPEED)
 										.call(function(){space.removeChildren();})
-										.wait(1500*SPEED)
+										.wait(1500*LOCAL_SPEED)
 										.call(function(){
 											app.currentScene.removeChild(space);
 										});
 							}else if(cnt>0){ //演算に変数が2つ以上使われるパターン
 								space.tweener
 									.clear()
-									.wait(500*SPEED)
+									.wait(500*LOCAL_SPEED)
 									.call(function(){
 									for(var i=0;i<P.length;i++){
 											P[i].Label.text = C[i].value;
 											C[i].hide();
 										}
 									})
-									.wait(500*SPEED) 
+									.wait(500*LOCAL_SPEED) 
 									.call(function(){
 										space.removeChildren();
 											equalLabel = tm.app.Label("=").addChildTo(space);
@@ -1207,11 +1208,11 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 												.setFontSize(30);
 										space.addChild(space.Label);
 									})
-									.wait(4500*SPEED)
+									.wait(4500*LOCAL_SPEED)
 									.call(function(){
 										space.removeChildren();
 									})
-									.wait(1500*SPEED)
+									.wait(1500*LOCAL_SPEED)
 									.call(function(){
 										app.currentScene.removeChild(space);
 									});
@@ -1223,7 +1224,7 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 											C[i].hide();
 										}
 									})
-									.wait(1000*SPEED) 
+									.wait(1000*LOCAL_SPEED) 
 									.call(function(){
 										if(expression.length>1){
 											space.removeChildren();
@@ -1244,9 +1245,9 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 											space.addChild(space.Label);
 										}
 									})
-									.wait(6500*SPEED)
+									.wait(6500*LOCAL_SPEED)
 									.call(function(){/*if(expression.length>1)space.removeChildren();*/})
-									.wait(2500*SPEED)
+									.wait(2500*LOCAL_SPEED)
 									.call(function(){
 										space.removeChildren();
 										app.currentScene.removeChild(space);
@@ -1256,73 +1257,73 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 					})
 
 					//消すモーション
-					.wait(1000*SPEED)
+					.wait(1000*LOCAL_SPEED)
 					.call(function(){
 						if(values[promin.index]){
 							promin.valueLabel.text="";
 							turn(promin,ERACE);
 						}
 					})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE2);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE2);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 
 					//書くモーション
 					.call(function(){if(values[promin.index])turn(promin,WRITE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,WRITE2);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,WRITE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,WRITE2);})
 					.call(function(){
 						if(values[promin.index]){
 							promin.valueLabel.text=values[promin.index];
 						}
 					})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){
 						turn(promin,FRONT);
 						/*app.currentScene.removeChild(promin.Label);*/
 					})
 
-					.wait(500*SPEED)
+					.wait(500*LOCAL_SPEED)
 					.call(function(){
 						app.currentScene.removeChild(promin.space);
 						turn(promin,LEFT);
 					})
-					//.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
+					//.move(app.canvas.centerX,app.canvas.centerY,175*aspe*(promin.index+1))
 					.call(function(){
 						if(promin.index===(size1*size2)-1){
 							promin.tweener
-								.move(promin.defaultX,promin.defaultY,500*SPEED)
+								.move(promin.defaultX,promin.defaultY,500*LOCAL_SPEED)
 								.call(function(){turn(promin,FRONT);})
-								.wait(250*SPEED)
+								.wait(250*LOCAL_SPEED)
 								.call(function(){sign = 1;BUTTON_ON();});
 						}else if(promin.index===(size1*size2)-2){
 							promin.tweener
-								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
-								.wait(2700*SPEED)
-								//.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
-								//.wait(2700*SPEED)
-								.move(promin.defaultX,promin.defaultY,375*SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*LOCAL_SPEED)
+								.wait(2700*LOCAL_SPEED)
+								//.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*LOCAL_SPEED)
+								//.wait(2700*LOCAL_SPEED)
+								.move(promin.defaultX,promin.defaultY,375*LOCAL_SPEED)
 								.call(function(){turn(promin,FRONT);})
-								.wait(250*SPEED);
+								.wait(250*LOCAL_SPEED);
 						}else{
 							promin.tweener
-								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
-								.wait(2700*SPEED)
-								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
-								.wait(2700*SPEED)
-								.move(promin.defaultX,promin.defaultY,250*SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*LOCAL_SPEED)
+								.wait(2700*LOCAL_SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*LOCAL_SPEED)
+								.wait(2700*LOCAL_SPEED)
+								.move(promin.defaultX,promin.defaultY,250*LOCAL_SPEED)
 								.call(function(){turn(promin,FRONT);})
-								.wait(250*SPEED);
+								.wait(250*LOCAL_SPEED);
 						}
 					})
 					
@@ -1337,12 +1338,13 @@ function ANIME_twoDarray_sengen_dainyu(dataType,name,size1,size2,ex,values){
 
 function ANIME_array_sengen(dataType,name,size){ 
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
+    var LOCAL_SPEED = SPEED;
     var arrayIndex = 0;
-    var a_SPEED = 1*SPEED;
+    var aspe = 1*LOCAL_SPEED;
     if(size>=20){
-    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    	aspe = 0.3*LOCAL_SPEED; //配列の長さが20以上なら３倍速
     }else if(size>=50){
-    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    	aspe = 0.01*LOCAL_SPEED; //配列の長さが50以上なら10倍速
     }
 
     //プロミン車両をまとめておく、列車オブジェクト
@@ -1370,14 +1372,14 @@ function ANIME_array_sengen(dataType,name,size){
 		promin.tweener
 			.clear()
 			.call(function(){turn(promin,LEFT);})
-			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,1000*SPEED) //move( x, y, duration, fn )
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,1000*LOCAL_SPEED) //move( x, y, duration, fn )
 			.call(function(){turn(promin,FRONT);})
-			.wait(500*SPEED)
+			.wait(500*LOCAL_SPEED)
 			.call(function(){turn(promin,LEFT);})
-			.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
-			.move(promin.defaultX,promin.defaultY,500*SPEED)
+			.move(app.canvas.centerX,app.canvas.centerY,175*aspe*(promin.index+1))
+			.move(promin.defaultX,promin.defaultY,500*LOCAL_SPEED)
 			.call(function(){turn(promin,FRONT);})
-			.wait(500*SPEED)
+			.wait(500*LOCAL_SPEED)
 			.call(function(){if(promin.index===size-1){sign = 1;BUTTON_ON();}});
 	}
 }
@@ -1385,14 +1387,15 @@ function ANIME_array_sengen(dataType,name,size){
 function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
     //配列走査用の変数arrayIndexを0で初期化
+    var LOCAL_SPEED = SPEED;
     var arrayIndex = 0;
 
-    //宣言される配列の大きさが大きいときの対策として、本アニメーション用のSPEED値を設定
-    var a_SPEED = 1*SPEED;
+    //宣言される配列の大きさが大きいときの対策として、本アニメーション用のLOCAL_SPEED値を設定
+    var aspe = 1*LOCAL_SPEED;
     if(size>=20){
-    	a_SPEED = 0.3*SPEED; //配列の長さが20以上なら３倍速
+    	aspe = 0.3*LOCAL_SPEED; //配列の長さが20以上なら３倍速
     }else if(size>=50){
-    	a_SPEED = 0.01*SPEED; //配列の長さが50以上なら10倍速
+    	aspe = 0.01*LOCAL_SPEED; //配列の長さが50以上なら10倍速
     }
 
     //プロミン車両をまとめておく、列車オブジェクト
@@ -1423,18 +1426,18 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 		promin.tweener
 			.clear()
 			.call(function(){turn(promin,LEFT);})
-			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,250*SPEED)
+			.move(app.canvas.centerX+(promin.index*100),app.canvas.centerY,250*LOCAL_SPEED)
 			.call(function(){turn(promin,FRONT);})
-			.wait(250*SPEED)
+			.wait(250*LOCAL_SPEED)
 			.call(function(){
 				for(var i=0;i<promin.index;i++){
 					promin.tweener
-						.wait(2700*SPEED)
-						.moveBy(-100,0,250*SPEED);
-						//.wait(1000*SPEED);	
+						.wait(2700*LOCAL_SPEED)
+						.moveBy(-100,0,250*LOCAL_SPEED);
+						//.wait(1000*LOCAL_SPEED);	
 				}
 				promin.tweener
-					.wait(250*SPEED)
+					.wait(250*LOCAL_SPEED)
 					.call(function(){
 						if(values[promin.index]){ //初期化式が設定されているならば
 							var space = tm.app.Shape(400,200);
@@ -1514,30 +1517,30 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 									P[0].Label.text="";
 									space.tweener
 										.clear()
-										.wait(1000*SPEED) 
+										.wait(1000*LOCAL_SPEED) 
 										.call(function(){
 											/*
 											space.canvas.font = "20px center"; //フォントサイズ設定
 											space.Label = tm.app.Label(values[promin.index]).addChildTo(space);
 											space.addChild(space.Label);*/
 										})
-										.wait(6500*SPEED)
+										.wait(6500*LOCAL_SPEED)
 										.call(function(){space.removeChildren();})
-										.wait(1500*SPEED)
+										.wait(1500*LOCAL_SPEED)
 										.call(function(){
 											app.currentScene.removeChild(space);
 										});
 							}else if(cnt>0){ //演算に変数が2つ以上使われるパターン
 								space.tweener
 									.clear()
-									.wait(500*SPEED)
+									.wait(500*LOCAL_SPEED)
 									.call(function(){
 									for(var i=0;i<P.length;i++){
 											P[i].Label.text = C[i].value;
 											C[i].hide();
 										}
 									})
-									.wait(500*SPEED) 
+									.wait(500*LOCAL_SPEED) 
 									.call(function(){
 										space.removeChildren();
 											equalLabel = tm.app.Label("=").addChildTo(space);
@@ -1554,11 +1557,11 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 												.setFontSize(30);
 										space.addChild(space.Label);
 									})
-									.wait(4500*SPEED)
+									.wait(4500*LOCAL_SPEED)
 									.call(function(){
 										space.removeChildren();
 									})
-									.wait(1500*SPEED)
+									.wait(1500*LOCAL_SPEED)
 									.call(function(){
 										app.currentScene.removeChild(space);
 									});
@@ -1570,7 +1573,7 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 											C[i].hide();
 										}
 									})
-									.wait(1000*SPEED) 
+									.wait(1000*LOCAL_SPEED) 
 									.call(function(){
 										if(expression.length>1){
 											space.removeChildren();
@@ -1591,9 +1594,9 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 											space.addChild(space.Label);
 										}
 									})
-									.wait(6500*SPEED)
+									.wait(6500*LOCAL_SPEED)
 									.call(function(){/*if(expression.length>1)space.removeChildren();*/})
-									.wait(2500*SPEED)
+									.wait(2500*LOCAL_SPEED)
 									.call(function(){
 										space.removeChildren();
 										app.currentScene.removeChild(space);
@@ -1603,73 +1606,73 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 					})
 
 					//消すモーション
-					.wait(1000*SPEED)
+					.wait(1000*LOCAL_SPEED)
 					.call(function(){
 						if(values[promin.index]){
 							promin.valueLabel.text="";
 							turn(promin,ERACE);
 						}
 					})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE2);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE2);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,ERACE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 
 					//書くモーション
 					.call(function(){if(values[promin.index])turn(promin,WRITE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,WRITE2);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,WRITE);})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){if(values[promin.index])turn(promin,WRITE2);})
 					.call(function(){
 						if(values[promin.index]){
 							promin.valueLabel.text=values[promin.index];
 						}
 					})
-					.wait(100*SPEED)
+					.wait(100*LOCAL_SPEED)
 					.call(function(){
 						turn(promin,FRONT);
 						/*app.currentScene.removeChild(promin.Label);*/
 					})
 
-					.wait(500*SPEED)
+					.wait(500*LOCAL_SPEED)
 					.call(function(){
 						app.currentScene.removeChild(promin.space);
 						turn(promin,LEFT);
 					})
-					//.move(app.canvas.centerX,app.canvas.centerY,175*a_SPEED*(promin.index+1))
+					//.move(app.canvas.centerX,app.canvas.centerY,175*aspe*(promin.index+1))
 					.call(function(){
 						if(promin.index===size-1){
 							promin.tweener
-								.move(promin.defaultX,promin.defaultY,500*SPEED)
+								.move(promin.defaultX,promin.defaultY,500*LOCAL_SPEED)
 								.call(function(){turn(promin,FRONT);})
-								.wait(250*SPEED)
+								.wait(250*LOCAL_SPEED)
 								.call(function(){sign = 1;BUTTON_ON();});
 						}else if(promin.index===size-2){
 							promin.tweener
-								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
-								.wait(2700*SPEED)
-								//.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
-								//.wait(2700*SPEED)
-								.move(promin.defaultX,promin.defaultY,375*SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*LOCAL_SPEED)
+								.wait(2700*LOCAL_SPEED)
+								//.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*LOCAL_SPEED)
+								//.wait(2700*LOCAL_SPEED)
+								.move(promin.defaultX,promin.defaultY,375*LOCAL_SPEED)
 								.call(function(){turn(promin,FRONT);})
-								.wait(250*SPEED);
+								.wait(250*LOCAL_SPEED);
 						}else{
 							promin.tweener
-								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*SPEED)
-								.wait(2700*SPEED)
-								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*SPEED)
-								.wait(2700*SPEED)
-								.move(promin.defaultX,promin.defaultY,250*SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*1/3,250*LOCAL_SPEED)
+								.wait(2700*LOCAL_SPEED)
+								.move(app.canvas.centerX-(app.canvas.centerX-promin.defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-promin.defaultY)*2/3,250*LOCAL_SPEED)
+								.wait(2700*LOCAL_SPEED)
+								.move(promin.defaultX,promin.defaultY,250*LOCAL_SPEED)
 								.call(function(){turn(promin,FRONT);})
-								.wait(250*SPEED);
+								.wait(250*LOCAL_SPEED);
 						}
 					})
 					
@@ -1680,7 +1683,8 @@ function ANIME_array_sengen_dainyu(dataType,name,size,ex,values){
 function ANIME_array_dainyu(name,value){ 
 	//nameは代入対象の変数の要素名(a[0]など)、valueは代入値
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
-	
+	var LOCAL_SPEED = SPEED;
+
 	var promin = null;
 	var target_index = null;
 	var train = null;
@@ -1728,73 +1732,75 @@ function ANIME_array_dainyu(name,value){
 			var t = train.value[i];
 			train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
-				.wait(1000*SPEED)
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,4*time*LOCAL_SPEED)
+				.wait(1000*LOCAL_SPEED)
 
 				.call(function(){
 					space.show();
 					promin.valueLabel.text="";
 					turn(promin,ERACE);
 				})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 
 				.call(function(){turn(promin,FRONT);})
-				.wait(250*SPEED)
+				.wait(250*LOCAL_SPEED)
 
 				//書くモーション
 				.call(function(){turn(promin,WRITE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,WRITE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,WRITE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){
 					promin.value = value;
 					promin.valueLabel.text = value;
 				})
 				.call(function(){turn(promin,WRITE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,WRITE);})
-				.wait(250*SPEED)
+				.wait(250*LOCAL_SPEED)
 				.call(function(){
 					turn(promin,FRONT);
 					//space.hide();
 					app.currentScene.removeChild(space);
 				})
-				.wait(500*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
-				.wait(1000*SPEED)
+				.wait(500*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*LOCAL_SPEED)
+				.wait(1000*LOCAL_SPEED)
 				.call(function(){
 					cnt++;
-					if(train.value[0].x===train.value[0].defaultX){
-						sign = 1;BUTTON_ON();//console.log("おわた")
-					}
+					//if(train.value[0].x===train.value[0].defaultX && train.value[0].y===train.value[0].defaultY){
+					/*if(!(train.value[0].tweener.isPlaying)){
+						sign = 1;BUTTON_ON();console.log("おわた")
+					}*/
 				});
 
 		}else if(i<target_index){
 			var t = train.value[i].index;
 			train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
-				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,(target_index-i)*time*SPEED)
-				.wait(3450*SPEED)
-				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
-				.wait(1000*SPEED)
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,4*time*LOCAL_SPEED)
+				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,(target_index-i)*time*LOCAL_SPEED)
+				.wait(3450*LOCAL_SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*LOCAL_SPEED)
+				.wait(1000*LOCAL_SPEED)
 				.call(function(){
 					cnt++;
-					if(train.value[0].x===train.value[0].defaultX){
-						sign = 1;BUTTON_ON();//console.log("おわり")
+					//if(train.value[0].x===train.value[0].defaultX && train.value[0].y===train.value[0].defaultY){
+					if(!(train.value[0].tweener.isPlaying)){
+						sign = 1;BUTTON_ON();console.log("おわり")
 					}
 				})
 		}else if(i>target_index && target_index+3>i){
@@ -1802,20 +1808,19 @@ function ANIME_array_dainyu(name,value){
 			if(i===target_index+1){
 				train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,time*4*SPEED*2/3)//2.7*time*SPEED)
-				.wait(3450*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED)
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,time*4*LOCAL_SPEED*2/3)//2.7*time*LOCAL_SPEED)
+				.wait(3450*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*LOCAL_SPEED)
 	
 			//代入対象のインデックス+1のインデックスをもつ配列プロミン
 			}else if(i===target_index+2){
 				train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,time*4*SPEED*1/3)//1.7*time*SPEED)
-				.wait(3450*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*SPEED)
-	
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,time*4*LOCAL_SPEED*1/3)//1.7*time*LOCAL_SPEED)
+				.wait(3450*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*LOCAL_SPEED)
 			}
 		}
 	}
@@ -1825,6 +1830,7 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 	//nameは代入対象の変数の要素名(a[0]など)、valueは代入値
 	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
 	
+	var LOCAL_SPEED = SPEED;
 	var promin = null;
 	var target_index = null;
 	var train = null;
@@ -1863,9 +1869,9 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 		if(i===target_index){
 			train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
-				.wait(1000*SPEED)
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,4*time*LOCAL_SPEED)
+				.wait(1000*LOCAL_SPEED)
 				.call(function(){
 					equalLabel = tm.app.Label("=").addChildTo(space);
 					equalLabel
@@ -1935,7 +1941,7 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 						P[0].Label.text="";
 						space.tweener
 							.clear()
-							.wait(1000*SPEED) 
+							.wait(1000*LOCAL_SPEED) 
 							.call(function(){
 								space.canvas.font = "20px center"; //フォントサイズ設定
 								space.Label = tm.app.Label("").addChildTo(space);
@@ -1950,19 +1956,19 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 								}
 
 							})
-							.wait(6500*SPEED)
+							.wait(6500*LOCAL_SPEED)
 							.call(function(){space.removeChildren();});
 					}else if(counter>0){
 						space.tweener
 							.clear()
-							.wait(1000*SPEED)
+							.wait(1000*LOCAL_SPEED)
 							.call(function(){
 								for(var j=0;j<P.length;j++){
 									P[j].Label.text = C[j].value;
 									C[j].hide();
 								}
 							})
-							.wait(1000*SPEED) 
+							.wait(1000*LOCAL_SPEED) 
 							.call(function(){
 								space.removeChildren();
 
@@ -1988,18 +1994,18 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 									}
 								}
 							})
-							.wait(6500*SPEED)
+							.wait(6500*LOCAL_SPEED)
 							.call(function(){space.removeChildren();})
 					}else{
 						space.tweener
-							.wait(1000*SPEED)
+							.wait(1000*LOCAL_SPEED)
 							.call(function(){
 								for(var j=0;j<P.length;j++){
 									P[j].Label.text = C[j].value;
 									C[j].hide();
 								}
 							})
-							.wait(1000*SPEED) 
+							.wait(1000*LOCAL_SPEED) 
 							.call(function(){
 								space.removeChildren();
 
@@ -2025,76 +2031,76 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 									}
 								}
 							})
-							.wait(6500*SPEED)
+							.wait(6500*LOCAL_SPEED)
 							.call(function(){space.removeChildren();})
-							.wait(2500*SPEED)
+							.wait(2500*LOCAL_SPEED)
 					}
 				})
 
-				.wait(2500*SPEED)
+				.wait(2500*LOCAL_SPEED)
 				.call(function(){
 					space.show();
 					promin.valueLabel.text="";
 					turn(promin,ERACE);
 				})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,ERACE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 
 				.call(function(){turn(promin,FRONT);})
-				.wait(250*SPEED)
+				.wait(250*LOCAL_SPEED)
 
 				//書くモーション
 				.call(function(){turn(promin,WRITE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,WRITE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,WRITE);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){
 					promin.value = result;
 					promin.valueLabel.text = result;
 				})
 				.call(function(){turn(promin,WRITE2);})
-				.wait(150*SPEED)
+				.wait(150*LOCAL_SPEED)
 				.call(function(){turn(promin,WRITE);})
-				.wait(250*SPEED)
+				.wait(250*LOCAL_SPEED)
 				.call(function(){
 					turn(promin,FRONT);
 					app.currentScene.removeChild(space);
 				})
-				.wait(900*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
-				.wait(1000*SPEED)
+				.wait(900*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*LOCAL_SPEED)
+				.wait(1000*LOCAL_SPEED)
 				.call(function(){
 					cnt++;
-					if(train.value[0].x === train.value[0].defaultX){
+					if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
 						sign = 1;BUTTON_ON();
-						//console.log("おわり")
+						console.log("配列への演算代入おわり")
 					}
 				});
 		}else if(i<target_index){
 			var t = train.value[i];
 			train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX,app.canvas.centerY,4*time*SPEED)
-				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,(target_index-i)*time*SPEED)
-				.wait(6350*SPEED)
-				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*SPEED)
-				.wait(1000*SPEED)
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,4*time*LOCAL_SPEED)
+				.move(app.canvas.centerX+100*(target_index-i),app.canvas.centerY,(target_index-i)*time*LOCAL_SPEED)
+				.wait(6350*LOCAL_SPEED)
+				.move(app.canvas.centerX,app.canvas.centerY,(target_index-i)*time*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,4*time*LOCAL_SPEED)
+				.wait(1000*LOCAL_SPEED)
 				.call(function(){
 					cnt++;
-					if(train.value[0].x === train.value[0].defaultX){
+					if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
 						sign = 1;BUTTON_ON();
-						//console.log("おわり")
+						console.log("配列への演算代入おわり")
 					}
 				})
 		}else if(i>target_index && target_index+3>i){
@@ -2102,19 +2108,19 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 			if(i===target_index+1){
 				train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,time*4*SPEED*2/3)//2.7*time*SPEED)
-				.wait(6350*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*SPEED);
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*1/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*1/3,time*4*LOCAL_SPEED*2/3)//2.7*time*LOCAL_SPEED)
+				.wait(6350*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,3.7*time*LOCAL_SPEED);
 
 			//代入対象のインデックス+2のインデックスをもつ配列プロミン
 			}else if(i===target_index+2){
 				train.value[i].tweener
 				.clear()
-				.wait(i*time*SPEED)
-				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,time*4*SPEED*1/3)//1.7*time*SPEED)
-				.wait(6350*SPEED)
-				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*SPEED);
+				.wait(i*time*LOCAL_SPEED)
+				.move(app.canvas.centerX-(app.canvas.centerX-train.value[i].defaultX)*2/3,app.canvas.centerY-(app.canvas.centerY-train.value[i].defaultY)*2/3,time*4*LOCAL_SPEED*1/3)//1.7*time*LOCAL_SPEED)
+				.wait(6350*LOCAL_SPEED)
+				.move(train.value[i].defaultX,train.value[i].defaultY,2.3*time*LOCAL_SPEED);
 
 			}
 		}
@@ -2572,6 +2578,7 @@ function ANIME_enzan_dainyu(name,expression,result){
 			.wait(1500*SPEED)
 			.call(function(){
 				sign=1;
+				console.log("演算代入終了");
 				app.currentScene.removeChild(space);
 				BUTTON_ON();
 			});
@@ -2609,6 +2616,7 @@ function ANIME_enzan_dainyu(name,expression,result){
 			.wait(2500*SPEED)
 			.call(function(){
 				sign=1;
+				console.log("演算代入終了");
 				app.currentScene.removeChild(space);
 				BUTTON_ON();
 			});
