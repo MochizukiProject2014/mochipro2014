@@ -190,6 +190,19 @@ function answer_check(num){
 			re = new RegExp(/printf_js\("sum","%d"\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
+		case 512:
+			re = new RegExp(/array_declare\("int","a","1@2@3@4@5",5\)/);answer_pattern_array.push(re);
+			re = new RegExp(/array_declare\("int","b","undefined",5\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,i,0","i < 5","i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("b\[i\]","a\[(4:-:i:-1)|(4:-:1:-i)|(3:-:i)\]"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,i,0","i < 5","i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("i,b\[i\]".+\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
+		break;
+		case 522:
+			re = new RegExp(/multiarray_declare\("int","data","1@2@3^4@5@6^7@8@9^10@11@12","4","3"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("data\[3\]\[1\]".+\)/);answer_pattern_array.push(re);
+		break;
 	}
 	var flen = flagArr.length;
 	//console.log(flen+"つのtrueが必要です。");

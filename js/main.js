@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	SPEED=0.25;
+	//SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -221,6 +221,7 @@ function codeArrayInit(){
 
 function getVariableExist(name){
 	var vlen = variables.length;
+	//if(/\[.+\]\[.+\]/.test(name)){name = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1];}
 	if(/\[.+\]/.test(name))name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	for(i = 0; i < vlen; i++){
 		if(variables[i].name == name){
@@ -239,6 +240,26 @@ function getVariableType(name){
 			result = variables[i].data_type;
 			break;
 		}
+	}
+	return result;
+}
+
+function calcArrayIndex(name){
+	var vlen = variables.length;
+	var result;
+	if(/\[.+\]\[.+\]/.test(name)){
+		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
+		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
+		if(/^[a-z]\w*/.test(index1)||/:/.test(index1))index1 =calc(index1);
+		if(/^[a-z]\w*/.test(index2)||/:/.test(index2))index2 =calc(index2);
+		result = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1] + "["+index1+"]["+index2+"]";
+	}else if(/\[.+\]/.test(name)){
+		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
+		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
+		result = name.match(/^([a-z]\w*)\[.+\]/)[1] + "["+index+"]";
+	}else{
+		console.log("システムエラー：引数の形に誤りがあります");
+		eval("gabgabaa");
 	}
 	return result;
 }
@@ -327,6 +348,9 @@ function variable_declare(data_type,name,value){
 				if(i<len-1){str += ',';}else{str +=']';}
 			}
 			value = regulate_js(data_type,value);
+		}else if(/\[.\]/.test(value)&&getVariableExist(value)){
+			str = '"'+calcArrayIndex(value)+'"';
+			value = getVariableValue(value);
 		}else{
 			str='["'+value+'"]';
 			value = regulate_js(data_type,getVariableValue(value));
