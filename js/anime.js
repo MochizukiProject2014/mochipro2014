@@ -112,7 +112,13 @@ var ASSETS = {
 	//怪盗C
     "kaitoC" : "img/character/kaitoC.png", 
     "fukidashi" : "img/fukidashi.png",
-      
+
+    //比較アニメ用trueとfalse
+    "true_S" : "img/bool/true1.png",
+    "true_L" : "img/bool/true2.png",
+    "false_S" : "img/bool/false1.png",
+    "false_L" : "img/bool/false2.png",
+
 };
 
 //int型のプロミン（青）のイメージセット
@@ -249,7 +255,7 @@ tm.define("MainScene", {
 	        				texture.drawImage(img,(promin1.x+promin2.x)/2,(promin1.y+promin2.y)/2);
 	        				*/
 	        				texture.lineWidth = 5; //線の太さ
-	        				texture.strokeStyle="darkgray"; //線の色
+	        				texture.strokeStyle="gray"; //線の色
 	        				texture.drawLine(promin1.x-15,promin1.y+30,promin2.x-10,promin2.y+30);
 		        		}
 		        		if(promin1.twoDarrayFlag && promin1.index===0 && promin1.x===promin1.defaultX){
@@ -271,10 +277,11 @@ tm.define("MainScene", {
     		//ANIME_twoDarray_sengen("int","a",3,5);
     		//ANIME_twoDarray_sengen_dainyu("int","a",2,2,["1"],["1"]);
     		//ANIME_twoDarray_sengen_dainyu("int","a",2,2,["0","1","2","3"],["0","1","2","3"])
-    	},1000);
+    		//ANIME_compare(["x:+:1:==:2","||","2:+:2:>:3","||","x"/*,"&&","x","&&","y:==:2","x:+:y:==:5"*/],[false,true,true/*,false,true,false*/],true);
+    	},10000);
     	window.setTimeout(function(){
-    		//ANIME_enzan_dainyu("y",["a[0][0]","+","1"],"1","1")
-    	},10000)
+    		//ANIME_sengen_dainyu("int","x",2);
+    	},1000)
     },
 });
 
@@ -678,6 +685,292 @@ function here(){
 		HERE.isHide=1;
 	}
 }
+
+/*
+ *  比較のアニメ
+ */
+
+function ANIME_compare(expressions,bools,total){
+	SPEED_BOARD.text=(DEFAULT_SPEED/SPEED)+"倍速";
+	
+	var between = 500/(expressions.length+1); //between:文字同士の幅
+	var exSpace = [];
+	var objects = [];
+
+	for(var i=0;i<expressions.length;i++){
+		var ex = tm.app.Shape(100,50); 
+		//ex.canvas.clearColor("red");
+		//ex.setPosition(300+i*120,100);
+		ex.setPosition((between+(i*between))+200,100);
+
+		ex.Label = tm.app.Label(expressions[i].replace(/:/g,"")).addChildTo(ex);
+		ex.Label
+			.setFillStyle("rgba(45,45,45,1)")
+			.setFontSize(20)
+			.setPosition(ex.canvas.centerX-50,ex.canvas.centerY-25);
+		
+		if(expressions[i]!=="||" && expressions[i]!=="&&"){
+			exSpace.push(ex);
+		}
+
+		objects.push(ex);
+		ex.text = expressions[i];
+		app.currentScene.addChild(ex);
+	}
+	
+	var twn = tm.app.Shape(0,0);
+	app.currentScene.addChild(twn);
+
+	twn.tweener
+		.clear()
+		.wait(2000*SPEED)
+		.call(function(){
+			var cnt=0;
+			for(var i=0;i<exSpace.length;i++){
+				twn.tweener
+					.call(function(){
+						//exSpace[cnt].setFillStyle("red");
+						//exSpace[cnt].canvas.drawLine(exSpace[cnt].Label.left,exSpace[cnt].Label.y+50,exSpace[cnt].right,exSpace[cnt].Label.y+50);
+						underLine(exSpace[cnt]);
+					})
+					.wait(1000*SPEED)
+					.call(function(){
+						enzan(exSpace[cnt].text,bools[cnt]);
+					})
+					.wait(3000*SPEED)
+					.call(function(){
+						if(bools[cnt]){
+							true_stamp(exSpace[cnt]);
+							true_stamp();
+						}else{
+							false_stamp(exSpace[cnt])
+							false_stamp();
+						}
+						cnt++;
+					})
+					.wait(2000*SPEED)
+			}
+			twn.tweener
+				.wait(1000*SPEED)
+				.call(function(){
+					var result;
+					if(total){
+						result = tm.app.Sprite("true_L");
+					}else{
+						result = tm.app.Sprite("false_L");
+					}
+					result.setPosition(app.canvas.centerX+100,app.canvas.centerY+50);
+					app.currentScene.addChild(result);
+					objects.push(result);
+				})
+				.wait(2000*SPEED)
+				.call(function(){
+					for(var i=0;i<objects.length;i++){
+						objects[i].remove();
+					}
+					sign=1;BUTTON_ON();//1console.log("比較おわり")
+				});
+		});
+
+	function underLine(obj){
+		var line = tm.app.Shape(100,10);
+		line.canvas.drawLine(0,0,100,0);
+		line.canvas.clearColor("red");
+		//line.canvas.lineWidth = 0; 
+		line.setPosition(obj.x,obj.y+30);
+		line.addChildTo(app.currentScene);
+		line.tweener
+			.wait(5000*SPEED)
+			.call(function(){line.remove();})
+	}
+
+	function true_stamp(obj){	
+		var true_S = tm.app.Sprite("true_S");
+		if(obj){
+			//true_S.setRotation(20);
+			//true_S.setAlpha(0.9);
+			true_S.setPosition(obj.x,obj.y);
+			objects.push(true_S);
+		}else{
+			true_S.setPosition(500,360);
+			true_S.tweener
+				.wait(1000*SPEED)
+				.call(function(){true_S.remove();})
+		}
+		app.currentScene.addChild(true_S);
+	}
+
+	function false_stamp(obj){
+		var false_S = tm.app.Sprite("false_S");;
+		if(obj){
+			//true_S.setRotation(20);
+			//true_S.setAlpha(0.9);
+			false_S.setPosition(obj.x,obj.y);
+			objects.push(false_S);
+		}else{
+			false_S.setPosition(500,360);
+			false_S.tweener
+				.wait(1000*SPEED)
+				.call(function(){false_S.remove();})
+		}
+		app.currentScene.addChild(false_S);
+	}
+
+	function enzan(ex,result){
+		var space = tm.app.Shape(400,200); //printfの表示領域オブジェクトspaceを生成
+		space.setPosition(525,260); //初期位置の設定（上部)
+		//space.canvas.clearColor("blue");
+		app.currentScene.addChild(space); //spaceをカレントシーンにに追加
+
+		space.canvas.setFillStyle("black"); //フォントカラー設定
+		space.canvas.font = "20px center"; //フォントサイズ設定
+
+		var expression = String(ex).split(":");
+		//console.log(expression)
+
+		var between = 400/(expression.length+1); //between:文字同士の幅
+
+		cnt = 0;
+		var P=[]; //Pspaceオブジェクトの配列(プロミンのcopy用の描画スペース)
+		var C=[]; //copyオブジェクトの配列
+
+		for(var i=0;i<expression.length;i++){
+			var check=0;
+			for(var k=0;k<promin_array.length;k++){
+				//式に含まれる変数と、promin_arrayのプロミンの名前が一致するものを探す
+				if(expression[i]===promin_array[k].name){
+					var Pspace = tm.app.Shape(80,80);
+					//Pspace.canvas.clearColor("red"); //デバッグ用にPspaceのcanvasを赤にする
+					Pspace.setPosition((between+(i*between))-250,space.canvas.centerY-80);
+					Pspace.Label = tm.app.Label(expression[i]).addChildTo(Pspace);
+					Pspace.Label
+						.setFillStyle("rgba(0,0,0,1)")
+						.setFontSize(20);
+					space.addChild(Pspace);
+					
+					if(promin_array[k].arrayFlag===true){
+						var copy = new ArrayPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].index,promin_array[k].value);
+					}else if(promin_array[k].twoDarrayFlag===true){
+						var copy = new twoDArrayPromin(promin_array[k].dataType, 
+							promin_array[k].name,
+							promin_array[k].index,
+							promin_array[k].LIndex,
+							promin_array[k].RIndex,
+							promin_array[k].value,
+							promin_array[k].arrayName);
+					}else{
+						var copy = new MiniPromin(promin_array[k].dataType,promin_array[k].name,promin_array[k].value);
+					}
+					Pspace.addChild(copy);
+					copy.setPosition(0,0);
+					Pspace.addChild(copy);
+					P.push(Pspace);
+					C.push(copy);
+					check = 1;
+					cnt++;
+					break;	
+				}
+			}
+			if(check===0){ //テキストをそのまま出力*/
+				var Pspace = tm.app.Shape(80,80);
+				//Pspace.canvas.clearColor("red");
+				Pspace.setPosition((between+(i*between))-250,space.canvas.centerY-80);
+				Pspace.Label = tm.app.Label(expression[i]).addChildTo(Pspace);
+				Pspace.Label
+					.setFillStyle("rgba(0,0,0,1)")
+					.setFontSize(20);
+				space.addChild(Pspace);
+				//space.canvas.fillText(expression[i],between+(i*between),space.canvas.centerY+20); //テキスト描画
+			}
+		}
+
+		if(C.length===1&&expression.length===1){
+			//console.log("x=yみたいなパターン");
+			C[0].x = C[0].x+40;
+			P[0].Label.text="";
+			space.tweener
+				.clear()
+				.wait(3000*SPEED) 
+				.call(function(){
+					space.canvas.font = "20px center"; //フォントサイズ設定
+					space.Label = tm.app.Label("").addChildTo(space);
+					space.addChild(space.Label);
+
+					var promin;
+					for(var i=0;i<promin_array.length;i++){
+						if(name===promin_array[i].name){ 
+							promin = promin_array[i];
+							break;
+						}
+					}
+					//MYdainyu_move(promin,result);
+					/*if(result){
+						true_stamp();
+					}else{
+						false_stamp();
+					}*/
+				})
+				.wait(1000*SPEED)
+				.call(function(){space.removeChildren();});
+		}else if(cnt>0){
+			space.tweener
+				.clear()
+				.wait(2000*SPEED)
+				.call(function(){
+					for(var i=0;i<P.length;i++){
+						P[i].Label.text = C[i].value;
+						C[i].hide();
+					}
+				})
+				.wait(1000*SPEED) 
+				.call(function(){
+					var promin;
+					for(var i=0;i<promin_array.length;i++){
+						if(name===promin_array[i].name){
+							promin = promin_array[i];
+							break;
+						}
+					}
+					//MYdainyu_move(promin,result);
+					/*if(result){
+						true_stamp();
+					}else{
+						false_stamp();
+					}*/
+				})
+				.wait(1000*SPEED)
+				.call(function(){space.removeChildren();});
+		}else{
+			space.tweener
+				.wait(2000*SPEED)
+				.call(function(){
+					for(var i=0;i<P.length;i++){
+						P[i].Label.text = C[i].value;
+						C[i].hide();
+					}
+				})
+				.wait(1000*SPEED) 
+				.call(function(){
+					var promin;
+					for(var i=0;i<promin_array.length;i++){
+						if(name===promin_array[i].name){
+							promin = promin_array[i];
+							break;
+						}
+					}
+					//MYdainyu_move(promin,result);
+					/*if(result){
+						true_stamp();
+					}else{
+						false_stamp();
+					}*/
+				})
+				.wait(1000*SPEED)
+				.call(function(){space.removeChildren();});
+		}
+	}
+}
+
 
 /*
  *  二次元配列関連の関数
