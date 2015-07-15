@@ -1782,7 +1782,7 @@ function ANIME_array_dainyu(name,value){
 					//if(train.value[0].x===train.value[0].defaultX && train.value[0].y===train.value[0].defaultY){
 					//if(!(train.value[0].tweener.isPlaying)){
 					if(cnt===target_index+1){
-						sign = 1;BUTTON_ON();console.log("おわた")
+						sign = 1;BUTTON_ON();//console.log("おわた")
 					}
 				});
 		}else if(i<target_index){
@@ -1800,7 +1800,7 @@ function ANIME_array_dainyu(name,value){
 					cnt++;
 					//if(train.value[0].x===train.value[0].defaultX && train.value[0].y===train.value[0].defaultY){
 					if(cnt===target_index+1){
-						sign = 1;BUTTON_ON();console.log("おわり")
+						sign = 1;BUTTON_ON();//console.log("おわり")
 					}
 				})
 		}else if(i>target_index && target_index+3>i){
@@ -2083,7 +2083,7 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 					//if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
 					if(cnt===target_index+1){
 						sign = 1;BUTTON_ON();
-						console.log("配列への演算代入おわり")
+						//console.log("配列への演算代入おわり")
 					}
 				});
 		}else if(i<target_index){
@@ -2102,7 +2102,7 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 					//if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
 					if(cnt===target_index+1){
 						sign = 1;BUTTON_ON();
-						console.log("配列への演算代入おわり")
+						//console.log("配列への演算代入おわり")
 					}
 				})
 		}else if(i>target_index && target_index+3>i){
@@ -2361,11 +2361,11 @@ function ANIME_printf(contents,variables){
 					C.push(copy);
 					cnt++;
 					break;	
-				}else if(variables[i].match(/:/)){ //variablesに演算を含む場合
+				}/*else if(variables[i].match(/:/)){ //variablesに演算を含む場合
 					console.log(variables[i]);
 					var expression = String(variables[i]).split(":");
 
-				}
+				}*/
 			}
 		}/*else if(contents[i]==="%f"){  //double型とか？浮動小数点型のデータ型用
 
@@ -2580,7 +2580,7 @@ function ANIME_enzan_dainyu(name,expression,result){
 			.wait(1500*SPEED)
 			.call(function(){
 				sign=1;
-				console.log("演算代入終了");
+				//console.log("演算代入終了");
 				app.currentScene.removeChild(space);
 				BUTTON_ON();
 			});
@@ -2618,7 +2618,7 @@ function ANIME_enzan_dainyu(name,expression,result){
 			.wait(2500*SPEED)
 			.call(function(){
 				sign=1;
-				console.log("演算代入終了");
+				//console.log("演算代入終了");
 				app.currentScene.removeChild(space);
 				BUTTON_ON();
 			});
