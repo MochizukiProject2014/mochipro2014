@@ -1780,11 +1780,11 @@ function ANIME_array_dainyu(name,value){
 				.call(function(){
 					cnt++;
 					//if(train.value[0].x===train.value[0].defaultX && train.value[0].y===train.value[0].defaultY){
-					/*if(!(train.value[0].tweener.isPlaying)){
+					//if(!(train.value[0].tweener.isPlaying)){
+					if(cnt===target_index+1){
 						sign = 1;BUTTON_ON();console.log("おわた")
-					}*/
+					}
 				});
-
 		}else if(i<target_index){
 			var t = train.value[i].index;
 			train.value[i].tweener
@@ -1799,7 +1799,7 @@ function ANIME_array_dainyu(name,value){
 				.call(function(){
 					cnt++;
 					//if(train.value[0].x===train.value[0].defaultX && train.value[0].y===train.value[0].defaultY){
-					if(!(train.value[0].tweener.isPlaying)){
+					if(cnt===target_index+1){
 						sign = 1;BUTTON_ON();console.log("おわり")
 					}
 				})
@@ -2080,7 +2080,8 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 				.wait(1000*LOCAL_SPEED)
 				.call(function(){
 					cnt++;
-					if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
+					//if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
+					if(cnt===target_index+1){
 						sign = 1;BUTTON_ON();
 						console.log("配列への演算代入おわり")
 					}
@@ -2098,7 +2099,8 @@ function ANIME_array_enzan_dainyu(name,expression,result){
 				.wait(1000*LOCAL_SPEED)
 				.call(function(){
 					cnt++;
-					if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
+					//if(train.value[0].x === train.value[0].defaultX && train.value[0].y === train.value[0].defaultY){
+					if(cnt===target_index+1){
 						sign = 1;BUTTON_ON();
 						console.log("配列への演算代入おわり")
 					}
