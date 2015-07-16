@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	//SPEED=0.25;
+	SPEED=0.25;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -811,7 +811,13 @@ function for_eval(){
 		eval(for_alt_array[for_now_cnt]);
 		if(for_now_cnt==0&&for_index_array[for_now_cnt]>=len&&!(assess(for_conditions_array[for_now_cnt]))){
 			for_context_finish =true;//もし今のfor群の全てを実行し終えたら
+			arr_init("",for_contexts_array);arr_init("",for_index_array);
+			arr_init("",for_conditions_array);arr_init("",for_alt_array);
+			arr_init("",for_line_array);
+			for_rindex = 0;
+			for_context_finish =true;
 			evalfunction(rindex+1,result2);
+			break;
 		}else if(for_now_cnt!=0&&!(assess(for_conditions_array[for_now_cnt]))){
 			for_now_cnt-=1;
 			return 0;
