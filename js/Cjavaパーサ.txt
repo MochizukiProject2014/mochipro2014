@@ -1,8 +1,3 @@
-/*
- * Classic example grammar, which recognizes simple arithmetic expressions like
- * "2*(3+4)". The parser generated from this grammar then computes their value.
- */
-
 start
   = space "#include" space "<stdio.h>"  space coment* "int" space "main" space "(void)" block:block  space {return block;}
 
@@ -27,8 +22,10 @@ script
 statement
   = statement_int
   / statement_double
-  / statement_array_int
   / statement_char
+  / statement_array_int_2
+  / statement_array_int
+
 
 statement_int
   =  "int " space variable:variable space ";"  space {return "var " + variable + ";" ;}
@@ -72,17 +69,30 @@ statement_array_int
 		return  'var ' + name + '= [' + variable + '];'    }
  
 statement_array_int_2
-  =  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  ";" space { return "intの配列： " + variable + "　大きさ：" + length1 + "," + length2 + ';'  }
-  /  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  space "=" space "{" space contents:additive space "}" space  ";" space { return "intの配列：" + variable + "　大きさ：" + length1 + "," + length2 + "　中身：" + contents + ';'  }
- /  "int " space variable:variable "[" space length:additive space "]" space "=" space "{" space contents:(array_contents* additive) space "}" space  ";" space { return "intの配列：" + variable + "　大きさ：" + length + "　中身：" + contents + ';'  }
+  =  "int " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  ";" space { return "var " + variable + "= new Array(); for(var i = 0; i <=" + length1 + "; i ++){ array[i] = new Array(); };" }
+  
+/ type:("int"/"double") " " space variable:variable "[" space length1:additive space "]" "[" space length2:additive space "]"  space "=" space contents:array_contents2 space  ";" space { return "var " +  variable + "=" + contents + ";";}
 
 //配列の初期化{1,2,3,4}みたいなやつ
 array_contents
  =space  "{"space contents:additive_plural_array space "}" space {return contents}
  
+ //二次元配列のとき{{1},{2}...}
+array_contents2
+ = space  "{" contents:additive_plural_array2 space "}" space {return "[[" +  contents + "]]";}
+ 
  additive_plural_array
  = space left:additive space "," space right:additive_plural_array {return left + "," + right;}
  /  additive
+ 
+  //{1},{2}...
+additive_plural_array2
+ = space left:array_contents space "," space right:additive_plural_array2 space {return left + "],[" + right ;}
+ /array_contents
+
+//{{},{},....} 
+additive_plural_array_null
+ = "{" space "}" space contents:("," space "{" space "}")*
 
 //------------------------------------------------------------
 
@@ -258,8 +268,8 @@ comparison_not_equal
 
 //スキャン
 scanf
-  =  "scanf" space "("  space ["] scan_type ["] space "," space "&" space variable:variable space ")" [\n]* ";"  space{ return variable + "= scan_data[scan_i]; scan_i++;";}
-  / "scanf" space "("  space ["] type1:scan_type[\x20]* type2:scan_type ["] space "," space "&" space variable1:variable space "," space "&" space variable2:variable space ")" [\n]* ";"  space{  return variable1 + "= scan_data[scan_i]; scan_i++;" + variable2 + "= scan_data[scan_i]; scan_i++;" ;  }
+  =  "scanf" space "("  space ["] scan_type ["] space "," space "&" space variable:(variable_array/variable) space ")" [\n]* ";"  space{ return variable + "= scan_data[scan_i]; scan_i++;";}
+  / "scanf" space "("  space ["] type1:scan_type[\x20]* type2:scan_type ["] space "," space "&" space variable1:(variable_array/variable) space "," space "&" space variable2:(variable_array/variable) space ")" [\n]* ";"  space{  return variable1 + "= scan_data[scan_i]; scan_i++;" + variable2 + "= scan_data[scan_i]; scan_i++;" ;  }
   //  "scanf" space "(" space ["] space   contents:scan_val space ["]   space "," space variable:additive_plural_scan space ")" space ";"  space { return " " ; }
 
 scan_val
@@ -276,17 +286,13 @@ additive_plural_scan
 //プリント
 printf
   =  "printf" space "(" space ["] contents:letter_2 ["] space ")" space ";"  space {    
-if(contents.indexOf("\\") != -1){
-  	contents = contents.replace(/\\/g,"\\\\");
-  }  
   return 're_eval="' + contents + '";' ; }
 
-  / "printf" space "(" space ["] contents:letter_2 ["] space "," space variable:variable space ")" space ";"  space { 
-  if(contents.indexOf("\\") != -1){
-  	contents = contents.replace(/\\/g,"\\\\");
-  }  
-  
+  / "printf" space "(" space ["] contents:letter_2 ["] space "," space variable:(variable_array/variable) space ")" space ";"  space { 
   return 're_eval="' + contents + '"; re_eval = re_eval.replace("%d",' + variable + ');' ; }
+  
+  / "printf" space "(" space ["] contents:letter_2 ["] space "," space variable1:(variable_array/variable) space "," space variable2:(variable_array/variable)  space ")" space ";"  space { 
+  return 're_eval="' + contents + '"; re_eval = re_eval.replace("%d",' + variable1 + '); re_eval = re_eval.replace("%d",' + variable2 + ');' ; }
 
 print_val
   =left:letter type:print_type right:print_val { return left + "::" + type + "::" + right; }
@@ -341,7 +347,8 @@ primary
   / decimal
   / variable_array
   / variable
-  / "(" additive:additive ")" { return "(" + additive + ")"; }
+  / "(" additive:additive ")" { return "(" + ":" + additive + ":" + ")"; }
+
 
 //マイナス
 minus
@@ -370,8 +377,10 @@ character
 variable
   = variable:([a-zA-Z][a-zA-Z0-9]*) { return variable.join("").replace(/,/g,""); }
 
+//配列
 variable_array
- = variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
+ = variable:variable "[" num1:(variable/additive) "]" space "[" num2:(variable/integer) "]" { return variable + "[" + num1 + "][" + num2 + "]"  }
+ / variable:variable "[" num:(variable/additive) "]" { return variable + "[" + num + "]" }
 
 
 //改行・コメント
