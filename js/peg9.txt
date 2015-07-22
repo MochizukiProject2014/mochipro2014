@@ -270,6 +270,7 @@ substitution
   /  left:(variable_array/variable) space "+=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':+:' + right + '");' ; }
   /   left:(variable_array/variable) space "-=" space right:additive space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + left + ':-:' + right + '");' ; }
   /   left:(variable_array/variable) space "=" space "'" right:[a-zA-Z] "'" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
+  /left:(variable_array/variable) space "=" space "'" right:character "'" space ";" space { return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');substitute("' + left + '","' + right + '");' ; } 
 
 //for文で用いる代入・演算
 substitution_for
