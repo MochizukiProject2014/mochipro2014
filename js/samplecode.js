@@ -1,7 +1,8 @@
 var sample211 = 'ANIME_sengen("int","x");ANIME_sengen("double","y")'
+var sample2111 = 'line(3);ANIME_sengen("char","z");line(4)'
 var sample212 = 'ANIME_sengen("int","x");ANIME_dainyu("x","10")'
 var sample213 = 'ANIME_sengen_dainyu("double","a","5.500000");'
-var sample221 ='ANIME_sengen("int","x");ANIME_scanf();setPrintf("5");ANIME_dainyu("x","5")'
+var sample221 = 'ANIME_sengen("int","x");ANIME_scanf();setPrintf("5");ANIME_dainyu("x","5")'
 var sample222 = 'ANIME_sengen("int","x");ANIME_sengen("double","y");ANIME_scanf();setPrintf("15 5.5");ANIME_dainyu("x","15");ANIME_dainyu("y","5.500000")'
 var sample231 = 'ANIME_sengen("int","x");ANIME_scanf();setPrintf("5");ANIME_dainyu("x","5");ANIME_enzan_dainyu("x",["x","+","3"],"8")';
 var sample232 = 'ANIME_sengen("int","x");ANIME_sengen("int","y");ANIME_scanf();setPrintf("5 3");ANIME_dainyu("x","5");ANIME_dainyu("y","3");ANIME_sengen("int","z");ANIME_enzan_dainyu("z",["x","+","y"],"8")'
@@ -15,7 +16,6 @@ var sample314 = 'ANIME_sengen("double","height");ANIME_sengen("double","weight")
 var sample321 ='ANIME_sengen("int","x");ANIME_scanf();setPrintf("5");ANIME_dainyu("x","5");ANIME_printf("未成年");setPrintf("未成年")'
 var sample331 = 'ANIME_sengen("int","x");ANIME_scanf();setPrintf("5");ANIME_dainyu("x","5");ANIME_printf("不可");setPrintf("不可")';
 var sampleMatome3 = 'ANIME_sengen("double","height");ANIME_sengen("double","weight");ANIME_sengen("double","bmi");ANIME_printf("あなたの身長(m)を入力してください。");setPrintf("あなたの身長(m)を入力してください。");ANIME_scanf();setPrintf("1.7");ANIME_dainyu("height","1.700000");ANIME_printf("あなたの体重(kg)を入力してください。");setPrintf("あなたの体重(kg)を入力してください。");ANIME_scanf();setPrintf("65");ANIME_dainyu("weight","65.000000");ANIME_enzan_dainyu("bmi",["weight","/","(","height","*","height",")"],"22.491349");ANIME_printf("あなたは適正です。");setPrintf("適正")'
-
 var Exsample111 ='line(1);line(2);line(3);ANIME_printf("Hello World!");setPrintf("Hello World!");line(4);line(5)';
 var Exsample211 ='line(1);line(2);line(3);ANIME_sengen("int","x");line(4);ANIME_sengen("double","y");line(5);ANIME_sengen("char","z");line(6);ANIME_sengen("int","kengo");line(7);line(8)'
 var Exsample221 ='line(1);line(2);line(3);ANIME_sengen("int","x");line(4);ANIME_scanf_ex();setPrintf(100);ANIME_dainyu("x","100");line(5);line(6)';

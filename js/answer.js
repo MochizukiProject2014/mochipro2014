@@ -39,9 +39,27 @@ function answer_check(num){
 			re = new RegExp(/duplication_judge\("double","a","5\.5"\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 		break;
+		case 2131:
+			re = new RegExp(/duplication_judge\("char","x","y"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 2132:
+			re = new RegExp(/plural_declaration\("int","x=3,y=7"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
 		case 221:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(x,5\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 2211:
+			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,2\.3\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 2212:
+			re = new RegExp(/duplication_judge\("char","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,k\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 		break;
 		case 222:
@@ -50,6 +68,19 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			re = new RegExp(/newscanfnext\(x,15\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(y,5\.5\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 2221:
+			re = new RegExp(/duplication_judge\("char","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,k\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 2222:
+			re = new RegExp(/duplication_judge\("char","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("double","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/newscanfnext\(x,n\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(y,3\.6\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 		break;
 		case 231:

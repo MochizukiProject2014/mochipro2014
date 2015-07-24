@@ -394,7 +394,7 @@ function variable_declare(data_type,name,value){
 			if(jstrlen(value)>1)return createSyntaxError("char型の変数には文字１つしかいれられないよ！");
 			jsOfAnimes.push('ANIME_sengen_dainyu("'+data_type+'","'+name+'","'+value+'")');
 		}
-	}else if(/[0-9]+/.test(value)||data_type!="char"){
+	}else if(/[0-9]+/.test(value)&&data_type!="char"){
 		jsOfAnimes.push('ANIME_sengen_dainyu("'+data_type+'","'+name+'","'+value+'")');
 	}else{
 		value = "?";
@@ -681,7 +681,7 @@ function return_js(value){
 function ANIME_finish(){
 	line_reset();
 	if(htmlversion!="free"){answer_check(htmlversion);}
-	else{answer_check("2122");}
+	else{answer_check("2212");}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
@@ -908,22 +908,13 @@ if(action_frag == true&&for_flag){
 	//variable = variable.replace(/\x20/g,"");
 	var v = variable.split(",");
 	for(var i=0; i < v.length; i++){
-		console.log(v[i]);
 		if(v[i].indexOf("=", 0) == -1){
-			console.log("ただの宣言！");
 			user_pattern_array.push('duplication_judge("'+type+'","'+v[i]+'", '+null+' )');
 			duplication_judge(type,v[i], null );
 		}else{
-			console.log("式の宣言！");
 			var x = v[i].split("=");
-			if(x[1].indexOf(":", 0) == -1){
-				user_pattern_array.push('duplication_judge("'+type+'","'+x[0]+'","'+x[1]+'")');
-				duplication_judge(type , x[0] , x[1] );
-			}else{
-				y = x[1].replace(/:/g,"");
-				duplication_judge(type , x[0] , y );
-				substitute(x[0] , calc(x[1]));
-			}
+			user_pattern_array.push('duplication_judge("'+type+'","'+x[0]+'","'+x[1]+'")');
+			duplication_judge(type,x[0],x[1]);
 		}
 	}
 }else if(!for_flag){
