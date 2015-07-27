@@ -445,7 +445,7 @@ decimal_places
 
 //文字列
 character
- = char:([a-zA-Z0-9]*) { return char.join("").replace(/,/g,""); }
+ = char:([a-zA-Z0-9]*) { return char.join("@").replace(/,/g,""); }
  
  //変数命名規約
 variable

@@ -1,3 +1,12 @@
+//入力数１
+function hantei_1(code,scan0,seikai){
+	var scan_data = new Array;
+	scan_data[0] = scan0;
+	var scan_i = 0;
+	var r_c = hantei_eval(code,scan_data,scan_i);
+	console.log( "正解：" + seikai + "　結果：" + r_c );
+	if(r_c  == seikai){ return true;}
+}
 
 //入力数２
 function hantei_2(code,scan0,scan1,seikai){
