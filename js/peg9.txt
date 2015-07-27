@@ -143,11 +143,16 @@ array_char_2
  
  //char型二次元配列の初期化
 array_contents_char
- =space  "{"space contents:additive_plural_array_char space "}" space {return contents}
+ =space  "{"space contents:(additive_plural_array_char/additive_plural_array_char_2) space "}" space {return contents}
 
  additive_plural_array_char
- = space ["] space left:character space ["] space "," space right:additive_plural_array_char {return left + "@" + right;}
+ = space ["] space left:character space ["] space "," space right:additive_plural_array_char {return left + "^" + right;}
  /  ["] space content:character space ["] space {return content;}
+ 
+additive_plural_array_char_2
+ = space "{" space left:character space "}" space "," space right:additive_plural_array_char_2 {return left + "^" + right;}
+ / "{" space content:character space "}" space {return content;}
+ 
 //------------------------------------------------------------
 
 //繰り返し

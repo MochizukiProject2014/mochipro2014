@@ -331,6 +331,14 @@ function answer_check(num){
 			re = new RegExp(/multiarray_declare\("int","data","1@2@3^4@5@6^7@8@9^10@11@12","4","3"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("data\[3\]\[1\]".+\)/);answer_pattern_array.push(re);
 		break;
+		case 5222:
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_6(user_code,0, 0, 0, 1, 0, 2,"250.3333") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if(hantei_6(user_code,1, 0, 1, 1, 1, 2,"88.3333") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if(hantei_6(user_code,0, 0, 0, 2, 0, 1,"245") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if(hantei_6(user_code,0, 1, 1, 0, 1, 2,"93.6666") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else { flagArr.push(true); } 
+		break;
 		case 5:
 			var user_code = parser_judge.parse(codeOfUser);
 			if(hantei_4(user_code,0, 0, 0, 0,"1") != true){ miss_answer("５章まとめ不正解！"); return 0;}
