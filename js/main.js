@@ -414,6 +414,7 @@ if(action_frag == true&&for_flag){
 		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
 	if(value=="undefined"&&length=="undefined")return createSyntaxError("初期化しないときは長さを指定してね！");
 	if(value!="undefined"){
+		if(data_type=="char")value+="@\0";
 		var valuearr = value.split("@");
 		valuelen = valuearr.length;
 		if(length < valuelen)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;
@@ -786,7 +787,7 @@ function assess(condition){
 		if(!errorFlag)return createSyntaxError("条件式に定義されてない変数が入っているよ！");
 		}
 	}
-	//console.log(tempStr);
+	console.log(tempStr);
 	result = (eval(tempStr));
 	return result;
 }
@@ -842,10 +843,6 @@ function startContexts(cnt){
 	}
 	for_index_array.push(0);
 	for_index_array[for_now_cnt]=0;
-	/*console.log("実行開始！");
-	arr_check("条件",for_conditions_array);arr_check("",for_index_array);
-	arr_check("",for_contexts_array);arr_check("",for_alt_array);
-	arr_check("",for_line_array);arr_check("",for_init_array);*/
 	for_eval();
 }
 
@@ -864,7 +861,7 @@ function for_eval(){
 					if(for_now_cnt)console.log("戻ってきた");
 					for_index_array[for_now_cnt]++;
 			}else{
-			//console.log(tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt])+"、変化式："+for_alt_array[for_now_cnt]);
+			//console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt])+"、変化式："+for_alt_array[for_now_cnt]);
 				eval(tempArr[i]);
 				for_index_array[for_now_cnt]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
