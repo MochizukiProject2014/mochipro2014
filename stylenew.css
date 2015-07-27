@@ -12,7 +12,7 @@ body#c1{
 	margin:auto;
 	background-image: url("img/background/background01.png");
 	background-repeat: no-repeat;            /* 背景を繰り返さない */
-	background-position: 50% 0%;
+	position:absolute; top:0px; left:0px
 }
 
 body#c2{
@@ -20,7 +20,7 @@ body#c2{
 	margin:auto;
 	background-image: url("img/background/background02.png");
 	background-repeat: no-repeat;            /* 背景を繰り返さない */
-	background-position: 50% 0%;
+	position:absolute; top:0px; left:0px
 }
 
 .menu-box {
