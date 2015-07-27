@@ -410,6 +410,7 @@ if(action_frag == true&&for_flag){
 	var init_flag = false;
 	var calc_flag = false;
 	var valuelen = length;
+	if(data_type=="char")length--;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)
 		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
 	if(value=="undefined"&&length=="undefined")return createSyntaxError("初期化しないときは長さを指定してね！");
@@ -421,7 +422,7 @@ if(action_frag == true&&for_flag){
 		var str = "[";
 		for(var i = 0;i < valuelen ;i++)if(/:/.test(valuearr[i]))calc_flag = true;
 		if(!calc_flag){
-			for(var i = 0;i < valuelen ;i++)if(!type_judge(data_type,valuearr[i]))
+			for(var i = 0;i < valuelen ;i++)if(data_type!="char"&&!type_judge(data_type,valuearr[i]))
 			return createSyntaxError("配列に代入する値が変だよ！");
 		}
 	}else{
@@ -786,7 +787,7 @@ function assess(condition){
 		if(!errorFlag)return createSyntaxError("条件式に定義されてない変数が入っているよ！");
 		}
 	}
-	//console.log(tempStr);
+	console.log(tempStr);
 	result = (eval(tempStr));
 	return result;
 }
@@ -842,10 +843,6 @@ function startContexts(cnt){
 	}
 	for_index_array.push(0);
 	for_index_array[for_now_cnt]=0;
-	/*console.log("実行開始！");
-	arr_check("条件",for_conditions_array);arr_check("",for_index_array);
-	arr_check("",for_contexts_array);arr_check("",for_alt_array);
-	arr_check("",for_line_array);arr_check("",for_init_array);*/
 	for_eval();
 }
 
@@ -864,7 +861,7 @@ function for_eval(){
 					if(for_now_cnt)console.log("戻ってきた");
 					for_index_array[for_now_cnt]++;
 			}else{
-			//console.log(tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt])+"、変化式："+for_alt_array[for_now_cnt]);
+			//console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt])+"、変化式："+for_alt_array[for_now_cnt]);
 				eval(tempArr[i]);
 				for_index_array[for_now_cnt]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
@@ -952,7 +949,8 @@ if(action_frag == true){
 function type_judge(data_type,value){
 if(action_frag == true){
 	var value_type;
-	if(value.match(/^[a-z]\w*/))value_type = getVariableType(value);
+	console.log(data_type+"、"+value+"、"+getVariableExist(value))
+	if(getVariableExist(value)&&value.match(/^[a-z]\w*/))value_type = getVariableType(value);
 	switch(data_type){
 		case "int":
 			if(value_type){if(value_type=="int"||value_type=="double")return true;}
@@ -1229,7 +1227,7 @@ function valuein_check(data_type,name,value){
 		}
 	}
 }
-
+function change_speed(num){SPEED = num;}
 /*↓------------------------------------なかやさんゾーン------------------------------------↓*/
 function line(line_i){
 line_reset();
