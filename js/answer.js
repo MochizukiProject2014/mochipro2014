@@ -89,6 +89,18 @@ function answer_check(num){
 			re = new RegExp(/substitute\("x","x:\+:3"\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
+		case 2311:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("x","x:\+:x"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 2312:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("x","x:\+:3:\/:2"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
 		case 232:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("int","y",.+\)/);answer_pattern_array.push(re);
@@ -98,9 +110,37 @@ function answer_check(num){
 			re = new RegExp(/substitute\("z","x:\+:y"\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
+		case 2321:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/newscanfnext\(x,10\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("y","x:%:3"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 2322:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("doublef","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/newscanfnext\(x,10\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("y","x:-:3\.5"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
 		case 241:
 			re = new RegExp(/newscanfnext\((\w+),\d\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("(\w+)","%."\)/);answer_pattern_array.push(re);
+			flagArr.push(adjustable_check(user_pattern_array,answer_pattern_array));
+		break;
+		case 2411:
+			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
+			flagArr.push(adjustable_check(user_pattern_array,answer_pattern_array));
+		break;
+		case 2412:
+			re = new RegExp(/duplication_judge\("char","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(x,.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
 			flagArr.push(adjustable_check(user_pattern_array,answer_pattern_array));
 		break;
 		case 242:
@@ -109,6 +149,28 @@ function answer_check(num){
 			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("y","%."\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+		break;
+		case 2421:
+			re = new RegExp(/duplication_judge\("char","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("char","y",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("char","z",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/substitute\("x","k"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("y","n"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("z","g"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/printf_js\("x,y,z".+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 2422:
+			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/substitute\("x","1"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("y","3"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/printf_js\("x,y".+\/n.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 311:
 			re = new RegExp(/if_js\("x > 20"\)/);answer_pattern_array.push(re);
@@ -330,14 +392,6 @@ function answer_check(num){
 		case 522:
 			re = new RegExp(/multiarray_declare\("int","data","1@2@3^4@5@6^7@8@9^10@11@12","4","3"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("data\[3\]\[1\]".+\)/);answer_pattern_array.push(re);
-		break;
-		case 5222:
-			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_6(user_code,0, 0, 0, 1, 0, 2,"250.3333") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if(hantei_6(user_code,1, 0, 1, 1, 1, 2,"88.3333") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if(hantei_6(user_code,0, 0, 0, 2, 0, 1,"245") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if(hantei_6(user_code,0, 1, 1, 0, 1, 2,"93.6666") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else { flagArr.push(true); } 
 		break;
 		case 5:
 			var user_code = parser_judge.parse(codeOfUser);

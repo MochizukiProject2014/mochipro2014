@@ -72,7 +72,7 @@ function evalfunction(index,rArr){
 	var len = rArr.length;
 	for(var i = index ;i < len ;i++){
 		if(!(rArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(rArr[i]);
-				console.log("実行"+i+"個目："+rArr[i]);
+		console.log("実行"+i+"個目："+rArr[i]);
 		eval(rArr[i]);
 		if(rArr[i].match(/^scanf_js.*/)&&for_flag&&action_frag){rindex = i;break;}
 		if(rArr[i].match(/^end_of_for.*/)&&action_frag&&for_cnt==0){rindex = i;startContexts(0);break;}
@@ -462,14 +462,12 @@ if(action_frag == true&&for_flag){
 
 function multiarray_declare(data_type,name,value,length1,length2){
 if(action_frag){
-	/*int a[2][3] = {{1,2,3},{4,5,6}};基本形
-	multiarray_declare("int","a","1@2@3^4@5@6","2","3");
+	/*int a[2][3] = {{1,2,3},{4,5,6}};基本形：multiarray_declare("int","a","1@2@3^4@5@6","2","3");
 	①int a[3][5] → 全て不定値・・・・・・・・・・・・・・・・・・・・・・・・・おっけー
 	②int a[2][2] = {{},{}} → 全て0という値・・・・・・・・・・・・・・・・・おっけー
-	③int a[][2] = {{},{}} → 全て0という値・・・・・・・・・・・・・・・・・・未定
 	④int a[3][5] = {{1,2},{1,2}} → 初期化しきれてないところは0という値・・・おっけー
 	⑤int hoge[2][2] = {{1,2}}; → {1,2},{?,?}・・・・・・・・・・・・・・・おっけー*/
-	if(value=="undefined"&&length1=="undefined"&&length2=="undefined")//a[][];この対処
+	if(value=="undefined"&&length1=="undefined"&&length2=="undefined")//int a[][];の場合の対処
 		return createSyntaxError("二次元配列の宣言の仕方が間違ってるよ！") ;
 	var alen = variables.length;
 	var init_flag = false;
@@ -478,9 +476,8 @@ if(action_frag){
 	var animeValue = "[";
 	var objValue = "";
 	var addStr = "?";
-	if(length2=="undefined"||length1=="undefined")return createSyntaxError("配列の長さは両方決めてね！") ;//a[数字][];の対処
-	for(var i =0;i <alen;i++)if(variables[i].name == name)//変数名かぶりの対処
-		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
+	if(length2=="undefined"||length1=="undefined")return createSyntaxError("配列の長さは両方決めてね！") ;//配列の長さは絶対指定;
+	for(var i =0;i <alen;i++)if(variables[i].name == name)return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
 	if(value!="undefined"){//初期化されている時
 		var altvalue="";
 		if(value==""){
@@ -490,6 +487,7 @@ if(action_frag){
 		var value1arr = value.split("^");
 		var len1 = value1arr.length;
 		var len2 = length2;
+		if(data_type=="char")len2=len2-1;
 		for(var i = 0;i< len1;i++){
 			var value2arr = value1arr[i].split("@");
 			var value2arrlen = value2arr.length;
@@ -510,13 +508,18 @@ if(action_frag){
 		for(var i = 0;i < len1;i++){
 			value2arr = value1arr[i].split("@");//配列(小)の方
 			len2 = value2arr.length;//要するに[][]の左の方の長さ
-			if(length2 > len2)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;//右の値が指定より多い対処
+			if((length2 < len2&&data_type!="char")||(length2-1 < len2&&data_type=="char"))
+				return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;//右の値が指定より多い対処
 			for(var k = 0;k < len2;k++) {
 				if(/:/.test(value2arr[k]))calc_flag = true;
-				if(value2arr[k]!="?"){
+				if(value2arr[k]!="?"&&data_type!="char"){
 					animeEx+='"'+value2arr[k]+'"';
 					animeValue+='"'+calc(value2arr[k])+'"';
 					objValue += calc(value2arr[k]);
+				}else if(data_type=="char"){
+					animeEx+='"'+value2arr[k]+'"';
+					animeValue+='"'+value2arr[k]+'"';
+					objValue += value2arr[k];
 				}else{
 					animeEx+='null';;
 					animeValue+='null';
@@ -524,16 +527,10 @@ if(action_frag){
 				}
 				if(k<len2-1){animeEx += ',';animeValue += ',';objValue += '@';}
 			}
-			/*if(!calc_flag){
-				for(var k = 0;i < len2 ;k++)if(!type_judge(data_type,value2arr[k]))
-				return createSyntaxError("配列に代入する値が変だよ！");
-			}*/
 			if(i<len1-1){animeEx += ',';animeValue += ',';objValue += '^';}
 			else{animeEx += ']';animeValue += ']';}
 		}
 	}else{//初期化なしの場合
-		if(length1=="undefined")
-			return createSyntaxError("初期化の際は両方長さを指定してね！") ;//a[][];この対処
 			for(var i = 0;i < length1;i++){
 				for(var j = 0;j < length2;j++){
 					objValue += "?";
@@ -542,8 +539,8 @@ if(action_frag){
 				if(i<length1-1){objValue += '^';}
 			}
 	}
-	jsOfAnimes.push('ANIME_twoDarray_sengen_dainyu("'+data_type+'","'+name+'",'+len1+','+length2+','+animeEx+','+animeValue+")");
-	var v = new MultiArr(data_type,name,value,len1,length2);
+	jsOfAnimes.push('ANIME_twoDarray_sengen_dainyu("'+data_type+'","'+name+'",'+len1+','+len2+','+animeEx+','+animeValue+")");f
+	var v = new MultiArr(data_type,name,value,len1,len2);
 	variables.push(v);
 }
 }
@@ -683,6 +680,7 @@ function return_js(value){
 function ANIME_finish(){
 	line_reset();
 	if(htmlversion!="free"){answer_check(htmlversion);}
+	else{answer_check(2422);}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
