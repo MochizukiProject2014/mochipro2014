@@ -412,6 +412,7 @@ if(action_frag == true&&for_flag){
 	var valuelen = length;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)
 		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
+	if(value=="undefined"&&length=="undefined")return createSyntaxError("初期化しないときは長さを指定してね！");
 	if(value!="undefined"){
 		var valuearr = value.split("@");
 		valuelen = valuearr.length;
@@ -681,7 +682,6 @@ function return_js(value){
 function ANIME_finish(){
 	line_reset();
 	if(htmlversion!="free"){answer_check(htmlversion);}
-	else{answer_check("2212");}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
@@ -786,6 +786,7 @@ function assess(condition){
 		if(!errorFlag)return createSyntaxError("条件式に定義されてない変数が入っているよ！");
 		}
 	}
+	//console.log(tempStr);
 	result = (eval(tempStr));
 	return result;
 }
@@ -841,6 +842,10 @@ function startContexts(cnt){
 	}
 	for_index_array.push(0);
 	for_index_array[for_now_cnt]=0;
+	/*console.log("実行開始！");
+	arr_check("条件",for_conditions_array);arr_check("",for_index_array);
+	arr_check("",for_contexts_array);arr_check("",for_alt_array);
+	arr_check("",for_line_array);arr_check("",for_init_array);*/
 	for_eval();
 }
 
@@ -874,7 +879,7 @@ function for_eval(){
 			for_context_finish =true;//もし今のfor群の全てを実行し終えたら
 			arr_init("",for_contexts_array);arr_init("",for_index_array);
 			arr_init("",for_conditions_array);arr_init("",for_alt_array);
-			arr_init("",for_line_array);
+			arr_init("",for_line_array);arr_init("",for_init_array);
 			for_rindex = 0;
 			for_context_finish =true;
 			evalfunction(rindex+1,result2);
