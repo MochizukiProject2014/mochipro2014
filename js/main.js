@@ -410,11 +410,11 @@ if(action_frag == true&&for_flag){
 	var init_flag = false;
 	var calc_flag = false;
 	var valuelen = length;
+	if(data_type=="char")length--;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)
 		return createSyntaxError("すでに同じ名前の変数か配列があるよ！");
 	if(value=="undefined"&&length=="undefined")return createSyntaxError("初期化しないときは長さを指定してね！");
 	if(value!="undefined"){
-		if(data_type=="char")value+="@\0";
 		var valuearr = value.split("@");
 		valuelen = valuearr.length;
 		if(length < valuelen)return createSyntaxError("指定した長さ以上の要素が入っているよ！") ;
@@ -422,7 +422,7 @@ if(action_frag == true&&for_flag){
 		var str = "[";
 		for(var i = 0;i < valuelen ;i++)if(/:/.test(valuearr[i]))calc_flag = true;
 		if(!calc_flag){
-			for(var i = 0;i < valuelen ;i++)if(!type_judge(data_type,valuearr[i]))
+			for(var i = 0;i < valuelen ;i++)if(data_type!="char"&&!type_judge(data_type,valuearr[i]))
 			return createSyntaxError("配列に代入する値が変だよ！");
 		}
 	}else{
@@ -949,7 +949,8 @@ if(action_frag == true){
 function type_judge(data_type,value){
 if(action_frag == true){
 	var value_type;
-	if(value.match(/^[a-z]\w*/))value_type = getVariableType(value);
+	console.log(data_type+"、"+value+"、"+getVariableExist(value))
+	if(getVariableExist(value)&&value.match(/^[a-z]\w*/))value_type = getVariableType(value);
 	switch(data_type){
 		case "int":
 			if(value_type){if(value_type=="int"||value_type=="double")return true;}
@@ -1226,7 +1227,7 @@ function valuein_check(data_type,name,value){
 		}
 	}
 }
-
+function change_speed(num){SPEED = num;}
 /*↓------------------------------------なかやさんゾーン------------------------------------↓*/
 function line(line_i){
 line_reset();
