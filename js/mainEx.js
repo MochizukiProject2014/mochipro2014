@@ -102,6 +102,12 @@ function disTexetarea(){
 		if(htmlversion=="e312"){sampleAnimeArray=ex_312;row=sampleAnimeArray.length;$.cookie("ex9",true, { expires: 7 , path: '/'});}
 		if(htmlversion=="e321"){sampleAnimeArray=ex_321;row=sampleAnimeArray.length;$.cookie("ex10",true, { expires: 7 , path: '/'});}
 		if(htmlversion=="e331"){sampleAnimeArray=ex_331;row=sampleAnimeArray.length;$.cookie("ex11",true, { expires: 7 , path: '/'});}
+		if(htmlversion=="e411"){sampleAnimeArray=ex_411;row=sampleAnimeArray.length;$.cookie("ex12",true, { expires: 7 , path: '/'});}
+		if(htmlversion=="e421"){sampleAnimeArray=ex_421;row=sampleAnimeArray.length;$.cookie("ex13",true, { expires: 7 , path: '/'});}
+		if(htmlversion=="e431"){sampleAnimeArray=ex_431;row=sampleAnimeArray.length;$.cookie("ex14",true, { expires: 7 , path: '/'});}
+		if(htmlversion=="e511"){sampleAnimeArray=ex_511;row=sampleAnimeArray.length;$.cookie("ex15",true, { expires: 7 , path: '/'});}
+		if(htmlversion=="e512"){sampleAnimeArray=ex_512;row=sampleAnimeArray.length;$.cookie("ex16",true, { expires: 7 , path: '/'});}
+		if(htmlversion=="e521"){sampleAnimeArray=ex_521;row=sampleAnimeArray.length;$.cookie("ex17",true, { expires: 7 , path: '/'});}
 		tre = new RegExp("line[(]"+row+"[)]","g");
 		sign =1;
 		firstcom=false
@@ -369,8 +375,10 @@ function random_number(type){
 }
 
 function line(line_i){
+	line_reset();
 	cEditor.markText({line: line_i-1, ch: 0}, {line: line_i-1, ch: 100}, {className: "styled-background"});
 	cEditor.markText({line: 0 , ch: 0}, {line: line_i -2, ch: 100}, {className: "styled-background-null"});
+	cEditor.markText({line: line_i , ch: 0}, {line: 100, ch: 100}, {className: "styled-background-null"});
 	sign = 1;
 }
 function line_2(line_i){
