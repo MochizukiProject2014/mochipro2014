@@ -59,6 +59,14 @@ window.onload = function() {
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
 	SPEED=0.25;
+	var tenpa = ["0","1","2","3","4","5","6","7","8","9"];
+	var tempb = "0\n01\n012\n0123\n01234\n012345\n0123456\n01234567\n012345678\n0123456789";
+	//console.log(tempb);
+	var temparr = tempb.split("\n");
+	for(var i = 0;i < tenpa.length;i++){
+		//console.log(temparr[i]);
+	}
+	//console.log(tenpa.test(tempb));
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -786,7 +794,9 @@ function assess(condition){
 		}
 	}
 	console.log(tempStr);
+	for(var i = 0;i < tempStr.length;i++)console.log(tempStr.indexOf(i));
 	result = (eval(tempStr));
+	
 	return result;
 }
 
