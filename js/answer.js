@@ -437,6 +437,15 @@ function answer_check(num){
 			temp = getPatternLine(user_pattern_array,answer_pattern_array,temp);flagArr.push(temp);
 		break;
 		case 4311:
+				var tenpa = ["","0","1","2","3","4","5","6","7","8","9"];
+			var tempb = "0\n01\n012\n0123\n01234\n012345\n0123456\n01234567\n012345678\n0123456789";
+			var temparr = tempb.split("\n");
+			var index = 0;
+			for(var i = 0;i < 10;i++){
+				tenpa[0]+=tenpa[i+1];
+				if(RegExp(tenpa[0]).test(temparr[i]))index++;
+			}
+			if(index>=10)flagArr.push(true);
 		break;
 		case 4312:
 			re = new RegExp(/for_js.+/);answer_pattern_array.push(re);

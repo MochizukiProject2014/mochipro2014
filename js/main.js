@@ -59,14 +59,6 @@ window.onload = function() {
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
 	SPEED=0.25;
-	var tenpa = ["0","1","2","3","4","5","6","7","8","9"];
-	var tempb = "0\n01\n012\n0123\n01234\n012345\n0123456\n01234567\n012345678\n0123456789";
-	//console.log(tempb);
-	var temparr = tempb.split("\n");
-	for(var i = 0;i < tenpa.length;i++){
-		//console.log(temparr[i]);
-	}
-	//console.log(tenpa.test(tempb));
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -337,6 +329,16 @@ function jstrlen(str) {
       }
    }
    return len;
+}
+
+function getArrStr(uArr){
+	var ulen = uArr.length;
+	var result = '['
+	for(var i = 0;i < ulen;i++){
+		result += ('"' + uArr[i] + '"');
+		if(i<ulen-1){result += ',';}else{result +=']';}
+	}
+	return result;
 }
 /*↓------------------------------------コア------------------------------------↓*/
 //変数や配列を格納する配列
@@ -769,6 +771,36 @@ function end_of_if(){
 }
 
 function assess(condition){
+	var tempStr = condition;
+	var animeExp = [];
+	var animeRes = [];
+	var count = 0;
+	var flag = true;
+	for(var i = 0;i < tempStr.length;i++){
+		if(/\(/.test(tempStr.charAt(i))){count++;}
+		else if(/\)/.test(tempStr.charAt(i))){count++;}
+		else if(count==0&&/\||&/.test(tempStr.charAt(i))){i++;flag = false;}
+	}
+	var from = 0;
+	if(flag){animeExp.push(condition)}
+	else{
+		for(var i = 0;i < tempStr.length;i++){
+			if(/\(/.test(tempStr.charAt(i))){count++;}
+			else if(/\)/.test(tempStr.charAt(i))){count++;}
+			else if(count==0&&/\||&/.test(tempStr.charAt(i))){
+				animeExp.push(tempStr.slice(from,i));
+				animeExp.push((tempStr.charAt(i)+tempStr.charAt(i+1)));i++;from=i+2;
+			}
+			else if(i == tempStr.length-1){animeExp.push(tempStr.slice(from,i+1));}
+		}
+	}
+	for(var i = 0;i < animeExp.length;i+=2)animeRes.push(evalue(animeExp[i]));
+	result = evalue(condition);
+	jsOfAnimes.push('ANIME_compare('+getArrStr(animeExp)+','+getArrStr(animeRes)+','+result+')');
+	return result;
+}
+
+function evalue(condition){
 	if(/true/.test(condition)){return true;}
 	if(/false/.test(condition)){return false;}
 	var result = false;
@@ -777,8 +809,8 @@ function assess(condition){
 	var changeVariables;
 	var variableExist = false;
 	var errorFlag = false;
-	reg = new RegExp("[a-z][a-zA-Z0-9]*","g");
 	var tempStr = condition;
+	reg = new RegExp("[a-z][a-zA-Z0-9]*","g");
 	if(condition.match(reg)){
 		numOfVariable = condition.match(reg).length;
 		changeVariables = condition.match(reg);
@@ -793,10 +825,7 @@ function assess(condition){
 		if(!errorFlag)return createSyntaxError("条件式に定義されてない変数が入っているよ！");
 		}
 	}
-	console.log(tempStr);
-	for(var i = 0;i < tempStr.length;i++)console.log(tempStr.indexOf(i));
 	result = (eval(tempStr));
-	
 	return result;
 }
 
