@@ -889,7 +889,7 @@ function for_eval(){
 	var forlimit = 0;
 	var breakflag = false;
 	for_context_finish =false;
-	while(assess(for_conditions_array[for_now_cnt])&&forlimit<15){
+	while(evalue(for_conditions_array[for_now_cnt])&&forlimit<15){
 		for(var i = for_index_array[for_now_cnt];i < len ;i++){
 			if(tempArr[i].match(/for_next/)){
 					if(for_now_cnt>0)eval("faefa");
