@@ -205,9 +205,8 @@ function R4(){
 	/*for(var r4i = 0;r4i < workArray.length;r4i++)console.log("R4内の出力："+workArray[r4i]);*/
 	document.getElementById("button").disabled = "disabled";
 	if(r4index<workArray.length){
-		if(workArray[r4index]=="sign=1"){
-		sign=1;
-		}
+		if(workArray[r4index]=="sign=1")sign=1;
+		if(/change_speed/.test(workArray[r4index]))change_speed(workArray[r4index].match(/change_speed\((.+)\)/)[1]);
 		if(sign===1){
 			sign=0;
 			eval(workArray[r4index]);
@@ -223,8 +222,7 @@ function R4(){
 		for(var st = 0;st < wl;st++)workArray.shift();
 	}
 };
-
-
+function change_speed(num){SPEED = num;}
 function R(){
 	//console.log("現在のanimeStartIndex："+animeStartIndex)
 	//console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
