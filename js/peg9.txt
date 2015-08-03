@@ -290,19 +290,16 @@ substitution_for
 //論理演算子
 logical
  = logical_and
- / logical_or
- / logical_not
- / comparison
- 
+
 logical_and
- = left:comparison space "&&" space right:logical space space { return left + " && " + right ; }
+  = left:logical_or space "&&" space right:logical_and { return left + "&&" + right; }
+  / logical_or
 
 logical_or
- = left:comparison space "||" space right:logical space space {return left + " || " + right ; }
- 
-logical_not
- = space "!" space comparison_same:logical space space { return "!" + comparison_same ;}
+  = left:comparison space "||" space right:logical_or { return left + "||" + right; }
+ / comparison
 
+ 
 //比較
 comparison
   = comparison_same
@@ -311,24 +308,31 @@ comparison
   / comparison_greater_than_or_equal
   / comparison_less_than_or_equal
   / comparison_not_equal
+  / "(" space logical:logical space ")" { return "(" + logical + ")" ;}
 
 comparison_same
-  = left:additive space "==" space right:additive space  { return left + " == " + right ; }
+  = left:additive space "==" space right:additive space  { return left + "==" + right ; }
+  / "(" space left:additive space "==" space right:additive space ")" space  { return "(" + left + "==" + right + ")" ; }
   
 comparison_greater_than
-  = left:additive space ">" space right:additive  space  { return left + " > " + right ; }
+  = left:additive space ">" space right:additive  space  { return left + ">" + right ; }
+  / "(" space left:additive space ">" space right:additive space ")" space  { return "(" + left + ">" + right + ")" ; }
   
 comparison_less_than
-  = left:additive space "<" space right:additive space  { return left + " < " + right ; }
+  = left:additive space "<" space right:additive space  { return left + "<" + right ; }
+  / "(" space left:additive space "<" space right:additive space ")" space  { return "(" + left + "<" + right + ")" ; }
   
 comparison_greater_than_or_equal
-  = left:additive space ">=" space right:additive space  { return left + " >= " + right ; }
+  = left:additive space ">=" space right:additive space  { return left + ">=" + right ; }
+  / "(" space left:additive space ">=" space right:additive space ")" space  { return "(" + left + ">=" + right + ")" ; }
   
 comparison_less_than_or_equal
-  = left:additive space "<=" space right:additive space  { return left + " <= " + right ; }
+  = left:additive space "<=" space right:additive space  { return left + "<=" + right ; }
+  / "(" space left:additive space "<=" space right:additive space ")" space  { return "(" + left + "<=" + right + ")" ; }
   
 comparison_not_equal
-  = left:additive space "!=" space right:additive space  { return left + " != " + right ; }
+  = left:additive space "!=" space right:additive space  { return left + "!=" + right ; }
+  / "(" space left:additive space "!=" space right:additive space ")" space  { return "(" + left + "!=" + right + ")" ; }
 
 
 //------------------------------------------------------------
