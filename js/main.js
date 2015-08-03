@@ -540,16 +540,17 @@ if(action_frag){
 			if(i<len1-1){animeEx += ',';animeValue += ',';objValue += '^';}
 			else{animeEx += ']';animeValue += ']';}
 		}
+	jsOfAnimes.push('ANIME_twoDarray_sengen_dainyu("'+data_type+'","'+name+'",'+len1+','+len2+','+animeEx+','+animeValue+")");
 	}else{//初期化なしの場合
-			for(var i = 0;i < length1;i++){
-				for(var j = 0;j < length2;j++){
-					objValue += "?";
-					if(j<length2-1){objValue += '@';}
-				}
-				if(i<length1-1){objValue += '^';}
+		for(var i = 0;i < length1;i++){
+			for(var j = 0;j < length2;j++){
+				objValue += "?";
+				if(j<length2-1){objValue += '@';}
 			}
+			if(i<length1-1){objValue += '^';}
+		}
+		jsOfAnimes.push('ANIME_twoDarray_sengen("'+data_type+'","'+name+'",'+length1+','+length2+")");
 	}
-	jsOfAnimes.push('ANIME_twoDarray_sengen_dainyu("'+data_type+'","'+name+'",'+len1+','+len2+','+animeEx+','+animeValue+")");f
 	var v = new MultiArr(data_type,name,value,len1,len2);
 	variables.push(v);
 }
@@ -659,8 +660,8 @@ if(action_frag == true&&for_flag){
 						len1 = variables[i].length1;len2 =variables[i].length2;
 					}
 				}
-				if(cvflag){/*二次元配列の代入アニメメソッド(演算ver)*/}
-				else{/*二次元配列の代入アニメメソッド (普通ver)*/}
+				if(cvflag){jsOfAnimes.push('ANIME_array_enzan_dainyu("'+name+'['+index1+']['+index2+']'+'",'+str+',"'+value+'")');}
+				else{jsOfAnimes.push('ANIME_array_dainyu("'+name+'['+index1+']['+index2+']'+'","'+value+'")');}
 				for(var i = 0;i < len1;i++){
 					temp2Arr = tempArr[i].split("@");
 					for(var j = 0;j < len2;j++){
@@ -852,7 +853,7 @@ if(action_frag == true){
 	for_init_array.push(init);
 	scopeLevel++;
 	for_line_array.push('line('+line_num+')');
-	push_line(line_num);
+	//push_line(line_num);
 	for_flag = false;
 	for_cnt++;
 	if(for_cnt>=1)for(var fi = 0;fi < for_cnt-1;fi++)for_contexts_array[fi] += 'for_next;';
@@ -870,9 +871,10 @@ if(action_frag == true){
 
 function startContexts(cnt){
 	var fcalength = for_contexts_array.length;
-	/*for(var fi = 0;fi < fcalength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");*/
+	for(var fi = 0;fi < fcalength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");
 	var context = for_contexts_array[cnt].match(/(.*);$/)[1];
 	for_flag=true;
+	jsOfAnimes.push(for_line_array[for_now_cnt]);
 	if(for_init_array[cnt]!="while"){
 		var forArray = for_init_array[cnt].split(",");
 		if(forArray[0]=="true"){return createSyntaxError("for文のカッコの中では変数を宣言できないよ！");}
@@ -882,31 +884,33 @@ function startContexts(cnt){
 	for_index_array[for_now_cnt]=0;
 	for_eval();
 }
-
+var breakflag = false;
 function for_eval(){
+	//console.log(for_now_cnt+"階層の"+for_index_array[for_now_cnt]+"から実行するよ"+evalue(for_conditions_array[for_now_cnt]));
 	var tempArr = for_contexts_array[for_now_cnt].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
 	var len = tempArr.length
 	var forlimit = 0;
-	var breakflag = false;
+	var doubleroopflag = false;
 	for_context_finish =false;
 	while(evalue(for_conditions_array[for_now_cnt])&&forlimit<15){
 		for(var i = for_index_array[for_now_cnt];i < len ;i++){
 			if(tempArr[i].match(/for_next/)){
-					if(for_now_cnt>0)eval("faefa");
+					//console.log("次の回想があるみたいですね！");
 					for_now_cnt++;
 					startContexts(for_now_cnt);
-					if(for_now_cnt)console.log("戻ってきた");
+					if(breakflag)break;
 					for_index_array[for_now_cnt]++;
+					for_now_cnt--;
 			}else{
-			//console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+assess(for_conditions_array[for_now_cnt])+"、変化式："+for_alt_array[for_now_cnt]);
+/*console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！終了条件："+for_conditions_array[for_now_cnt]+"："+evalue(for_conditions_array[for_now_cnt])+"、変化式："+for_alt_array[for_now_cnt]);*/
 				eval(tempArr[i]);
 				for_index_array[for_now_cnt]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
-				if(tempArr[i].match(/^scanf_js./)&&action_frag){for_rindex = i;breakflag = true;break;}
+				if(tempArr[i].match(/^scanf_js./)&&action_frag){console.log("およよ？");for_rindex = i;breakflag = true;break;}
 				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[for_now_cnt]=len;break;}
 			}
 		}
-		if(breakflag){break;}
+		if(breakflag)break;
 		jsOfAnimes.push(for_line_array[for_now_cnt]);
 		eval(for_alt_array[for_now_cnt]);
 		if(for_now_cnt==0&&for_index_array[for_now_cnt]>=len&&!(assess(for_conditions_array[for_now_cnt]))){
@@ -918,6 +922,12 @@ function for_eval(){
 			for_context_finish =true;
 			evalfunction(rindex+1,result2);
 			break;
+		}else if(for_now_cnt>=1){
+			if(!evalue(for_conditions_array[for_now_cnt])&&evalue(for_conditions_array[for_now_cnt-1])&&for_contexts_array[for_now_cnt-1].match(/(.*);$/)[1].split(";").length>for_index_array[for_now_cnt-1]&&!breakflag){//二重ループscanf
+				doubleroopflag = true;
+				for_now_cnt-=1;
+				break;
+			}
 		}else if(for_now_cnt!=0&&!(assess(for_conditions_array[for_now_cnt]))){
 			for_now_cnt-=1;
 			return 0;
@@ -925,6 +935,20 @@ function for_eval(){
 		forlimit++;
 		for_index_array[for_now_cnt]=0;
 		if(forlimit >=15)return createSyntaxError("for文の回数が多すぎるよ！");
+	}
+	if(doubleroopflag){
+		doubleroopflag=false;
+		jsOfAnimes.push(for_line_array[for_now_cnt]);
+		eval(for_alt_array[for_now_cnt]);
+		if(for_now_cnt==0&&(for_contexts_array[for_now_cnt].match(/(.*);$/)[1].split(";").length>=for_index_array[for_now_cnt])&&!(evalue(for_conditions_array[for_now_cnt]))){
+			for_context_finish =true;//もし今のfor群の全てを実行し終えたら
+			arr_init("",for_contexts_array);arr_init("",for_index_array);
+			arr_init("",for_conditions_array);arr_init("",for_alt_array);
+			arr_init("",for_line_array);arr_init("",for_init_array);
+			for_rindex = 0;
+			for_context_finish =true;
+			evalfunction(rindex+1,result2);
+		}else{for_eval();}
 	}
 }
 
@@ -986,7 +1010,7 @@ if(action_frag == true){
 function type_judge(data_type,value){
 if(action_frag == true){
 	var value_type;
-	console.log(data_type+"、"+value+"、"+getVariableExist(value))
+	//console.log(data_type+"、"+value+"、"+getVariableExist(value));
 	if(getVariableExist(value)&&value.match(/^[a-z]\w*/))value_type = getVariableType(value);
 	switch(data_type){
 		case "int":
@@ -1041,13 +1065,16 @@ if(scanf_flag){
 	if(inputFinishFlag){
 		document.getElementById("com").innerHTML="";
 		for(var i = 0;i < namelen;i++){
-			substitute(nameArray[i],regulate_js(getVariableType(nameArray[i]),inputValueArray[i]));
+			//substitute(nameArray[i],regulate_js(getVariableType(nameArray[i]),inputValueArray[i]));
+			console.log('newscanfnext('+nameArray[i]+','+inputValueArray[i]+')')
+			substitute(nameArray[i],inputValueArray[i]);
 			user_pattern_array.push('newscanfnext('+nameArray[i]+','+inputValueArray[i]+')');
 		}
 	}
-	if(!for_context_finish){for_eval();}
+	console.log(for_context_finish);
+	if(!for_context_finish){breakflag=false;for_eval();}
 	else{evalfunction(rindex+1,result2);}
-	//arr_check("アニメ配列",jsOfAnimes);
+	arr_check("アニメ配列",jsOfAnimes);
 	sign =1;
 	scanf_flag=false;
 	if(syntaxErrorFlag){R();}

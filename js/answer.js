@@ -487,6 +487,15 @@ function answer_check(num){
 			re = new RegExp(/printf_js\("sum","%d"\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
+		case 5111:
+			re = new RegExp(/array_declare\("int","a","3@6@9",3\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
+		break;
+		case 5112:
+			re = new RegExp(/array_declare\("int","a","5@4@3@2@1",5\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("a\[0\]",.+\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
+		break;
 		case 512:
 			re = new RegExp(/array_declare\("int","a","1@2@3@4@5",5\)/);answer_pattern_array.push(re);
 			re = new RegExp(/array_declare\("int","b","undefined",5\)/);answer_pattern_array.push(re);
@@ -496,6 +505,20 @@ function answer_check(num){
 			re = new RegExp(/printf_js\("i,b\[i\]".+\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
+		case 5121:
+			re = new RegExp(/array_declare\("int","a","2@4@6@8@10",5\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","i",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,i,0","i < 5","i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("a\[i\]".+\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
+		break;
+		case 5122:
+			re = new RegExp(/array_declare\("int","x",".+",3\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","i",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,i,0","i < 3","i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x\[i\]".+\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
+		break;
 		case 521:
 			var user_code = parser_judge.parse(codeOfUser);
 			if(hantei_2(user_code,0, 0,"1") != true){ miss_answer("5-2-1不正解！"); return 0;}
@@ -503,6 +526,10 @@ function answer_check(num){
 			else if( hantei_2(user_code,2, 0,"7") != true){ miss_answer("5-2-1不正解！"); return 0;}
 			else if( hantei_2(user_code,2, 2,"3") != true){ miss_answer("5-2-1不正解！"); return 0;}
 			else { flagArr.push(true); } 
+		break;
+		case 5211:
+			re = new RegExp(/multiarray_declare\("int","x","\d+@\d+@\d+^d+@\d+@\d+",3\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
 		case 522:
 			re = new RegExp(/multiarray_declare\("int","data","1@2@3^4@5@6^7@8@9^10@11@12","4","3"\)/);answer_pattern_array.push(re);
