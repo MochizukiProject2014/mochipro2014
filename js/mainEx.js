@@ -254,7 +254,7 @@ function R2(){
 	if(animeStartIndex<jsOfAnimes.length){
 		if(sign===1){
 			sign=0;
-			console.log("現在："+jsOfAnimes[animeStartIndex]+"説明文："+introductionTexts[textStartIndex]);
+			console.log("現在："+jsOfAnimes[animeStartIndex]+"説明文："+introductionTexts[textfIndex]);
 			if((animeStartIndex+1<jsOfAnimes.length)&&!(jsOfAnimes[animeStartIndex+1].match(/line/)))continueflag = true
 			if((animeStartIndex+1<jsOfAnimes.length)&&(jsOfAnimes[animeStartIndex+1].match(/line/)))continueflag = false;
 			setTextPlace.innerHTML = introductionTexts[textStartIndex];
@@ -293,6 +293,16 @@ function return_js2(){
 	example_end();
 	buttonMode2=2;
 	document.getElementById("button").disabled = "";
+}
+
+function return_js3(value){
+		mainFinishFlag =true;
+		buttonMode=2;
+		document.getElementById('button').value="最初から見る";
+		example_end2();
+		movenextex();
+		BUTTON_ON();
+		sign=1;
 }
 
 function scanf_js(name,type){

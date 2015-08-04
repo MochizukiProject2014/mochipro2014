@@ -679,8 +679,9 @@ function ANIME_changeSPEED(){
 }
 
 function ANIME_changeSPEED_Ex(num){
-	console.log(num);
+	//console.log(num);
 	SPEED = DEFAULT_SPEED/num;
+	sign=1;
 }
 
 //「ここだよ！」って出す関数
@@ -3194,6 +3195,17 @@ function example_end(){
 	msg.canvas.setFillStyle("red"); //フォントカラー設定
 	msg.canvas.font = "30px center"; //フォントサイズ設定
 	msg.canvas.fillText("お手本はおわり！問題へ進もう！",250,msg.canvas.centerY); //メッセージcanvasに文字描画
+	app.currentScene.addChild(msg); //tmlib領域にメッセージのcanvasを追加
+	msg.setPosition(app.canvas.centerX,app.canvas.centerY); //メッセージcanvasのtmlib領域上での座標指定
+}
+
+function example_end2(){ 
+	var msg = tm.app.Shape(750,440); //メッセージ用canvasの生成（750×440ならtmlib領域と同じサイズ）
+	msg.canvas.setFillStyle("blue"); //フォントカラー設定
+	msg.canvas.font = "20px center"; //フォントサイズ設定
+	msg.canvas.setFillStyle("red"); //フォントカラー設定
+	msg.canvas.font = "30px center"; //フォントサイズ設定
+	msg.canvas.fillText("お手本はおわり！次のお手本へ進もう！",250,msg.canvas.centerY); //メッセージcanvasに文字描画
 	app.currentScene.addChild(msg); //tmlib領域にメッセージのcanvasを追加
 	msg.setPosition(app.canvas.centerX,app.canvas.centerY); //メッセージcanvasのtmlib領域上での座標指定
 }
