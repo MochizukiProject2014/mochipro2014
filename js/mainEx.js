@@ -205,8 +205,9 @@ function R4(){
 	/*for(var r4i = 0;r4i < workArray.length;r4i++)console.log("R4内の出力："+workArray[r4i]);*/
 	document.getElementById("button").disabled = "disabled";
 	if(r4index<workArray.length){
-		if(workArray[r4index]=="sign=1")sign=1;
-		if(/change_speed/.test(workArray[r4index]))change_speed(workArray[r4index].match(/change_speed\((.+)\)/)[1]);
+		if(workArray[r4index]=="sign=1"){
+		sign=1;
+		}
 		if(sign===1){
 			sign=0;
 			eval(workArray[r4index]);
@@ -222,7 +223,8 @@ function R4(){
 		for(var st = 0;st < wl;st++)workArray.shift();
 	}
 };
-function change_speed(num){SPEED = num;}
+
+
 function R(){
 	//console.log("現在のanimeStartIndex："+animeStartIndex)
 	//console.log("アニメ配列の長さ："+jsOfAnimes.length+"現在のanimeStartIndex："+animeStartIndex+"現在実行中："+jsOfAnimes[animeStartIndex]);
@@ -278,11 +280,15 @@ function R2(){
 	}
 }*/
 
+function ajaxPostFunc(param1, param2, param3){
+    $.post("post.php", {input1:param1, input2:param2, input3:param3}, function(json){});
+}
 function return_js(value){
 		mainFinishFlag =true;
 		buttonMode=2;
 		document.getElementById('button').value="最初から見る";
 		example_end();
+		ajaxPostFunc(document.getElementById("state").innerHTML,"1",codeOfUser);
 		movenextex();
 		BUTTON_ON();
 		sign=1;
@@ -862,6 +868,10 @@ if(action_frag == true){
 	jsOfAnimes.push('ANIME_printf("'+dstr+'");');
 	jsOfAnimes.push('setPrintf("'+dstr+'");');
 	}
+}
+
+function ajaxPostFunc(param1, param2, param3){
+    $.post("post.php", {input1:param1, input2:param2, input3:param3}, function(json){alert("パラメータを3つPOSTしました");});
 }
 
 var firstPrintf;

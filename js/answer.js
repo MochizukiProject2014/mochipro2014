@@ -194,7 +194,7 @@ function answer_check(num){
 			re = new RegExp(/duplication_judge\("int","x","12"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("int","y","20"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/if_js\("x < y"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("xはyより小さいです")/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("xはyより小さいです"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
@@ -213,8 +213,8 @@ function answer_check(num){
 		case 313:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/if_js\("x != 0"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("xは0ではないです")/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("x.*!=.*0"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\("xは0ではないです"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
@@ -555,11 +555,11 @@ function answer_check(num){
 	if(flen == index&&flen!=0){
 		console.log("All OK!!!");
 		correct_answer();
-		//ajaxPostFunc(htmlversion,"1",codeOfUser);
-		//movenext();
+		ajaxPostFunc(document.getElementById("state").innerHTML,"1",codeOfUser);
+		movenext();
 	}else{
 		miss_answer()
-		//ajaxPostFunc(htmlversion,"0",codeOfUser);
+		ajaxPostFunc(document.getElementById("state").innerHTML,"0",codeOfUser);
 		console.log("GAME OVER...");
 	}
 	line_reset();
