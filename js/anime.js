@@ -678,6 +678,11 @@ function ANIME_changeSPEED(){
 	//console.log("ANIME_changeSPEEDうごいてます");
 }
 
+function ANIME_changeSPEED_Ex(num){
+	console.log(num);
+	SPEED = DEFAULT_SPEED/num;
+}
+
 //「ここだよ！」って出す関数
 function here(){
 	if(HERE.isHide===1){
