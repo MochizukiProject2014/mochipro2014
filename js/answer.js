@@ -534,6 +534,7 @@ function answer_check(num){
 		case 522:
 			re = new RegExp(/multiarray_declare\("int","data","1@2@3^4@5@6^7@8@9^10@11@12","4","3"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("data\[3\]\[1\]".+\)/);answer_pattern_array.push(re);
+			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
 		case 5:
 			var user_code = parser_judge.parse(codeOfUser);
@@ -566,7 +567,7 @@ function answer_check(num){
 }
 
 function ajaxPostFunc(param1, param2, param3){
-    $.post("post.php", {input1:param1, input2:param2, input3:param3}, function(json){alert("パラメータを3つPOSTしました");});
+    $.post("post.php", {input1:param1, input2:param2, input3:param3}, function(json){});
 }
 
 function getPatternLine(uArr,aArr,line){
@@ -596,7 +597,7 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
-			if(flag)i=-1;
+			if(!flag)i=-1;
 			index++;
 		}
 		if(index == alen)break;
@@ -642,13 +643,14 @@ function adjustable_check(uArr,aArr){//正誤判定に変数名が指定され�
 	}
 	var uvlen = user_variable.length;
 	for(var i = 0; i < ulen;i++){
-		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			for(var j = 0;j < uvlen;j++){
 				console.log(uArr[i].match(aArr[index])[1]+"と"+user_variable[j]+"を比較します。")
 				if(uArr[i].match(aArr[index])[1]==user_variable[j]){
 					console.log(true);
+					index++;
 					temp_variable.push(user_variable[j]);
 				}
 			}

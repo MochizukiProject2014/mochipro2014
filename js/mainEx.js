@@ -288,7 +288,7 @@ function return_js(value){
 		buttonMode=2;
 		document.getElementById('button').value="最初から見る";
 		example_end();
-		ajaxPostFunc(document.getElementById("state").innerHTML,"1",codeOfUser);
+		ajaxPostFunc(document.getElementById("state").innerHTML,"1","ex");
 		movenextex();
 		BUTTON_ON();
 		sign=1;
