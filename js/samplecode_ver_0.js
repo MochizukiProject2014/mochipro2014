@@ -2,6 +2,8 @@ var sample111 = '#include <stdio.h>int main(void){printf("Hello World!");return 
 
 var sampleMatome1 = '#include <stdio.h>int main(void){printf("Hello World!");return 0;}'
 
+//------------------------------------------------------
+
 var sample211 = '#include <stdio.h>int main(void){int x;double y,z;return 0;}'
 
 var sample221 ='#include <stdio.h>int main(void){int x;scanf("%d",&x);return 0;}'
@@ -11,6 +13,8 @@ var sample232 = '#include <stdio.h>int main(void){int x,y,z;scanf("%d %d",&x,&y)
 var sample241 = '#include <stdio.h>int main(void){int x;scanf("%d",&x);printf("%d",x);return 0;}'
 
 var sampleMatome2 ='#include <stdio.h>int main(void){int x;scanf("%d",&x);x=x*3;printf("%d",x);return 0;}'
+
+//------------------------------------------------------
 
 var sample311 = '#include <stdio.h>int main(void){int x = 32;if(x>20){printf("xは20より大きいです");}return 0;}'
 
@@ -27,108 +31,47 @@ var sample331 = '#include <stdio.h>int main(void){int score;scanf("%d",&score);i
 
 var sampleMatome3 = '#include <stdio.h>int main(void){double height,weight,bmi;printf("あなたの身長(m)を入力してください。");scanf("%lf",&height);printf("あなたの体重(kg)を入力してください。");scanf("%lf",&weight);bmi = weight / (height * height);if(bmi >= 18.5 && bmi <= 25.0){printf("あなたは適正です。");}else if(bmi > 25.0){printf("あなたは太り気味です");}else{printf("あなたはやせ気味です");}return 0;}'
 
+//------------------------------------------------------
+
 var sample411 = 
-'#include <stdio.h>
-int main(void){
-    int a;
-    for(a=1; a<=3; a++){
-       printf("わんわん\n");
-	}
-	return 0;
-}'
+'#include <stdio.h>int main(void){int a;for(a=1; a<=3; a++){printf("わんわん\n");}return 0;}'
 
 var sample412 =
-'#include <stdio.h>
-int main(void){
-    int b;
-    for(b=3; b>=1; b--){
-       printf("にゃんにゃん\n");
-    }
-    return 0;
-}'
+'#include <stdio.h>int main(void){int b;for(b=3; b>=1; b--){printf("にゃんにゃん\n");}return 0;}'
 
 var sample421 =
-'#include <stdio.h>
-int main(void){
-   int a;
-   while(1){
-       printf("数字を入力：");
-       scanf("%d",&a);
-       if(a % 2 == 0){
-           printf("終了");
-           break;
-       }
-       printf("もう1回");
-  }
-   return 0;
-}'
+'#include <stdio.h>int main(void){int a;while(1){printf("数字を入力：");scanf("%d",&a);if(a % 2 == 0){printf("終了");break;}printf("もう1回");}return 0;}'
 
 var sample422 =
-'#include <stdio.h>
-int main(void){
-   int a,ans = 0;
-   while(ans <= 100){
-       printf("数字を入力:");
-       scanf("%d",&a);
-       ans += a;
-   }
-   printf("100を超えました。%dです。",ans);
-   return 0;
-}'
+'#include <stdio.h>int main(void){int a,ans = 0;while(ans <= 100){printf("数字を入力:");scanf("%d",&a);ans += a;}printf("100を超えました。%dです。",ans);return 0;}'
 
 var sample431 =
-'#include <stdio.h>
-int main(void){
-    int x,i,k;
-    for(i=1;i<=9;i++){
-        for(k=1; k<=9;k++){
-            x=i*k;
-            printf("%d ",x);
-        }
-        printf("\n");
-    }
-    return 0;
-}'
+'#include <stdio.h>int main(void){int x,i,k;for(i=1;i<=9;i++){for(k=1; k<=9;k++){x=i*k;printf("%d ",x);}printf("\n");}return 0;}'
 
 var sampleMatome41 =
-'#include <stdio.h>
-int main(void){
- int i,sum,count;
- i = 0;
- sum = 0;
- count = 0;
- printf("入力した数値を足していきます、0を入力したら終了します\n");
- while(1){
-   printf("足したい数を入力して下さい\n");
-   scanf("%d", &i);
-   sum +=i;
-   count++;
-   printf("現在の合計は%dです\n", sum);
-   printf("現在、%d回足しましたn", count);
-   if(i==0){
-     break;
-   }
- }
- printf("合計は%dです",sum);
- return 0;
-}'
+'#include <stdio.h>int main(void){int i,sum,count;i = 0;sum = 0;count = 0;printf("入力した数値を足していきます、0を入力したら終了します\n");while(1){printf("足したい数を入力して下さい\n");scanf("%d", &i);sum +=i;count++;printf("現在の合計は%dです\n", sum);printf("現在、%d回足しましたn", count);if(i==0){break;}}printf("合計は%dです",sum);return 0;}'
 
 var sampleMatome42 =
-'#include <stdio.h>
-int main(void){
-    int x,i,k;
-    int y=1;
-    scanf("%d",&x);
-    for(i=1;i<=x;i++){
-       for(k=1;k<=y;k++){
-           printf("*");
-       }
-       y++;
-       printf("\n");
-    }
-    return 0;
-}'
+'#include <stdio.h>int main(void){int x,i,k;int y=1;scanf("%d",&x);for(i=1;i<=x;i++){for(k=1;k<=y;k++){printf("*");}y++;printf("\n");}return 0;}'
 
+//------------------------------------------------------
+
+ver sample511=
+'#include <stdio.h>int main(void){int a[5] = {1, 2, 3, 4, 5};int i,sum=0;for(i=0; i<5; i++){sum += a[i];}printf("%d", sum);return 0;}'
+
+var sample512=
+'#include <stdio.h>int main(void){int a[5] = {1, 2, 3, 4, 5};int b[5];int i;for(i=0; i<5; i++){b[i] = a[4-i];}for (i=0; i<5; i++) {printf("b[%d] = %d\n",i, b[i]);}return 0;}'
+
+var sample521=
+'#include <stdio.h>int main(void){int x,y;int data[3][3]={{1,2,3},{4,5,6},{7,8,9}};scanf("%d %d",&x,&y);printf("%d",data[x][y]);return 0;}'
+
+var sample522=
+'#include <stdio.h>int main(void){int data[4][3]={{1,2,3},{4,5,6},{7,8,9},{10,11,12}};printf("%d",data[ 3 ][ 1 ]);return 0;}'
+
+var sampleMatome5 =
+'#include <stdio.h>int main(void){int a[10] = {1,4,7,8,3,0,2,5,9,6};int i,b;for(i = 0; i < 4; i ++){printf("数字を入力してください：");scanf("%d",&b);printf("%d\n",a[b]);}}'
+
+//------------------------------------------------------
 var Exsample111 ='line(1);line(2);line(3);ANIME_printf("Hello World!");setPrintf("Hello World!");line(4);line(5)';
 var Exsample211 ='line(1);line(2);line(3);ANIME_sengen("int","x");line(4);ANIME_sengen("double","y");line(5);ANIME_sengen("char","z");line(6);ANIME_sengen("int","kengo");line(7);line(8)'
 var Exsample221 ='line(1);line(2);line(3);ANIME_sengen("int","x");line(4);ANIME_scanf();setPrintf(100);ANIME_dainyu("x","100");line(5);line(6)';

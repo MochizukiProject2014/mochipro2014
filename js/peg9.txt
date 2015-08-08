@@ -143,16 +143,11 @@ array_char_2
  
  //char型二次元配列の初期化
 array_contents_char
- =space  "{"space contents:(additive_plural_array_char/additive_plural_array_char_2) space "}" space {return contents}
+ =space  "{"space contents:additive_plural_array_char space "}" space {return contents}
 
  additive_plural_array_char
- = space ["] space left:character space ["] space "," space right:additive_plural_array_char {return left + "^" + right;}
+ = space ["] space left:character space ["] space "," space right:additive_plural_array_char {return left + "@" + right;}
  /  ["] space content:character space ["] space {return content;}
- 
-additive_plural_array_char_2
- = space "{" space left:character space "}" space "," space right:additive_plural_array_char_2 {return left + "^" + right;}
- / "{" space content:character space "}" space {return content;}
- 
 //------------------------------------------------------------
 
 //繰り返し
@@ -290,16 +285,19 @@ substitution_for
 //論理演算子
 logical
  = logical_and
-
+ / logical_or
+ / logical_not
+ / comparison
+ 
 logical_and
-  = left:logical_or space "&&" space right:logical_and { return left + "&&" + right; }
-  / logical_or
+ = left:comparison space "&&" space right:logical space space { return left + " && " + right ; }
 
 logical_or
-  = left:comparison space "||" space right:logical_or { return left + "||" + right; }
- / comparison
-
+ = left:comparison space "||" space right:logical space space {return left + " || " + right ; }
  
+logical_not
+ = space "!" space comparison_same:logical space space { return "!" + comparison_same ;}
+
 //比較
 comparison
   = comparison_same
@@ -308,31 +306,24 @@ comparison
   / comparison_greater_than_or_equal
   / comparison_less_than_or_equal
   / comparison_not_equal
-  / "(" space logical:logical space ")" { return "(" + logical + ")" ;}
 
 comparison_same
-  = left:additive space "==" space right:additive space  { return left + "==" + right ; }
-  / "(" space left:additive space "==" space right:additive space ")" space  { return "(" + left + "==" + right + ")" ; }
+  = left:additive space "==" space right:additive space  { return left + " == " + right ; }
   
 comparison_greater_than
-  = left:additive space ">" space right:additive  space  { return left + ">" + right ; }
-  / "(" space left:additive space ">" space right:additive space ")" space  { return "(" + left + ">" + right + ")" ; }
+  = left:additive space ">" space right:additive  space  { return left + " > " + right ; }
   
 comparison_less_than
-  = left:additive space "<" space right:additive space  { return left + "<" + right ; }
-  / "(" space left:additive space "<" space right:additive space ")" space  { return "(" + left + "<" + right + ")" ; }
+  = left:additive space "<" space right:additive space  { return left + " < " + right ; }
   
 comparison_greater_than_or_equal
-  = left:additive space ">=" space right:additive space  { return left + ">=" + right ; }
-  / "(" space left:additive space ">=" space right:additive space ")" space  { return "(" + left + ">=" + right + ")" ; }
+  = left:additive space ">=" space right:additive space  { return left + " >= " + right ; }
   
 comparison_less_than_or_equal
-  = left:additive space "<=" space right:additive space  { return left + "<=" + right ; }
-  / "(" space left:additive space "<=" space right:additive space ")" space  { return "(" + left + "<=" + right + ")" ; }
+  = left:additive space "<=" space right:additive space  { return left + " <= " + right ; }
   
 comparison_not_equal
-  = left:additive space "!=" space right:additive space  { return left + "!=" + right ; }
-  / "(" space left:additive space "!=" space right:additive space ")" space  { return "(" + left + "!=" + right + ")" ; }
+  = left:additive space "!=" space right:additive space  { return left + " != " + right ; }
 
 
 //------------------------------------------------------------
@@ -462,8 +453,8 @@ variable
 
 //配列
 variable_array
- = variable:variable "[" num1:(variable/integer) "]" space "[" num2:(variable/integer) "]" { return variable + "[" + num1 + "][" + num2 + "]"  }
- / variable:variable "[" num:(variable/integer) "]" { return variable + "[" + num + "]" }
+ = variable:variable "[" num1:(additive/integer) "]" space "[" num2:(additive/integer) "]" { return variable + "[" + num1 + "][" + num2 + "]"  }
+ / variable:variable "[" num:(additive/integer) "]" { return variable + "[" + num + "]" }
 
 //改行・コメント
 space

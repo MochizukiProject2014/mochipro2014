@@ -90,7 +90,7 @@ function disTexetarea(){
 		text = document.getElementById('text').value;
 		var sampleAnime;
 		htmlversion = document.getElementById("ver").getAttribute("version");
-		document.getElementById('button').src="img/btn_02.png"
+		document.getElementById('button').src="../img/btn_02.png"
 		if(htmlversion=="e111"){sampleAnimeArray=ex_111;row=sampleAnimeArray.length}
 		if(htmlversion=="e211"){sampleAnimeArray=ex_211;row=sampleAnimeArray.length;$.cookie("ex2",true, { expires: 7 , path: '/'});}
 		if(htmlversion=="e212"){sampleAnimeArray=ex_212;row=sampleAnimeArray.length;$.cookie("ex3",true, { expires: 7 , path: '/'});}
@@ -160,7 +160,7 @@ window.onload = function(){
 	document.getElementById('button').addEventListener('click', disTexetarea, false);
 	SPEED=DEFAULT_SPEED;
 	document.getElementById("console").readOnly=true;
-	document.getElementById('button').src="img/btn_01.png";
+	document.getElementById('button').src="../img/btn_01.png";
 	cEditor = CodeMirror.fromTextArea(document.getElementById("text"), {
 		mode: "text/x-csrc", 
 		theme: "default",
@@ -197,7 +197,7 @@ function playAgain(){
 	mainFinishFlag=false;
 	var wl = workArray.length;
 	for(var st = 0;st < wl;st++)workArray.shift();
-	document.getElementById('button').src="img/btn_01.png";
+	document.getElementById('button').src="../img/btn_01.png";
 
 }
 var r4index =0;
@@ -346,26 +346,26 @@ function setIntr(text){
 	BUTTON_ON();
 }
 function baON(){
-	document.getElementById('button').src="img/btn_02.png";
+	document.getElementById('button').src="../img/btn_02.png";
 	sign=1;
 	BUTTON_ON();
 }
 function baOFF(){
-	document.getElementById('button').src="img/btn_03.png";
+	document.getElementById('button').src="../img/btn_03.png";
 	sign=1;
 }
 
 function biON(){
-	document.getElementById('button').src="img/btn_02.png";
+	document.getElementById('button').src="../img/btn_02.png";
 	sign=1;
 	BUTTON_ON();
 }
 function biOFF(){
-	document.getElementById('button').src="img/ex_button005.png";
+	document.getElementById('button').src="../img/ex_button005.png";
 	sign=1;
 }
 function bRestart(){
-	document.getElementById('button').src="img/btn_04.png";
+	document.getElementById('button').src="../img/btn_04.png";
 	sign=1;
 	BUTTON_ON();
 }
@@ -880,9 +880,6 @@ if(action_frag == true){
 	}
 }
 
-function ajaxPostFunc(param1, param2, param3){
-    $.post("post.php", {input1:param1, input2:param2, input3:param3}, function(json){alert("パラメータを3つPOSTしました");});
-}
 
 var firstPrintf;
 function setPrintf(value){

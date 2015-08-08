@@ -15,6 +15,9 @@ var comment = [
 //	/* 2 */	"<p>＜けんご＞</p>"
 
 window.onload=function(){
+	var answerId=document.getElementById("state").innerHTML;
+	ajaxPostFunc(answerId,"1","ex1-1-1");
+	console.log(answerId);
 	document.getElementsByClassName("space")[0].innerHTML = comment[0];
 	//document.getElementById("clear").style.display ="none";
 	var Pbutton = document.getElementById("prev")
@@ -111,6 +114,10 @@ function ojiichan(n){
 			movenext111();
 			break;
 	}
+}
+
+function ajaxPostFunc(param1, param2, param3,param4){
+    $.post("post.php", {input1:param1, input2:param2, input3:param3, input4:param4}, function(json){});
 }
 
 
