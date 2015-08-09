@@ -75,7 +75,7 @@ function evalfunction(index,rArr){
 		console.log("実行"+i+"個目："+rArr[i]);
 		eval(rArr[i]);
 		if(rArr[i].match(/^scanf_js.*/)&&for_flag&&action_frag){rindex = i;break;}
-		if(rArr[i].match(/^end_of_for.*/)&&action_frag&&for_cnt==0){console.log("はるな");rindex = i;startContexts(0);break;}
+		if(rArr[i].match(/^end_of_for.*/)&&action_frag&&for_cnt==0){rindex = i;startContexts(0);break;}
 	}
 }
 
@@ -279,6 +279,7 @@ function calcArrayIndex(name){
 }
 
 function getVariableValue(name){
+	console.log(name+"の値を取得します");
 	var vlen = variables.length;
 	var result;
 	if(/\[.+\]\[.+\]/.test(name)){
@@ -290,6 +291,7 @@ function getVariableValue(name){
 	}else if(/\[.+\]/.test(name)){
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
+		console.log("マッチしてる？"+name);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	for(i = 0; i < vlen; i++){
@@ -313,6 +315,7 @@ function getVariableValue(name){
 			break;
 		}
 	}
+	console.log(name+"の値を返します。"+result);
 	return result;
 }
 
@@ -562,18 +565,22 @@ if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
 	var str;
 	var len = variables.length;
-	if(/\[.+\]\[.+\]/.test(name)){//もし二重配列なら、nameとindex1と2(indexが変数の場合数字になおし)を宣言。
+	console.log("計算終始まり"+value);
+	if(/\[.+\]\[.+\]/.test(name)&&!(value.match(/:/))){//もし二重配列なら、nameとindex1と2(indexが変数の場合数字になおし)を宣言。
+		console.log("どうよ？１");
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index1)||/:/.test(index1))index1 =calc(index1);
 		if(/^[a-z]\w*/.test(index2)||/:/.test(index2))index2 =calc(index2);
 		name = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1];
-	}else if(/\[.+\]/.test(name)){//もし配列なら、nameとindex(indexが変数の場合数字になおし)を宣言。
+	}else if(/\[.+\]/.test(name)&&!(value.match(/:/))){//もし配列なら、nameとindex(indexが変数の場合数字になおし)を宣言。
+	console.log("どうよ？2");
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	var vtype = getVariableType(name);
+	console.log("計算途中1"+value);
 	if(vtype=="char"){
 		var strlen  = jstrlen(value);
 		switch(getVariableStatus(name)){
@@ -596,11 +603,13 @@ if(action_frag == true&&for_flag){
 			break;
 		}
 	}else{
-		if(/\[.+\]/.test(value)){
+		console.log("計算途中2"+value);
+		if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
 			valueindex = calc(valueindex);
 			value = getVariableValue(value);
 		}else if(value.match(/:/)){//代入する値が計算式の場合
+		console.log("どうよ？3");
 			cvflag = true;
 			str = '"'+value.replace(/:/g,"")+'"';
 			var fArray = value.split(":");
@@ -620,6 +629,7 @@ if(action_frag == true&&for_flag){
 			value = regulate_js(vtype,value);
 		}
 	}
+	console.log("計算途中3"+value);
 	for(var i = 0; i < len; i++){
 		if(variables[i].name == name){
 			switch(variables[i].status){
@@ -691,8 +701,8 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion!="free"){answer_check(htmlversion);}
-	else{answer_check(2422);}
+	if(htmlversion!="debug"){answer_check(htmlversion);}
+	else{answer_check(242);}
 }
 
 var if_conditions = new Array();if_conditions.push(true);
@@ -1108,10 +1118,8 @@ if(scanf_flag){
 	for(var i = 0;i < tempArr.length;i++){
 		inputValueArray.push(tempArr[i]);
 	}
-	//inputValueArray.push(getNewInput().split(/\x20+/)[0]);
 	var namelen = nameArray.length;
 	var inputFinishFlag =false;
-	
 	for(var si = 0;si < inputValueArray.length;si++)if(!CheckLength(inputValueArray[si]))
 		return createSyntaxError("入力は半角だけだよ！もう一回実行してね！");
 		arr_check("入力",inputValueArray);
@@ -1125,6 +1133,7 @@ if(scanf_flag){
 			substitute(nameArray[i],inputValueArray[i]);
 			user_pattern_array.push('newscanfnext('+nameArray[i]+','+inputValueArray[i]+')');
 		}
+		arr_init("入力を完了しました",inputValueArray);
 	}else{return 0;}
 	if(!for_context_finish){breakflag=false;
 		if(doubleroop){for_deval();}else{for_eval();}

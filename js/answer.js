@@ -3,6 +3,7 @@ function answer_check(num){
 	var version = Number(num),re;
 	var answer_pattern_array = [];
 	var flagArr = [];
+	var tempFlagArr = [];
 	var index = 0;
 	var apalen = user_pattern_array.length;
 	for(var i = 0;i < apalen;i++)console.log(user_pattern_array[i]);
@@ -86,7 +87,7 @@ function answer_check(num){
 		case 231:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/substitute\("x","x:\+:3"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("x","(x:\+:3)|(3:\+:x)"\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 2311:
@@ -104,11 +105,18 @@ function answer_check(num){
 		case 232:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("int","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			re = new RegExp(/duplication_judge\("int","z",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(x,\d\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(y,\d\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("z","x:\+:y"\)/);answer_pattern_array.push(re);
-			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/newscanfnext\(x,\d\)/);answer_pattern_array.push(re);
+			re = new RegExp(/newscanfnext\(y,\d\)/);answer_pattern_array.push(re);
+			re = new RegExp(/duplication_judge\("int","z","x:\+:y"\)/);answer_pattern_array.push(re);
+			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			console.log("０："+tempFlagArr[0]+"、１："+tempFlagArr[1]);
+			flagArr.push(tempFlagArr[0]||tempFlagArr[1]);
 		break;
 		case 2321:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
@@ -153,9 +161,14 @@ function answer_check(num){
 		case 242:
 			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("char","y",.+\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("y","%."\)/);answer_pattern_array.push(re);
-			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			re = new RegExp(/.+/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("(x,y)|(y,x)","%."\)/);answer_pattern_array.push(re);
+			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			flagArr.push(tempFlagArr[0]||tempFlagArr[1]);
 		break;
 		case 2421:
 			re = new RegExp(/duplication_judge\("char","x",.+\)/);answer_pattern_array.push(re);
@@ -614,10 +627,10 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
-			if(flag)i=-1;
+			if(!flag)i=-1;
 			index++;
 		}
 		if(index == alen)break;
