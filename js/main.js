@@ -1221,7 +1221,7 @@ function doSampleCode(){
 	encodeTime++;
 	var samplecode;
 	if(htmlversion=="111")samplecode = sample111;
-	if(htmlversion=="q1")samplecode = sampleMatome1;
+	if(htmlversion=="1")samplecode = sampleMatome1;
 	if(htmlversion=="211")samplecode = sample211;
 	if(htmlversion=="212")samplecode = sample212;
 	if(htmlversion=="213")samplecode = sample213;
@@ -1231,14 +1231,25 @@ function doSampleCode(){
 	if(htmlversion=="232")samplecode = sample232;
 	if(htmlversion=="241")samplecode = sample241;
 	if(htmlversion=="242")samplecode = sample242;
-	if(htmlversion=="c2")samplecode = sampleMatome2;
-	if(htmlversion=="311")samplecode = sample211;
+	if(htmlversion=="2")samplecode = sampleMatome2;
+	if(htmlversion=="311")samplecode = sample311;
 	if(htmlversion=="312")samplecode = sample312;
 	if(htmlversion=="313")samplecode = sample313;
 	if(htmlversion=="314")samplecode = sample314;
 	if(htmlversion=="321")samplecode = sample321;
 	if(htmlversion=="331")samplecode = sample331;
-	if(htmlversion=="q3")samplecode = sampleMatome3;
+	if(htmlversion=="3")samplecode = sampleMatome3;
+	if(htmlversion=="411")samplecode = sample411;
+	if(htmlversion=="412")samplecode = sample412;
+	if(htmlversion=="421")samplecode = sample421;
+	if(htmlversion=="422")samplecode = sample422;
+	if(htmlversion=="431")samplecode = sample431;
+	if(htmlversion=="4")samplecode = sampleMatome4;
+	if(htmlversion=="511")samplecode = sample511;
+	if(htmlversion=="512")samplecode = sample512;
+	if(htmlversion=="521")samplecode = sample521;
+	if(htmlversion=="522")samplecode = sample522;
+	if(htmlversion=="5")samplecode = sampleMatome5;
 	var samplecode1 = samplecode.split(";");
 	for(var si = 0;si < samplecode1.length;si++){
 			sampleOfAnimes.push(samplecode1[si]);

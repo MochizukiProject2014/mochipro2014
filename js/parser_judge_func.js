@@ -61,6 +61,7 @@ function hantei_6(code,scan0, scan1, scan2, scan3, scan4, scan5, seikai){
 
 //C→jsに変換して実行
 function hantei_eval(code, scan_data,scan_i){
+	var break_cnt=0;
 	for(var k=0; k < code.length; k++){
 		var re_eval
 		if(code[k].match(";\,") != 0){
@@ -69,11 +70,4 @@ function hantei_eval(code, scan_data,scan_i){
 		eval(code[k]); 
 	}
 	return re_eval;
-}
-
-//break文の処理（仮）
-function break_kari(){
-	if(action_frag == true){
-		action_frag == false;
-	 }
 }

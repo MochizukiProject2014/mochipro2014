@@ -121,7 +121,7 @@ parser_judge = (function() {
              for(var k=1; k < block.length; k++){
                 a = a + block[k];
              }
-          return "while(" + comparison + "){" + block + "}"; },
+          return "while(" + comparison + "){ break_cnt++;" + block + "if(break_cnt==5){ break; }}"; },
         peg$c71 = "break",
         peg$c72 = { type: "literal", value: "break", description: "\"break\"" },
         peg$c73 = function() {return "break;" ;},
@@ -300,7 +300,7 @@ parser_judge = (function() {
         peg$c199 = { type: "literal", value: "/", description: "\"/\"" },
         peg$c200 = function(left, right) {  return left  + "/" +  right;  },
         peg$c201 = function(left, right) {  return left +  "%" +  right;  },
-        peg$c202 = function(additive) { return "(" + ":" + additive + ":" + ")"; },
+        peg$c202 = function(additive) { return "(" + additive + ")"; },
         peg$c203 = function(result) {return "-" + result},
         peg$c204 = ".",
         peg$c205 = { type: "literal", value: ".", description: "\".\"" },

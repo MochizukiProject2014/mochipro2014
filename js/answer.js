@@ -127,9 +127,16 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 241:
+		/*
 			re = new RegExp(/newscanfnext\((\w+),\d\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("(\w+)","%."\)/);answer_pattern_array.push(re);
 			flagArr.push(adjustable_check(user_pattern_array,answer_pattern_array));
+		*/
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_1(user_code,1, "1") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code,10,"10") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code, 100, "100") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 2411:
 			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
@@ -171,6 +178,13 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			re = new RegExp(/printf_js\("x,y".+\/n.+\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		break;
+		case 2:
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_1(user_code,1, "3") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code,2,"6") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code,3,"9") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 311:
 			re = new RegExp(/if_js\("(x > 20)|(x < 20)"\)/);answer_pattern_array.push(re);
@@ -249,14 +263,21 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 321:
+		/*
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(x,\d\)/);answer_pattern_array.push(re);
 			re = new RegExp(/if_js\("(x >= 20)|(20 <= x)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("あなたは成人です。")/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("成人")/);answer_pattern_array.push(re);
 			re = new RegExp(/else_js\(\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("あなたは未成人です。")/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs("未成人")/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+			*/
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_1(user_code,19, "未成年") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code,20,"成人") != true){ miss_answer("条件式を確認してみよう！"); return 0;}
+			else if( hantei_1(user_code,21,"成人") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 3211:
 			var user_code = parser_judge.parse(codeOfUser);
@@ -374,9 +395,9 @@ function answer_check(num){
 		case 421:
 			var user_code = parser_judge.parse(codeOfUser);
 			if(hantei_2(user_code,1, 2,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei_3(user_code,1,1,4,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei_4(user_code,1, 1, 1, 6, "終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei_2(user_code, 1, 8,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			else if( hantei_3(user_code,1,2,4,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			else if( hantei_4(user_code,1, 3, 5, 6, "終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
+			else if( hantei_2(user_code, 2, 8,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 4211:
@@ -397,10 +418,10 @@ function answer_check(num){
 		break;
 		case 422:
 			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_3(user_code, 1, 99, 1, "100を超えました。101です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
-			else if( hantei_3(user_code,10,20,77,"100を超えました。107です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
-			else if( hantei_2(user_code,99, 99, "100を超えました。198です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
-			else if( hantei_3(user_code, 12, 34, 56, "100を超えました。102です。") != true){ miss_answer("4-2-2不正解！"); return 0;}
+			if(hantei_3(user_code, 1, 99, 1, "100を超えました。101です。") != true){ miss_answer("条件式を見直してみよう！"); return 0;}
+			else if( hantei_3(user_code,10,20,77,"100を超えました。107です。") != true){ miss_answer("条件式を見直してみよう！"); return 0;}
+			else if( hantei_2(user_code,99, 99, "100を超えました。198です。") != true){ miss_answer("条件式を見直してみよう！"); return 0;}
+			else if( hantei_3(user_code, 12, 34, 56, "100を超えました。102です。") != true){ miss_answer("条件式を見直してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 4221:
@@ -460,7 +481,7 @@ function answer_check(num){
 				if(index>=4)flagArr.push(true);
 			}
 		break;
-		case 4:
+		case 41:
 			var user_code = parser_judge.parse(codeOfUser);
 			if(hantei_3(user_code,1, 99, 0,"合計は100です") != true){ miss_answer("４章まとめ不正解！"); return 0;}
 			else if( hantei_4(user_code,10,20,77,0,"合計は107です") != true){ miss_answer("４章不正解！"); return 0;}
@@ -534,7 +555,6 @@ function answer_check(num){
 		case 522:
 			re = new RegExp(/multiarray_declare\("int","data","1@2@3^4@5@6^7@8@9^10@11@12","4","3"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("data\[3\]\[1\]".+\)/);answer_pattern_array.push(re);
-			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
 		case 5:
 			var user_code = parser_judge.parse(codeOfUser);
@@ -597,7 +617,7 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
-			if(!flag)i=-1;
+			if(flag)i=-1;
 			index++;
 		}
 		if(index == alen)break;
@@ -643,14 +663,13 @@ function adjustable_check(uArr,aArr){//正誤判定に変数名が指定され�
 	}
 	var uvlen = user_variable.length;
 	for(var i = 0; i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			for(var j = 0;j < uvlen;j++){
 				console.log(uArr[i].match(aArr[index])[1]+"と"+user_variable[j]+"を比較します。")
 				if(uArr[i].match(aArr[index])[1]==user_variable[j]){
 					console.log(true);
-					index++;
 					temp_variable.push(user_variable[j]);
 				}
 			}
