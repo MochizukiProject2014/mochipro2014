@@ -1099,16 +1099,23 @@ if(action_frag == true&&for_flag){
 	jsOfAnimes.push("ANIME_scanf()");
 	}else if(!for_flag){add_forcontext('scanf_js("'+name+'","'+type+'");');}
 }
-
+var inputValueArray = [];
 function newscanfnext(){
 if(scanf_flag){
 	var nameArray = scanfname.split(",");
 	var typeArray = new Array();
-	var inputValueArray = getNewInput().split(/\x20+/);
+	var tempArr = getNewInput().split(/\x20+/);
+	for(var i = 0;i < tempArr.length;i++){
+		inputValueArray.push(tempArr[i]);
+	}
+	//inputValueArray.push(getNewInput().split(/\x20+/)[0]);
 	var namelen = nameArray.length;
 	var inputFinishFlag =false;
+	
 	for(var si = 0;si < inputValueArray.length;si++)if(!CheckLength(inputValueArray[si]))
 		return createSyntaxError("入力は半角だけだよ！もう一回実行してね！");
+		arr_check("入力",inputValueArray);
+		arr_check("名前",nameArray);
 	if(inputValueArray.length==namelen)inputFinishFlag=true;
 	if(inputFinishFlag){
 		document.getElementById("com").innerHTML="";
@@ -1118,8 +1125,7 @@ if(scanf_flag){
 			substitute(nameArray[i],inputValueArray[i]);
 			user_pattern_array.push('newscanfnext('+nameArray[i]+','+inputValueArray[i]+')');
 		}
-	}
-	console.log(for_context_finish);
+	}else{return 0;}
 	if(!for_context_finish){breakflag=false;
 		if(doubleroop){for_deval();}else{for_eval();}
 	}
