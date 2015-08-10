@@ -565,22 +565,18 @@ if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
 	var str;
 	var len = variables.length;
-	console.log("計算終始まり"+value);
 	if(/\[.+\]\[.+\]/.test(name)&&!(value.match(/:/))){//もし二重配列なら、nameとindex1と2(indexが変数の場合数字になおし)を宣言。
-		console.log("どうよ？１");
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index1)||/:/.test(index1))index1 =calc(index1);
 		if(/^[a-z]\w*/.test(index2)||/:/.test(index2))index2 =calc(index2);
 		name = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1];
 	}else if(/\[.+\]/.test(name)&&!(value.match(/:/))){//もし配列なら、nameとindex(indexが変数の場合数字になおし)を宣言。
-	console.log("どうよ？2");
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
 	}
 	var vtype = getVariableType(name);
-	console.log("計算途中1"+value);
 	if(vtype=="char"){
 		var strlen  = jstrlen(value);
 		switch(getVariableStatus(name)){
@@ -603,13 +599,11 @@ if(action_frag == true&&for_flag){
 			break;
 		}
 	}else{
-		console.log("計算途中2"+value);
 		if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
 			valueindex = calc(valueindex);
 			value = getVariableValue(value);
 		}else if(value.match(/:/)){//代入する値が計算式の場合
-		console.log("どうよ？3");
 			cvflag = true;
 			str = '"'+value.replace(/:/g,"")+'"';
 			var fArray = value.split(":");
@@ -629,7 +623,6 @@ if(action_frag == true&&for_flag){
 			value = regulate_js(vtype,value);
 		}
 	}
-	console.log("計算途中3"+value);
 	for(var i = 0; i < len; i++){
 		if(variables[i].name == name){
 			switch(variables[i].status){
@@ -814,7 +807,7 @@ function assess(condition){
 }
 
 function evalue(condition){
-	console.log(condition+"のevalueを開始するよ！");
+	//console.log(condition+"のevalueを開始するよ！");
 	if(/true/.test(condition)){return true;}
 	if(/false/.test(condition)){return false;}
 	if(/undefined/.test(condition)){return 0;}
@@ -903,7 +896,6 @@ function startContexts(cnt){
 var doubleroop = false;
 var breakflag = false;
 function for_eval(){
-	console.log("始まるよ");
 //console.log(for_now_cnt+"階層の"+for_index_array[for_now_cnt]+"から実行するよ!続行条件："+evalue(for_conditions_array[for_now_cnt]));
 	var tempArr = for_contexts_array[for_now_cnt].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
 	var len = tempArr.length
@@ -1170,31 +1162,24 @@ if(action_frag == true&&for_flag){
 	}
 	var variableNumCounter = 0,pstr = "";
 	for(var i = 0;i<valuelen;i++){
-		if(/:/.test(nameArray[i])){
-			pstr += calc(nameArray[i]);
-			variableNumCounter++;
-		}else if(valueArray[i].match(/^%[a-z]/)){
-			pstr += getVariableValue(nameArray[variableNumCounter]);
+		if(valueArray[i].match(/^%[a-z]/)){
+			if(/:/.test(nameArray[variableNumCounter])){pstr += calc(nameArray[variableNumCounter]);}
+			else{pstr += getVariableValue(nameArray[variableNumCounter]);}
 			variableNumCounter++;
 		}else{
 			pstr += valueArray[i];
 		}
 	}
 	var methodstr;
-	if(typeMissErrorFlag){methodstr = "ANIME_printf_typeMiss(["}
-	else{methodstr = "ANIME_printf(["}
-	for(var i = 0;i < valuelen;i++){
-		methodstr += ('"' + valueArray[i] + '"');
-		if(i<valuelen-1){methodstr += ',';}
-		else{methodstr +=']';}
-	}methodstr += ',[';
+	if(typeMissErrorFlag){methodstr = "ANIME_printf_typeMiss("}
+	else{methodstr = "ANIME_printf("}
+	methodstr += (getArrStr(valueArray)+',[');
 	for(var pi = 0;pi < nameArray.length;pi++){
 		if(/\[.\]/.test(nameArray[pi])){methodstr += '"'+calcArrayIndex(nameArray[pi])+'"';}
 		else{methodstr += ('"' + nameArray[pi] + '"');}
 		if(pi<nameArray.length-1){methodstr += ',';
 		}else{methodstr +=']';}
 	}methodstr += ');';
-	
 	jsOfAnimes.push(methodstr);
 	jsOfAnimes.push('setPrintf("'+pstr+'");');
 	}else if(!for_flag){add_forcontext('printf_js("'+name+'","'+value+'");');}

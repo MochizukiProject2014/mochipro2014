@@ -627,7 +627,7 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			if(!flag)i=-1;
