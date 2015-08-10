@@ -43,7 +43,7 @@ window.onload = function() {
 	app.replaceScene(loading); 
 	document.getElementById('button').addEventListener('click', disTexetarea, false);
 	htmlversion=document.getElementById("ver").getAttribute("version")
-	if(!(htmlversion=="free"||htmlversion=="debug"))document.getElementById('sample').addEventListener('click', doSampleCode, false);
+	if(!(htmlversion==="free"))document.getElementById('sample').addEventListener('click', doSampleCode, false);
 	cEditor = CodeMirror.fromTextArea(document.getElementById("text"), {
 		mode: "text/x-csrc", 
 		theme: "default",
@@ -1293,6 +1293,7 @@ function doSampleCode(){
 	if(htmlversion=="5221")samplecode = sample5221;
 	if(htmlversion=="5222")samplecode = sample5222;
 	if(htmlversion=="5")samplecode = sampleMatome5;
+	if(htmlversion=="debug")console.log("デバックモードでのサンプル実行を開始します") ;
 	var samplecode1 = samplecode.split(";");
 	for(var si = 0;si < samplecode1.length;si++){
 			sampleOfAnimes.push(samplecode1[si]);
