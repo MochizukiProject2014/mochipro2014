@@ -605,9 +605,11 @@ if(action_frag == true&&for_flag){
 			value = getVariableValue(value);
 		}else if(value.match(/:/)){//代入する値が計算式の場合
 			cvflag = true;
-			str = '"'+value.replace(/:/g,"")+'"';
+			str = getArrStr(value.split(":"));//'"'+value.replace(/:/g,"")+'"';
 			var fArray = value.split(":");
 			value = calc(value);//計算結果
+			console.log(value);
+			if(!syntaxErrorFlag){line_reset();return 0;}
 			if(type_judge(vtype,value))value = regulate_js(vtype,value);
 		}else if(value.match(/^[a-z]\w*/)){//代入する値が一つの変数の場合
 			var vvalue = getVariableValue(value);
@@ -627,6 +629,7 @@ if(action_frag == true&&for_flag){
 		if(variables[i].name == name){
 			switch(variables[i].status){
 		case "v":
+			console.log('ここが見たいんですよ：ANIME_enzan_dainyu("'+name+'",'+str+',"'+value+'")');
 			if(cvflag){jsOfAnimes.push('ANIME_enzan_dainyu("'+name+'",'+str+',"'+value+'")');}
 			else{jsOfAnimes.push('ANIME_dainyu("'+name+'","'+value+'")');}
 			variables[i].value = value;
@@ -880,7 +883,6 @@ if(action_frag == true){
 function startContexts(cnt){
 	var fcalength = for_contexts_array.length;
 	for(var fi = 0;fi < fcalength;fi++)console.log(fi+"階層の文群："+for_contexts_array[fi]+"の"+cnt+"を実行します。");
-	var context = for_contexts_array[cnt].match(/(.*);$/)[1];
 	for_flag=true;
 	jsOfAnimes.push(for_line_array[for_now_cnt]);
 	if(for_init_array[cnt]!="while"){
@@ -897,7 +899,8 @@ var doubleroop = false;
 var breakflag = false;
 function for_eval(){
 //console.log(for_now_cnt+"階層の"+for_index_array[for_now_cnt]+"から実行するよ!続行条件："+evalue(for_conditions_array[for_now_cnt]));
-	var tempArr = for_contexts_array[for_now_cnt].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
+	var tempArr = [];
+	if(/.+/.test(for_contexts_array[for_now_cnt]))tempArr=for_contexts_array[for_now_cnt].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
 	var len = tempArr.length
 	var forlimit = 0;
 	for_context_finish =false;
@@ -921,9 +924,8 @@ function for_eval(){
 				if(tempArr[i].match(/^scanf_js./)&&action_frag){console.log("およよ？");for_rindex = i;breakflag = true;break;}
 				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[for_now_cnt]=len;break;}
 			}
-		}		console.log("a");
+		}
 		if(breakflag||for_context_finish)break;
-				console.log("f");
 		jsOfAnimes.push(for_line_array[for_now_cnt]);
 		eval(for_alt_array[for_now_cnt]);
 		if(for_now_cnt==0&&for_index_array[for_now_cnt]>=len-1&&!(assess(for_conditions_array[for_now_cnt]))){
@@ -943,7 +945,6 @@ function for_eval(){
 		for_index_array[for_now_cnt]=0;
 		if(forlimit >=15)return createSyntaxError("for文の回数が多すぎるよ！");
 	}
-	console.log("v");
 	if(for_context_finish)return 0;
 }
 
@@ -1039,6 +1040,7 @@ if(action_frag == true&&for_flag){
 
 function calc(formula){//演算処理を行う関数
 if(action_frag == true){
+	console.log(formula);
 	var nullflag = false;				//変数が演算の中にあり、値がnullだった場合のフラグ
 	var fArray = formula.split(":");	//与えられた式を「:」で分けたものが入っている
 	var fstr ="";						//計算式を作成すし、最後にevalで評価するための文字列
@@ -1114,14 +1116,12 @@ if(scanf_flag){
 	var inputFinishFlag =false;
 	for(var si = 0;si < inputValueArray.length;si++)if(!CheckLength(inputValueArray[si]))
 		return createSyntaxError("入力は半角だけだよ！もう一回実行してね！");
-		arr_check("入力",inputValueArray);
-		arr_check("名前",nameArray);
 	if(inputValueArray.length==namelen)inputFinishFlag=true;
 	if(inputFinishFlag){
 		document.getElementById("com").innerHTML="";
 		for(var i = 0;i < namelen;i++){
 			//substitute(nameArray[i],regulate_js(getVariableType(nameArray[i]),inputValueArray[i]));
-			console.log('newscanfnext('+nameArray[i]+','+inputValueArray[i]+')')
+			//console.log('newscanfnext('+nameArray[i]+','+inputValueArray[i]+')')
 			substitute(nameArray[i],inputValueArray[i]);
 			user_pattern_array.push('newscanfnext('+nameArray[i]+','+inputValueArray[i]+')');
 		}
@@ -1293,7 +1293,7 @@ function doSampleCode(){
 	if(htmlversion=="5221")samplecode = sample5221;
 	if(htmlversion=="5222")samplecode = sample5222;
 	if(htmlversion=="5")samplecode = sampleMatome5;
-	if(htmlversion=="debug")console.log("デバックモードでのサンプル実行を開始します") ;
+	if(htmlversion=="debug"){console.log("デバックモードでのサンプル実行を開始します");samplecode = sample4211;}
 	var samplecode1 = samplecode.split(";");
 	for(var si = 0;si < samplecode1.length;si++){
 			sampleOfAnimes.push(samplecode1[si]);
