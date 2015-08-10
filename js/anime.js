@@ -1,4 +1,4 @@
-var app = null; //tmlib領域を指す
+var app = null; //tmlib領域
 var promin_array = []; //現存のプロミン（配列を含む）の格納場所
 var trainport = []; ///配列プロミンをそれぞれの所属する配列にまとめたものの格納場所
 /*
