@@ -36,88 +36,88 @@ var texture = null;
 //読み込む画像
 var ASSETS = {
 	//printf表示用の外枠
-    "printf_space" : "/img/syutsuryokusozai.png", 
+    "printf_space" : "img/syutsuryokusozai.png", 
     
     //緑プロミン
-    "Gpromin_front" : "/img/Gpromin/Gpromin_front.png", 
-    "Gpromin_right1" : "/img/Gpromin/Gpromin_right1.png",
-    "Gpromin_left1" : "/img/Gpromin/Gpromin_left1.png",
-    "Gpromin_writing1" : "/img/Gpromin/Gpromin_writing1.png",
-    "Gpromin_eracing1" : "/img/Gpromin/Gpromin_eracing1.png",
-    "Gpromin_question1" : "/img/Gpromin/Gpromin_question1.png",
-    "Gpromin_right2" : "/img/Gpromin/Gpromin_right2.png",
-    "Gpromin_left2" : "/img/Gpromin/Gpromin_left2.png",
-    "Gpromin_writing2" : "/img/Gpromin/Gpromin_writing2.png",
-    "Gpromin_eracing2" : "/img/Gpromin/Gpromin_eracing2.png",
-    "Gpromin_question2" : "/img/Gpromin/Gpromin_question2.png",
+    "Gpromin_front" : "img/Gpromin/Gpromin_front.png", 
+    "Gpromin_right1" : "img/Gpromin/Gpromin_right1.png",
+    "Gpromin_left1" : "img/Gpromin/Gpromin_left1.png",
+    "Gpromin_writing1" : "img/Gpromin/Gpromin_writing1.png",
+    "Gpromin_eracing1" : "img/Gpromin/Gpromin_eracing1.png",
+    "Gpromin_question1" : "img/Gpromin/Gpromin_question1.png",
+    "Gpromin_right2" : "img/Gpromin/Gpromin_right2.png",
+    "Gpromin_left2" : "img/Gpromin/Gpromin_left2.png",
+    "Gpromin_writing2" : "img/Gpromin/Gpromin_writing2.png",
+    "Gpromin_eracing2" : "img/Gpromin/Gpromin_eracing2.png",
+    "Gpromin_question2" : "img/Gpromin/Gpromin_question2.png",
    
     //青プロミン
-    "Bpromin_front" : "/img/Bpromin/Bpromin_front.png",  
-    "Bpromin_right1" : "/img/Bpromin/Bpromin_right1.png",
-    "Bpromin_left1" : "/img/Bpromin/Bpromin_left1.png",
-    "Bpromin_writing1" : "/img/Bpromin/Bpromin_writing1.png",
-    "Bpromin_eracing1" : "/img/Bpromin/Bpromin_eracing1.png",
-    "Bpromin_question1" : "/img/Bpromin/Bpromin_question1.png",
-    "Bpromin_left2" : "/img/Bpromin/Bpromin_left2.png",
-    "Bpromin_writing2" : "/img/Bpromin/Bpromin_writing2.png",
-    "Bpromin_eracing2" : "/img/Bpromin/Bpromin_eracing2.png",
-    "Bpromin_question2" : "/img/Bpromin/Bpromin_question2.png",
+    "Bpromin_front" : "img/Bpromin/Bpromin_front.png",  
+    "Bpromin_right1" : "img/Bpromin/Bpromin_right1.png",
+    "Bpromin_left1" : "img/Bpromin/Bpromin_left1.png",
+    "Bpromin_writing1" : "img/Bpromin/Bpromin_writing1.png",
+    "Bpromin_eracing1" : "img/Bpromin/Bpromin_eracing1.png",
+    "Bpromin_question1" : "img/Bpromin/Bpromin_question1.png",
+    "Bpromin_left2" : "img/Bpromin/Bpromin_left2.png",
+    "Bpromin_writing2" : "img/Bpromin/Bpromin_writing2.png",
+    "Bpromin_eracing2" : "img/Bpromin/Bpromin_eracing2.png",
+    "Bpromin_question2" : "img/Bpromin/Bpromin_question2.png",
 
     //オレンジプロミン
-    "Opromin_front" : "/img/Opromin/Opromin_front.png",
-    "Opromin_right1" : "/img/Opromin/Opromin_right1.png",
-    "Opromin_left1" : "/img/Opromin/Opromin_left1.png",
-    "Opromin_writing1" : "/img/Opromin/Opromin_writing1.png",
-    "Opromin_eracing1" : "/img/Opromin/Opromin_eracing1.png",
-    "Opromin_question1" : "/img/Opromin/Opromin_question1.png",
-    "Opromin_right2" : "/img/Opromin/Opromin_right2.png",
-    "Opromin_left2" : "/img/Opromin/Opromin_left2.png",
-    "Opromin_writing2" : "/img/Opromin/Opromin_writing2.png",
-    "Opromin_eracing2" : "/img/Opromin/Opromin_eracing2.png",
-    "Opromin_question2" : "/img/Opromin/Opromin_question2.png",
+    "Opromin_front" : "img/Opromin/Opromin_front.png",
+    "Opromin_right1" : "img/Opromin/Opromin_right1.png",
+    "Opromin_left1" : "img/Opromin/Opromin_left1.png",
+    "Opromin_writing1" : "img/Opromin/Opromin_writing1.png",
+    "Opromin_eracing1" : "img/Opromin/Opromin_eracing1.png",
+    "Opromin_question1" : "img/Opromin/Opromin_question1.png",
+    "Opromin_right2" : "img/Opromin/Opromin_right2.png",
+    "Opromin_left2" : "img/Opromin/Opromin_left2.png",
+    "Opromin_writing2" : "img/Opromin/Opromin_writing2.png",
+    "Opromin_eracing2" : "img/Opromin/Opromin_eracing2.png",
+    "Opromin_question2" : "img/Opromin/Opromin_question2.png",
 
     //ing型配列（青）
-    "intArray_front" : "/img/array/intArray/intTrain_front.png",
-    "intArray_writing" : "/img/array/intArray/intTrain_writing.png",
-    "intArray_eracing" : "/img/array/intArray/intTrain_eracing.png",
-    "intArray_lookdown" : "/img/array/intArray/intTrain_lookdown.png",
-    "intArray_writing2" : "/img/array/intArray/intTrain_writing2.png",
-    "intArray_eracing2" : "/img/array/intArray/intTrain_eracing2.png",
+    "intArray_front" : "img/array/intArray/intTrain_front.png",
+    "intArray_writing" : "img/array/intArray/intTrain_writing.png",
+    "intArray_eracing" : "img/array/intArray/intTrain_eracing.png",
+    "intArray_lookdown" : "img/array/intArray/intTrain_lookdown.png",
+    "intArray_writing2" : "img/array/intArray/intTrain_writing2.png",
+    "intArray_eracing2" : "img/array/intArray/intTrain_eracing2.png",
 
     //double型配列(緑)
-    "doubleArray_front" : "/img/array/doubleArray/doubleTrain_front.png",
-    "doubleArray_writing" : "/img/array/doubleArray/doubleTrain_writing.png",
-    "doubleArray_eracing" : "/img/array/doubleArray/doubleTrain_eracing.png",
-    "doubleArray_lookdown" : "/img/array/doubleArray/doubleTrain_lookdown.png",
-    "doubleArray_writing2" : "/img/array/doubleArray/doubleTrain_writing2.png",
-    "doubleArray_eracing2" : "/img/array/doubleArray/doubleTrain_eracing2.png",
+    "doubleArray_front" : "img/array/doubleArray/doubleTrain_front.png",
+    "doubleArray_writing" : "img/array/doubleArray/doubleTrain_writing.png",
+    "doubleArray_eracing" : "img/array/doubleArray/doubleTrain_eracing.png",
+    "doubleArray_lookdown" : "img/array/doubleArray/doubleTrain_lookdown.png",
+    "doubleArray_writing2" : "img/array/doubleArray/doubleTrain_writing2.png",
+    "doubleArray_eracing2" : "img/array/doubleArray/doubleTrain_eracing2.png",
 
 
     //char型配列（オレンジ）
-    "charArray_front" : "/img/array/charArray/charTrain_front.png",
-    "charArray_writing" : "/img/array/charArray/charTrain_writing.png",
-    "charArray_eracing" : "/img/array/charArray/charTrain_eracing.png",
-    "charArray_lookdown" : "/img/array/charArray/charTrain_lookdown.png",
-    "charArray_writing2" : "/img/array/charArray/charTrain_writing2.png",
-    "charArray_eracing2" : "/img/array/charArray/charTrain_eracing2.png",
+    "charArray_front" : "img/array/charArray/charTrain_front.png",
+    "charArray_writing" : "img/array/charArray/charTrain_writing.png",
+    "charArray_eracing" : "img/array/charArray/charTrain_eracing.png",
+    "charArray_lookdown" : "img/array/charArray/charTrain_lookdown.png",
+    "charArray_writing2" : "img/array/charArray/charTrain_writing2.png",
+    "charArray_eracing2" : "img/array/charArray/charTrain_eracing2.png",
 
     //二次元配列用金具
-    "chain" : "/img/array/kanagu.png",
+    "chain" : "img/array/kanagu.png",
     
     //健吾
-    "kengo" : "/img/character/kengo.png", 
-	"kengo_clear" : "/img/character/kengo_clear.png",
-	"kengo_failure" : "/img/character/kengo_failure.png",
+    "kengo" : "img/character/kengo.png", 
+	"kengo_clear" : "img/character/kengo_clear.png",
+	"kengo_failure" : "img/character/kengo_failure.png",
 
 	//怪盗C
-    "kaitoC" : "/img/character/kaitoC.png", 
-    "fukidashi" : "/img/fukidashi.png",
+    "kaitoC" : "img/character/kaitoC.png", 
+    "fukidashi" : "img/fukidashi.png",
 
     //比較アニメ用trueとfalse
-    "true_S" : "/img/bool/true1.png",
-    "true_L" : "/img/bool/true2.png",
-    "false_S" : "/img/bool/false1.png",
-    "false_L" : "/img/bool/false2.png",
+    "true_S" : "img/bool/true1.png",
+    "true_L" : "img/bool/true2.png",
+    "false_S" : "img/bool/false1.png",
+    "false_L" : "img/bool/false2.png",
 
 };
 
@@ -251,7 +251,7 @@ tm.define("MainScene", {
 	        			if(promin1.twoDarrayFlag && promin2.twoDarrayFlag &&promin1.LIndex===promin2.LIndex){
 	        				/*
 	        				var img = new Image();
-	        				img.src = "/img/array/kanagu.png";
+	        				img.src = "img/array/kanagu.png";
 	        				texture.drawImage(img,(promin1.x+promin2.x)/2,(promin1.y+promin2.y)/2);
 	        				*/
 	        				texture.lineWidth = 5; //線の太さ
