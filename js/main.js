@@ -281,6 +281,7 @@ function calcArrayIndex(name){
 function getVariableValue(name){
 	console.log(name+"の値を取得します");
 	var vlen = variables.length;
+	var existFlag = false;
 	var result;
 	if(/\[.+\]\[.+\]/.test(name)){
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
@@ -291,16 +292,16 @@ function getVariableValue(name){
 	}else if(/\[.+\]/.test(name)){
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
-		console.log("マッチしてる？"+name);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
+		console.log("マッチしてる？"+name+"["+index+"]");
 	}
 	for(i = 0; i < vlen; i++){
 		if(variables[i].name == name){
+			existFlag = true;
 			switch(variables[i].status){
 				case "v":	result = variables[i].value;	break;
 				case "a":
-					if(variables[i].length <= index)
-							return createSyntaxError("本来の長さ以上の値を参照しようとしているよ！");
+					if(variables[i].length <= index)return createSyntaxError("本来の長さ以上の値を参照しようとしているよ！");
 					var temp = variables[i].value.split("@");
 					result = temp[index];
 				break;
@@ -315,7 +316,8 @@ function getVariableValue(name){
 			break;
 		}
 	}
-	console.log(name+"の値を返します。"+result);
+	console.log(existFlag);
+	if(!existFlag)return createSyntaxError("存在しない変数を参照しているところがあるよ！");
 	return result;
 }
 
@@ -918,7 +920,8 @@ function for_eval(){
 					for_now_cnt -=1 ;
 			}else{
 //console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！、変化式："+for_alt_array[for_now_cnt]+"、"+len+"中"+for_index_array[for_now_cnt]+"まで実行、終了条件："+for_conditions_array[for_now_cnt]+"："+evalue(for_conditions_array[for_now_cnt]));
-				eval(tempArr[i]);
+				if(syntaxErrorFlag){eval(tempArr[i]);}
+				else{breakflag=true;ANIME_reset();ANIME_error(syntaxStr);}
 				for_index_array[for_now_cnt]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
 				if(tempArr[i].match(/^scanf_js./)&&action_frag){console.log("およよ？");for_rindex = i;breakflag = true;break;}
@@ -1040,7 +1043,6 @@ if(action_frag == true&&for_flag){
 
 function calc(formula){//演算処理を行う関数
 if(action_frag == true){
-	console.log(formula);
 	var nullflag = false;				//変数が演算の中にあり、値がnullだった場合のフラグ
 	var fArray = formula.split(":");	//与えられた式を「:」で分けたものが入っている
 	var fstr ="";						//計算式を作成すし、最後にevalで評価するための文字列
