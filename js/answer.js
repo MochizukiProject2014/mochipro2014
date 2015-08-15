@@ -140,16 +140,20 @@ function answer_check(num){
 			else { flagArr.push(true); } 
 		break;
 		case 2411:
-			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/newscanfnext\(x,.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
-			flagArr.push(adjustable_check(user_pattern_array,answer_pattern_array));
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_1(user_code, 1, "1") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code, 2, "2") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code,2.5,"2.5") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code, 0.005, "0.005") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else { flagArr.push(true); } 
+
 		break;
 		case 2412:
-			re = new RegExp(/duplication_judge\("char","x",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/newscanfnext\(x,.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
-			flagArr.push(adjustable_check(user_pattern_array,answer_pattern_array));
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_1(user_code, "a", "a") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_1(user_code, "b", "b") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else { flagArr.push(true); } 
+
 		break;
 		case 242:
 			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
@@ -458,7 +462,7 @@ function answer_check(num){
 			temp = getPatternLine(user_pattern_array,answer_pattern_array,temp);flagArr.push(temp);
 		break;
 		case 4311:
-				var tenpa = ["","0","1","2","3","4","5","6","7","8","9"];
+			var tenpa = ["","0","1","2","3","4","5","6","7","8","9"];
 			var tempb = "0\n01\n012\n0123\n01234\n012345\n0123456\n01234567\n012345678\n0123456789";
 			var temparr = tempb.split("\n");
 			var index = 0;
