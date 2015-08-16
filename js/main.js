@@ -84,6 +84,7 @@ function R(){
 		if(sign===1){
 			sign=0;
 			eval(jsOfAnimes[animeStartIndex]);
+			//console.log(jsOfAnimes[animeStartIndex]+"を実行中");
 			if(jsOfAnimes[animeStartIndex].match(/ANIME_scanf/)){
 				sign=1;animeStartIndex++;
 				document.getElementById("com").innerHTML= scanfSetStr ;scanf_flag=true;
@@ -777,7 +778,7 @@ function end_of_if(){
 }
 
 function assess(condition){
-	//console.log(condition+"のassessを開始するよ！");
+	console.log(condition+"のassessを開始するよ！");
 	var tempStr = condition;
 	var animeExp = [];
 	var animeRes = [];
@@ -891,9 +892,9 @@ function startContexts(cnt){
 	for_index_array.push(0);
 	for_index_array[for_now_cnt]=0;
 	foreval()
-	//if(doubleroop){for_context_finish = false;fordeval()}else{for_context_finish = false;foreval();}
 }
 
+var breakflag = false;
 function foreval(){
 	if(/.+/.test(for_contexts_array[0]))tempArr=for_contexts_array[0].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
 	var len = tempArr.length;
@@ -903,34 +904,36 @@ function foreval(){
 	while(evalue(for_conditions_array[0])&&limit<15){//forの条件がfalseになるまで順次実行
 		firstdone = false;
 		for(var i = for_index_array[0];i < len ;i++){
-			if(tempArr[i].match(/for_next/)){console.log("二重ループです。");
+			if(tempArr[i].match(/for_next/)){
+					//console.log("二重ループです。");
 					for_now_cnt++;
 					doubleroop = true;
-					console.log("ダブルループ群："+for_contexts_array[1]+"を実行します。");
-					jsOfAnimes.push(for_line_array[for_now_cnt]);
-					fordeval();console.log("戻ってきた"+breakflag);
+					//console.log("ダブルループ群："+for_contexts_array[1]+"を実行します。");
+					jsOfAnimes.push(for_line_array[0]);
+					fordeval();//console.log("戻ってきた"+breakflag+"0階層："+for_index_array[0]+"、1階層"+for_index_array[1]);
 					if(breakflag||for_context_finish)break;
-					for_index_array[for_now_cnt]++;
-			}else{console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！、変化式："+for_alt_array[for_now_cnt]+"、"+len+"中"+for_index_array[for_now_cnt]+"まで実行、終了条件："+for_conditions_array[for_now_cnt]+"："+evalue(for_conditions_array[0]))
+					for_index_array[0]++;
+			}else{
+				//console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！、変化式："+for_alt_array[0]+"、"+len+"中"+for_index_array[0]+"まで実行、終了条件："+for_conditions_array[0]+"："+evalue(for_conditions_array[0]))
 				if(syntaxErrorFlag){eval(tempArr[i]);}else{breakflag=true;ANIME_reset();ANIME_error(syntaxStr);}//実行
-				for_index_array[for_now_cnt]++;
+				for_index_array[0]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
 				if(tempArr[i].match(/^scanf_js./)&&action_frag){console.log("scanfの実行です。");breakflag = true;break;}
-				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[for_now_cnt]=len;break;}
+				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[0]=len;break;}
 			}
 		}//for文の終了
-		console.log("ここまではきてる"+breakflag+"："+for_context_finish+"："+for_alt_array[for_now_cnt]);
+		//console.log("ここまではきてる"+breakflag+"："+for_context_finish+"："+for_alt_array[0]+"："+for_index_array[0]+"："+tempArr[for_index_array[0]]);
 		if(breakflag||for_context_finish)break;
 		jsOfAnimes.push(for_line_array[0]);
 		eval(for_alt_array[0]);
-		if(for_now_cnt==0&&for_index_array[for_now_cnt]>=len-1&&!evalue(for_conditions_array[0])){
+		if(for_now_cnt==0&&for_index_array[0]>=len-1&&!evalue(for_conditions_array[0])){
 			forallfinish();//もし今のfor群の全てを実行し終えたら
 		}else if(for_now_cnt!=0&&!doflag){
 			//for_now_cnt-=1;
 			return 0;
 		}
 		limit++;
-		for_index_array[for_now_cnt]=0;//forの文郡を順次実行したら、文郡を最初からもう一度実行。
+		for_index_array[0]=0;//forの文郡を順次実行したら、文郡を最初からもう一度実行。
 		if(limit >=15)return createSyntaxError("for文の回数が多すぎるよ！");
 		if(firstdone)forallfinish();
 		if(for_context_finish)return 0;
@@ -939,56 +942,50 @@ function foreval(){
 
 function fordeval(){
 	var tempArr = for_contexts_array[1].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
-	console.log("for_now_cnt="+for_now_cnt+"："+for_conditions_array[for_now_cnt] + "： "+ for_index_array[for_now_cnt]);
-	if(for_index_array[for_now_cnt]==0){
-		console.log('substitute('+for_init_array[1].split(",")[1]+','+for_init_array[1].split(",")[2]+')を実行します。')
+	//console.log("for_now_cnt="+for_now_cnt+"："+for_conditions_array[1] + "： "+ for_index_array[1]);
+	if(for_index_array[1]==0){
+		//console.log('substitute('+for_init_array[1].split(",")[1]+','+for_init_array[1].split(",")[2]+')を実行します。')
 		substitute(for_init_array[1].split(",")[1],for_init_array[1].split(",")[2]);
 	}
 	//eval(gabagaba);
 	var len = tempArr.length
 	var forlimit = 0;
 	for_context_finish =false;
-	while(evalue(for_conditions_array[for_now_cnt])&&forlimit<15){
-		for(var i = for_index_array[for_now_cnt];i < len ;i++){
+	while(evalue(for_conditions_array[1])&&forlimit<15){
+		for(var i = for_index_array[1];i < len ;i++){
 			if(tempArr[i].match(/for_next/)){return createSyntaxError("二重以上のループがくまれてるよ！")}
-			else{console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！、変化式："+for_alt_array[for_now_cnt]+"、"+len+"中"+for_index_array[for_now_cnt]+"まで実行、終了条件："+for_conditions_array[for_now_cnt]+"："+evalue(for_conditions_array[for_now_cnt]));
+			else{
+				//console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！、変化式："+for_alt_array[1]+"、"+len+"中"+for_index_array[1]+"まで実行、終了条件："+for_conditions_array[1]+"："+evalue(for_conditions_array[1]));
 				eval(tempArr[i]);
 				for_index_array[1]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
 				if(tempArr[i].match(/^scanf_js./)&&action_frag){console.log("scanfの実行です。2");breakflag = true;break;}
-				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[for_now_cnt]=len;break;}
+				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[1]=len;break;}
 			}
 		}
 		if(breakflag)break;
-		jsOfAnimes.push(for_line_array[for_now_cnt]);
-		eval(for_alt_array[for_now_cnt]);
-		var endflag = assess(for_conditions_array[for_now_cnt]);
-		if(for_index_array[for_now_cnt]>=len-1&&!endflag){
-			doubleroop = false;console.log("おわったっぽい？"+for_now_cnt);
-			for_now_cnt -= 1;console.log("おわったっぽい！"+for_now_cnt);
-			console.log("階層："+for_now_cnt+"実行"+for_contexts_array[for_now_cnt].match(/(.*);$/)[1].split(";").length+"中"+for_index_array[for_now_cnt]+"まで、"+evalue(for_conditions_array[for_now_cnt]))
-			/*jsOfAnimes.push(for_line_array[for_now_cnt]);
-			eval(for_alt_array[for_now_cnt]);
-			var downforFin = for_index_array[for_now_cnt]>=for_contexts_array[for_now_cnt].match(/(.*);$/)[1].split(";").length-1
-			if(for_now_cnt==0&&downforFin&&!(assess(for_conditions_array[for_now_cnt]))){
-				forallfinish();break;//もし今のfor群の全てを実行し終えたら
-			}console.log(/scanf/.test(for_contexts_array[for_now_cnt+1])+"；"+!downforFin)*/
+		jsOfAnimes.push(for_line_array[1]);
+		eval(for_alt_array[1]);
+		var endflag = assess(for_conditions_array[1]);
+		if(for_index_array[1]>=len-1&&!endflag){
+			doubleroop = false;
+			for_now_cnt = 0;
+			//console.log("階層："+for_now_cnt+"実行"+for_contexts_array[1].match(/(.*);$/)[1].split(";").length+"中"+for_index_array[1]+"まで、"+evalue(for_conditions_array[1]))
 			for_index_array[1]=0;
+			for_index_array[0]++;
 			return 0;
 		}else if(for_now_cnt!=0&&!endflag){return 0;}
 		forlimit++;
-		for_index_array[for_now_cnt]=0;
+		for_index_array[1]=0;
 		if(forlimit >=15)return createSyntaxError("for文の回数が多すぎるよ！");
 	}
 }
-
+/*--------------------------------------------------------ここから------------------------------------------*/
 var doubleroop = false;
-var breakflag = false;
 function for_eval(){
-console.log(for_now_cnt+"階層の"+for_index_array[for_now_cnt]+"から実行するよ!続行条件："+evalue(for_conditions_array[for_now_cnt])+"現在のインデックス"+for_index_array[0]+"二重ループ目"+for_index_array[1]);
+	//console.log(for_now_cnt+"階層の"+for_index_array[for_now_cnt]+"から実行するよ!続行条件："+evalue(for_conditions_array[for_now_cnt])+"現在のインデックス"+for_index_array[0]+"二重ループ目"+for_index_array[1]);
 	var tempArr = [];
 	if(/.+/.test(for_contexts_array[0]))tempArr=for_contexts_array[0].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
-	arr_check("一階層目",tempArr);
 	var len = tempArr.length
 	var forlimit = 0;
 	for_context_finish =false;
@@ -1102,6 +1099,7 @@ console.log(for_now_cnt+"："+tempArr[i]+"を実行中だぞ！、変化式："+
 	}
 	//eval(tyottomate);
 }
+/*------------------------ここまで多分使ってないけど消してバグ怒ったら怖いから残す--------------------------------------*/
 
 function forallfinish(){
 	for_context_finish =true;//もし今のfor群の全てを実行し終えたら
@@ -1237,8 +1235,8 @@ if(scanf_flag){
 		arr_init("入力を完了しました",inputValueArray);
 	}else{return 0;}
 	if(!for_context_finish){breakflag=false;
-		//for_eval();
-		if(doubleroop){for_deval();}else{for_eval();}
+		foreval();
+		//if(doubleroop){for_deval();}else{for_eval();}
 	}
 	else{evalfunction(rindex+1,result2);}
 	arr_check("アニメ配列",jsOfAnimes);
