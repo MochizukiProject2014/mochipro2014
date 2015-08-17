@@ -49,9 +49,11 @@
 				<textarea style="resize: none;" id="text" rows="20" cols="75">
 #include <stdio.h>
 int main(void){
-   int data[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
-   printf("%d",data[3][3]);
-   return 0;
+   int x = 6;
+   if(x<3&&x==x){
+	printf("test");
+    }
+    return 0;
 }
 </textarea>
 <input type="button" value="実行" id="button" onclick = "tabplay()">
