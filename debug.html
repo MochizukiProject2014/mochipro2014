@@ -49,13 +49,12 @@
 				<textarea style="resize: none;" id="text" rows="20" cols="75">
 #include <stdio.h>
 int main(void){
-   int a[5] = {1,2,3,4,5};
-   int b[5];
-   int i;
-   for(i=0; i<5; i++){
-   }
-   for(i=0; i<5; i++){
-      printf("b[%d] = %d\n",i,b[i]);
+   int a[10] = {1,0,7,8,3,4,6,5,9,2};
+   int i,b;
+   for(i=0;i<2;i++){
+  	printf("数字を入力してください：");
+   	 scanf("%d",&b);
+   	 printf("%d\n",a[b]);
    }
    return 0;
 }

@@ -260,8 +260,8 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		*/
 			var user_code = parser_judge.parse(codeOfUser);
-			if( hantei_2(user_code,1, 18.5,"あなたは適正です") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
-			else if( hantei_2(user_code, 1, 25,"あなたは適正です") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			if( hantei_2(user_code,1.75, 56.65625,"あなたは適正です") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_2(user_code, 1.75, 76.5625,"あなたは適正です") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
 			else if( codeOfUser.indexOf("&&") == -1 ){ miss_answer("条件式に && を使ってみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
@@ -314,7 +314,7 @@ function answer_check(num){
 		case 331:
 			re = new RegExp(/duplication_judge\("int","score",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(score,\d\)/);answer_pattern_array.push(re);
-			re = new RegExp(/if_js\("(score >= 20)||(20 <= score)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("(score >= 90)||(90 <= score)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs("良")/);answer_pattern_array.push(re);
 			re = new RegExp(/else_if_js\("(score < 90 && score >= 60)||(score < 90 && 60 <= score)||(90 > score && score >= 60)||(90 > score && 60 <= score)||(score >= 60 && score < 90)||(score >= 60 && 90 > score)||(60 <= score && 90 > score)||(60 <= score && score < 90)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs("可")/);answer_pattern_array.push(re);
@@ -347,8 +347,8 @@ function answer_check(num){
 			var user_code = parser_judge.parse(codeOfUser);
 			if(hantei_2(user_code,1,18.49, "やせ気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
 			else if( hantei_2(user_code,1,25.01,"太り気味") != true){ miss_answer("計算と条件式を確認してみよう！"); return 0;}
-			else if( hantei_2(user_code,1, 18.5,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
-			else if( hantei_2(user_code, 1, 25,"適正") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_2(user_code,1.75, 56.65625,"適正") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_2(user_code, 1.75, 76.5625,"太り気味") != true){ miss_answer("「25.0未満」は25.0も含まれないぞ！@@条件式を確認してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 411:
@@ -388,9 +388,11 @@ function answer_check(num){
 			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
 			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
 			*/
-			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_for_eval(user_code, 1) != 3){ miss_answer("条件式を見直してみよう！"); return 0;}
-			else if( hantei_1(user_code,1,"にゃんにゃん") != true){ miss_answer("出力される文字を確認してみよう！"); return 0;}
+			var user_code = for_cnt_parser.parse(codeOfUser);
+			var user_code2 = parser_judge.parse(codeOfUser);
+			if(hantei_for_eval_s(user_code, 3,1) != 3){ miss_answer("条件式を見直してみよう！"); return 0;}
+			else if(hantei_for_eval_s(user_code, 2,1) != 2){ miss_answer("条件式を見直してみよう！"); return 0;}
+			else if( hantei_1(user_code2,1,"にゃんにゃん") != true){ miss_answer("出力される文字を確認してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 4121:
@@ -499,10 +501,10 @@ function answer_check(num){
 		break;
 		case 41:
 			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_3(user_code,1, 99, 0,"合計は100です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if( hantei_4(user_code,10,20,77,0,"合計は107です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if( hantei_3(user_code,99, 99,0, "合計は198です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if( hantei_4(user_code, 12, 34, 56, 0, "合計は102です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			if(hantei_3(user_code,1, 99, 0,"合計は100です。") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_4(user_code,10,20,77,0,"合計は107です。") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_3(user_code,99, 99,0, "合計は198です。") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_4(user_code, 12, 34, 56, 0, "合計は102です。") != true){ miss_answer("コードを見直してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 42:
@@ -519,7 +521,7 @@ function answer_check(num){
 		case 511:
 			re = new RegExp(/array_declare\("int","a","1@2@3@4@5",5\)/);answer_pattern_array.push(re);
 			re = new RegExp(/plural_declaration\("int","i,sum=0"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/for_js\(("false,i,0","i < 5")|("false,i,1","i <= 5"),"i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\(("false,i,0","i < 5")||("false,i,1","i <= 5"),"i:\+:1","."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("sum","sum:\+:a.i."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("sum","%d"\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
@@ -578,8 +580,8 @@ function answer_check(num){
 			re = new RegExp(/array_declare\("int","a","1@0@7@8@3@4@6@5@9@2",10\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(b,1\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(b,9\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_js\("a.b.","%."\)/);answer_pattern_array.push(re);
-			var temp = context_check(result2,answer_pattern_array,false);flagArr.push(temp);
+			re = new RegExp(/printf_js\("a.b.",".*%.*"\)/);answer_pattern_array.push(re);
+			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			/*
 			var user_code = parser_judge.parse(codeOfUser);
 			if(hantei_4(user_code,0, 0, 0, 0,"1\n") == true ){
@@ -655,7 +657,7 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			if(!flag)i=-1;
