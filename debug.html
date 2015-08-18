@@ -16,6 +16,8 @@
 <script type="text/javascript" src="js/reset.js"></script>
 <script type="text/javascript" src="js/hint.js"></script>
 <script type="text/javascript" src="js/movenext.js"></script>
+<script type="text/javascript" src="js/parser_judge.js"></script>
+<script type="text/javascript" src="js/parser_judge_func.js"></script>
 <script type="text/javascript"src="tmlib.js-develop/build/tmlib.js"></script>
 <script type="text/javascript" src="js/anime.js"></script>
 <link href="./stylenew.css" rel="stylesheet" type="text/css">
@@ -49,12 +51,16 @@
 				<textarea style="resize: none;" id="text" rows="20" cols="75">
 #include <stdio.h>
 int main(void){
-   int a[10] = {1,0,7,8,3,4,6,5,9,2};
-   int i,b;
-   for(i=0;i<2;i++){
-  	printf("数字を入力してください：");
-   	 scanf("%d",&b);
-   	 printf("%d\n",a[b]);
+	int a;
+   while(1){
+	printf("数字を入力：");
+	scanf("%d",&a);
+	if(a%2==0){
+      		printf("終了");
+         		break;
+      	}else{
+      		printf("もう1回");
+      	}
    }
    return 0;
 }

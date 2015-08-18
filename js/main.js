@@ -709,7 +709,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"){answer_check("5");}
+	if(htmlversion=="debug"||htmlversion=="free"){}
 	else{answer_check(htmlversion);}
 }
 
@@ -817,10 +817,10 @@ function assess(condition){
 		var animelen = animeExp.length;
 		var animeExpStr = getArrStr(animeExp,true);
 		for(var j = 0;j < animeExpStr.length;j++){
-			if(/>|<|=/.test(animeExpStr.charAt(j))&&/>|<|=/.test(animeExpStr.charAt(j+1))){
+			if(/>|<|=|!/.test(animeExpStr.charAt(j))&&/>|<|=/.test(animeExpStr.charAt(j+1))){
 				animeStr+=(":"+animeExpStr.charAt(j) + animeExpStr.charAt(j+1) +":");
 				j++;
-			}else if(/>|</.test(animeExpStr.charAt(j))){
+			}else if(/>|<|%/.test(animeExpStr.charAt(j))){
 				animeStr+=(":"+animeExpStr.charAt(j)+":");
 			}else{
 				animeStr += animeExpStr.charAt(j)
@@ -1152,7 +1152,7 @@ function add_forcontext(str){
 
 function break_js(){
 	if(action_frag == true&&for_flag){
-		for_conditions_array[for_now_cnt] = "false";
+		//for_conditions_array[for_now_cnt] = "false";
 	}else if(!for_flag){add_forcontext('break_js();');}
 
 }

@@ -312,18 +312,12 @@ function answer_check(num){
 			else { flagArr.push(true); } 
 		break;
 		case 331:
-			re = new RegExp(/duplication_judge\("int","score",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/newscanfnext\(score,\d\)/);answer_pattern_array.push(re);
-			re = new RegExp(/if_js\("(score >= 90)||(90 <= score)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("良")/);answer_pattern_array.push(re);
-			re = new RegExp(/else_if_js\("(score < 90 && score >= 60)||(score < 90 && 60 <= score)||(90 > score && score >= 60)||(90 > score && 60 <= score)||(score >= 60 && score < 90)||(score >= 60 && 90 > score)||(60 <= score && 90 > score)||(60 <= score && score < 90)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("可")/);answer_pattern_array.push(re);
-			re = new RegExp(/else_if_js\("(score < 60 && score >= 60)||(score < 60 && 40 <= score)||(60 > score && score >= 40)||(60 > score && 40 <= score)||(score >= 40 && score < 60)||(score >= 40 && 60 > score)||(40 <= score && 60 > score)||(40 <= score && score < 60)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("再試験")/);answer_pattern_array.push(re);
-			re = new RegExp(/else_js\(\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs("不可")/);answer_pattern_array.push(re);
-			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
-			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_1(user_code,90, "良") != true){ miss_answer("90点以上は90点も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_1(user_code,60,"可") != true){ miss_answer("60点以上は60点も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_1(user_code,40,"再試験") != true){ miss_answer("40点以上は40点も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_1(user_code, 39, "不可") != true){ miss_answer("39点以下は「不可」になぞ！@@条件式を確認してみよう！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 3311:
 			var user_code = parser_judge.parse(codeOfUser);
@@ -657,7 +651,7 @@ function context_check(uArr,aArr,flag){//flagがtrueなら順序を考慮した�
 	var ulen = uArr.length;
 	var alen = aArr.length;
 	for(var i =0;i < ulen;i++){
-		console.log(uArr[i]+"と"+aArr[index]+"のチェック");
+		//console.log(uArr[i]+"と"+aArr[index]+"のチェック");
 		if(uArr[i].match(aArr[index])){
 			console.log("！！！マッチしました！！！");
 			if(!flag)i=-1;

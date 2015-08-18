@@ -62,12 +62,55 @@ function hantei_6(code,scan0, scan1, scan2, scan3, scan4, scan5, seikai){
 //C→jsに変換して実行
 function hantei_eval(code, scan_data,scan_i){
 	var break_cnt=0;
-	for(var k=0; k < code.length; k++){
-		var re_eval
-		if(code[k].match(";\,") != 0){
-			code[k] = String(code[k]).replace(/[;][,]/g,";");
+	var loop_frg=0;
+	var eval_i;
+	var re_eval
+	for( eval_i=0;  eval_i < code.length; eval_i++){
+		if(code[eval_i].match(";\,") != 0){
+			code[eval_i] = String(code[eval_i]).replace(/[;][,]/g,";");
 		}
-		eval(code[k]); 
+		eval(code[eval_i]); 
 	}
 	return re_eval;
+}
+
+//条件：scanfがない
+function hantei_for_eval(code,result_num){
+	var scan_data = new Array;
+	var scan_i=0;
+	var break_cnt=0;
+	var loop_frg=0;
+	var eval_i;
+	var re_eval
+	var for_cnt = new Array; //for_cnr[1]=for文一回目のカウント
+	var for_cnt_i = 0; //for文の個数
+	for( eval_i=0;  eval_i < code.length; eval_i++){
+		if(code[eval_i].match(";\,") != 0){
+			code[eval_i] = String(code[eval_i]).replace(/[;][,]/g,";");
+		}
+		eval(code[eval_i]); 
+	}
+	console.log(result_num + "回目のfor文は" + for_cnt[result_num] +"回回りました");
+	return for_cnt[result_num];
+}
+
+//条件：scanfが一つ
+function hantei_for_eval_s(code,scan0,result_num){
+	var scan_data = new Array;
+	scan_data[0] = scan0;
+	var scan_i=0;
+	var break_cnt=0;
+	var loop_frg=0;
+	var eval_i;
+	var re_eval
+	var for_cnt = new Array; //for_cnr[1]=for文一回目のカウント
+	var for_cnt_i = 0; //for文の個数
+	for( eval_i=0;  eval_i < code.length; eval_i++){
+		if(code[eval_i].match(";\,") != 0){
+			code[eval_i] = String(code[eval_i]).replace(/[;][,]/g,";");
+		}
+		eval(code[eval_i]); 
+	}
+	console.log(result_num + "回目のfor文は" + for_cnt[result_num] +"回回りました");
+	return for_cnt[result_num];
 }
