@@ -704,8 +704,8 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion!="debug"){answer_check(htmlversion);}
-	else{answer_check(222);}
+	if(htmlversion=="debug"||htmlversion=="free"||){answer_check(222);}
+	else{answer_check(htmlversion);}
 }
 
 var if_conditions = new Array();if_conditions.push(true);

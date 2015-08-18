@@ -197,8 +197,8 @@ function answer_check(num){
 			else { flagArr.push(true); } 
 		break;
 		case 311:
-			re = new RegExp(/if_js\("(x > 20)|(x < 20)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs\(".+xは20より大きいです.+"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("(x > 20)||(20 < x)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\(.+xは20より大きいです.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
@@ -215,8 +215,8 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 312:
-			re = new RegExp(/if_js\("(x < y)|(y > x)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs\(".+xはyより小さいです.+"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("(x < y)||(y > x)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\(.+xはyより小さいです.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
@@ -236,7 +236,7 @@ function answer_check(num){
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/if_js\("(x.*!=.*0)|(0.*!=.*x)"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_djs\(".+xは0ではないです.+"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_djs\(.+xは0ではないです.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
@@ -252,11 +252,18 @@ function answer_check(num){
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 314:
+		/*
 			re = new RegExp(/plural_duplication\("double","height,weight,bmi"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("bmi","weight:\/:\(:height:\*:height:\)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/if_js\("(bmi >= 18\.5 && bmi < 25\.0)|(bmi >= 18\.5 && 25\.0 > bmi)|(18\.5 <= bmi && bmi < 25\.0)|(18\.5 <= bmi && 25\.0 > bmi)|(bmi < 25\.0 && bmi >= 18\.5)|(bmi < 25\.0 && 18\.5 <= bmi)|(25\.0 > bmi && bmi >= 18\.5)|(25\.0 > bmi && 18\.5 <= bmi)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/あなたは適正です。/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
+		*/
+			var user_code = parser_judge.parse(codeOfUser);
+			if( hantei_2(user_code,1, 18.5,"あなたは適正です") != true){ miss_answer("「18.5以上」は18.5も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( hantei_2(user_code, 1, 25,"あなたは適正です") != true){ miss_answer("「25.0以下」は25.0も含まれるぞ！@@条件式を確認してみよう！"); return 0;}
+			else if( codeOfUser.indexOf("&&") == -1 ){ miss_answer("条件式に && を使ってみよう！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 3141:
 			re = new RegExp(/duplication_judge\("int","x","150"\)/);answer_pattern_array.push(re);
@@ -307,11 +314,11 @@ function answer_check(num){
 		case 331:
 			re = new RegExp(/duplication_judge\("int","score",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/newscanfnext\(score,\d\)/);answer_pattern_array.push(re);
-			re = new RegExp(/if_js\("(score >= 20)|(20 <= score)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/if_js\("(score >= 20)||(20 <= score)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs("良")/);answer_pattern_array.push(re);
-			re = new RegExp(/else_if_js\("(score < 90 && score >= 60)|(score < 90 && 60 <= score)|(90 > score && score >= 60)|(90 > score && 60 <= score)|(score >= 60 && score < 90)|(score >= 60 && 90 > score)|(60 <= score && 90 > score)|(60 <= score && score < 90)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/else_if_js\("(score < 90 && score >= 60)||(score < 90 && 60 <= score)||(90 > score && score >= 60)||(90 > score && 60 <= score)||(score >= 60 && score < 90)||(score >= 60 && 90 > score)||(60 <= score && 90 > score)||(60 <= score && score < 90)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs("可")/);answer_pattern_array.push(re);
-			re = new RegExp(/else_if_js\("(score < 60 && score >= 60)|(score < 60 && 40 <= score)|(60 > score && score >= 40)|(60 > score && 40 <= score)|(score >= 40 && score < 60)|(score >= 40 && 60 > score)|(40 <= score && 60 > score)|(40 <= score && score < 60)"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/else_if_js\("(score < 60 && score >= 60)||(score < 60 && 40 <= score)||(60 > score && score >= 40)||(60 > score && 40 <= score)||(score >= 40 && score < 60)||(score >= 40 && 60 > score)||(40 <= score && 60 > score)||(40 <= score && score < 60)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs("再試験")/);answer_pattern_array.push(re);
 			re = new RegExp(/else_js\(\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs("不可")/);answer_pattern_array.push(re);
@@ -374,17 +381,23 @@ function answer_check(num){
 			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
 		break;
 		case 412:
+		/*
 			re = new RegExp(/duplication_judge\(.+,"i",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/for_js\("false,i,3","i >= 1","i:-:1",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs\("にゃんにゃん.*"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
 			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
+			*/
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_for_eval(user_code, 1) != 3){ miss_answer("条件式を見直してみよう！"); return 0;}
+			else if( hantei_1(user_code,1,"にゃんにゃん") != true){ miss_answer("出力される文字を確認してみよう！"); return 0;}
+			else { flagArr.push(true); } 
 		break;
 		case 4121:
 			re = new RegExp(/duplication_judge\(.+,"b",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/for_js\("false,b,.+","b >= .+","b:-:1",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs\("にゃんにゃん.*"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_js\(,+あと%.回繰り返します.*"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\(",+あと%.回繰り返します.*"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
 			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
 		break;
@@ -398,18 +411,17 @@ function answer_check(num){
 		break;
 		case 421:
 			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_2(user_code,1, 2,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei_3(user_code,1,2,4,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei_4(user_code,1, 3, 5, 6, "終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else if( hantei_2(user_code, 2, 8,"終了") != true){ miss_answer("4-2-1不正解！"); return 0;}
-			else { flagArr.push(true); } 
+			if(hantei_2(user_code,1, 2,"終了") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+		else if( hantei_3(user_code,1,2,4,"終了") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+		else if( hantei_4(user_code,1, 3, 5, 6, "終了") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+		else if( hantei_2(user_code, 2, 8,"終了") != true){ miss_answer("コードを見直してみよう！"); return 0;}			else { flagArr.push(true); } 
 		break;
 		case 4211:
 			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_3(user_code,1, 10, 100, "100より大きい値が入力されました") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if( hantei_4(user_code,97,98,99,100,"100より大きい値が入力されました") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if( hantei_4(user_code,1, 2, 3, 101, "100より大きい値が入力されました") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if( hantei_4(user_code, 80, 90, 99, 200,"100より大きい値が入力されました") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			if(hantei_3(user_code,1, 99, 100, "無限ループです") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if(hantei_3(user_code,1, 100, 101, "100より大きい値が入力されました") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_4(user_code,97,98,99,101,"100より大きい値が入力されました") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_4(user_code,1, 2, 100, 999, "100より大きい値が入力されました") != true){ miss_answer("コードを見直してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 4212:
@@ -417,7 +429,7 @@ function answer_check(num){
 			if(hantei_4(user_code,1, 2, 3, 0, "6") != true){ miss_answer("コードを見直してみよう！"); return 0;}
 			else if( hantei_4(user_code,10, 20, 30, 0,"60") != true){ miss_answer("コードを見直してみよう！"); return 0;}
 			else if( hantei_1(user_code, 0 ,"0") != true){ miss_answer("コードを見直してみよう！"); return 0;}
-			else if( hantei_4(user_code, 1, 0,"1") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_2(user_code, 1, 0,"1") != true){ miss_answer("コードを見直してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 422:
@@ -487,10 +499,10 @@ function answer_check(num){
 		break;
 		case 41:
 			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_3(user_code,1, 99, 0,"合計は100です") != true){ miss_answer("４章まとめ不正解！"); return 0;}
-			else if( hantei_4(user_code,10,20,77,0,"合計は107です") != true){ miss_answer("４章不正解！"); return 0;}
-			else if( hantei_3(user_code,99, 99,0, "合計は198です") != true){ miss_answer("４章不正解！"); return 0;}
-			else if( hantei_4(user_code, 12, 34, 56, 0, "合計は102です") != true){ miss_answer("４章不正解！"); return 0;}
+			if(hantei_3(user_code,1, 99, 0,"合計は100です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_4(user_code,10,20,77,0,"合計は107です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_3(user_code,99, 99,0, "合計は198です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_4(user_code, 12, 34, 56, 0, "合計は102です") != true){ miss_answer("コードを見直してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 42:
@@ -546,7 +558,7 @@ function answer_check(num){
 		break;
 		case 521:
 			re = new RegExp(/.+/);answer_pattern_array.push(re);//reオブジェクトが１つだけだとなぜかバグるので応急措置
-			re = new RegExp(/multiarray_declare\("int",".+",".+@.+@.+^.+@.+@.+","2","3"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/multiarray_declare\("int",".+",".+@.+@.+..+@.+@.+","2","3"\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
 		case 5211:
@@ -555,10 +567,11 @@ function answer_check(num){
 		break;
 		case 522:
 			var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_2(user_code,0, 0,"1") != true){ miss_answer("5-2-2不正解！"); return 0;}
-			else if( hantei_2(user_code,1, 0,"4") != true){ miss_answer("5-2-2不正解！"); return 0;}
-			else if( hantei_2(user_code,2, 0,"7") != true){ miss_answer("5-2-2不正解！"); return 0;}
-			else if( hantei_2(user_code,2, 2,"3") != true){ miss_answer("5-2-2不正解！"); return 0;}
+			if(hantei_2(user_code,0, 0,"1") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_2(user_code,1, 0,"4") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_2(user_code,2, 0,"7") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( hantei_2(user_code,2, 2,"9") != true){ miss_answer("コードを見直してみよう！"); return 0;}
+			else if( codeOfUser.indexOf("[3][3]") == -1 ){ miss_answer("配列の大きさを確認してみよう！"); return 0;}
 			else { flagArr.push(true); } 
 		break;
 		case 5:
@@ -567,12 +580,30 @@ function answer_check(num){
 			re = new RegExp(/newscanfnext\(b,9\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("a.b.","%."\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,false);flagArr.push(temp);
-			/*var user_code = parser_judge.parse(codeOfUser);
-			if(hantei_4(user_code,0, 0, 0, 0,"1") != true){ miss_answer("５章まとめ不正解！"); return 0;}
-			else if( hantei_4(user_code,1, 1, 1, 1, "4") != true){ miss_answer("５章まとめ不正解！"); return 0;}
-			else if( hantei_4(user_code, 2, 2, 2, 2, "7") != true){ miss_answer("５章まとめ不正解！"); return 0;}
-			else if( hantei_4(user_code, 3, 3, 3, 3, "8") != true){ miss_answer("５章まとめ不正解！"); return 0;}
-			else { flagArr.push(true); } */
+			/*
+			var user_code = parser_judge.parse(codeOfUser);
+			if(hantei_4(user_code,0, 0, 0, 0,"1\n") == true ){
+				if( hantei_4(user_code,1, 1, 1, 1, "4\n") != true){
+					miss_answer("コードを見直してみよう！"); return 0;
+				}else if( hantei_4(user_code, 2, 2, 2, 2, "7\n") != true){
+					miss_answer("コードを見直してみよう！"); return 0;
+				}else if( hantei_4(user_code, 3, 3, 3, 3, "8\n") != true){
+					miss_answer("コードを見直してみよう！"); return 0;
+				}else {
+					flagArr.push(true);
+				} 
+			}else if(hantei_4(user_code,0, 0, 0, 0,"1") == true ){
+				if( hantei_4(user_code,1, 1, 1, 1, "4") != true){
+					miss_answer("コードを見直してみよう！"); return 0;
+				}else if( hantei_4(user_code, 2, 2, 2, 2, "7") != true){
+					miss_answer("コードを見直してみよう！"); return 0;
+				}else if( hantei_4(user_code, 3, 3, 3, 3, "8") != true){
+					miss_answer("コードを見直してみよう！"); return 0;
+				}else {
+					flagArr.push(true);
+				} 
+			}else {miss_answer("コードを見直してみよう！"); return 0;}
+			*/
 		break;
 	}
 	var flen = flagArr.length;
