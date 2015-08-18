@@ -917,7 +917,7 @@ function startContexts(cnt){
 	for_index_array[for_now_cnt]=0;
 	foreval()
 }
-
+var scanfroopflag = false;//scanfで入力する変数が、ループ終了条件と関わっており、その入力によってループが終了してしまう時にforevalのwhile文内に入れない時対策
 var breakflag = false;
 function foreval(){
 	console.log("ループ");
@@ -927,10 +927,12 @@ function foreval(){
 	var limit = 0;
 	for_context_finish =false;
 	var firstdone = true;
+	console.log(evalue(for_conditions_array[0]))
 	//var doflag = assess(for_conditions_array[0]);
-	while(evalue(for_conditions_array[0])&&limit<15){//forの条件がfalseになるまで順次実行
+	while((evalue(for_conditions_array[0])&&limit<15)||scanfroopflag){//forの条件がfalseになるまで順次実行
 		if(for_index_array[0]==0)assess(for_conditions_array[0])
 		firstdone = false;
+		scanfroopflag = false;
 		for(var i = for_index_array[0];i < len ;i++){
 			if(tempArr[i].match(/for_next/)){
 					console.log("二重ループです。");
@@ -1269,6 +1271,7 @@ if(scanf_flag){
 		arr_init("入力を完了しました",inputValueArray);
 	}else{return 0;}
 	if(!for_context_finish){breakflag=false;
+		scanfroopflag = true;
 		foreval();
 		//if(doubleroop){for_deval();}else{for_eval();}
 	}

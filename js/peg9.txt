@@ -164,6 +164,9 @@ repetition_for
        for(var k=1; k < block.length; k++){
          a = a + block[k];
        }
+       	if(String(comparison).match(":") != 0){
+			comparison = String(comparison).replace(/:/g,"");
+		}
     return 'for_js("false,' + left + ',' + right + '","' + comparison + '","' + substitution + '","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; 
   }
   
@@ -175,6 +178,9 @@ repetition_for
        for(var k=1; k < block.length; k++){
          a = a + block[k];
        }
+       if(String(comparison).match(":") != 0){
+			comparison = String(comparison).replace(/:/g,"");
+		}
     return 'for_js("true,' + va + ',' + left + ',' + right + '","' + comparison + '","' + substitution + '","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; 
     }
   
@@ -187,6 +193,9 @@ repetition_while
        for(var k=1; k < block.length; k++){
          a = a + block[k];
        }
+       if(String(comparison).match(":") != 0){
+			comparison = String(comparison).replace(/:/g,"");
+		}
     return 'for_js("while","' + comparison + '","","' + peg$computePosDetails(peg$reportedPos).line + '");' + a  + 'end_of_for();'; }
 
 
@@ -275,10 +284,10 @@ substitution
 //for文で用いる代入・演算
 substitution_for
   = left:variable space "=" space right:additive space { return left + " = " + right ; } 
-  /   left:variable "++" space { return left + ":+:1" ; }
-  /   left:variable "--" space { return left + ":-:1" ; }
-  /   left:variable "+=" right:additive space space { return left + ":+:" + right ; }
-  /   left:variable "-=" right:additive space space { return left + ":-:" + right ; }
+  /   left:variable space "++" space { return left + ":+:1" ; }
+  /   left:variable space "--" space { return left + ":-:1" ; }
+  /   left:variable space "+=" right:additive space space { return left + ":+:" + right ; }
+  /   left:variable space "-=" right:additive space space { return left + ":-:" + right ; }
 
 //------------------------------------------------------------
 
@@ -352,9 +361,9 @@ additive_plural_scan
   
 //プリント
 printf
-  =  "printf" space "(" space ["] space type:print_type space  ["] space "," space variable:variable space ")" [\n]* ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_js("' + variable + '","' + type + '");' ;  }
+  =  "printf" space "(" space ["] type:print_type  ["] space "," space variable:variable space ")" [\n]* ";" space {return 'push_line(' + peg$computePosDetails(peg$reportedPos).line +');printf_js("' + variable + '","' + type + '");' ;  }
   
-  /  "printf" space "(" space ["] space   contents:print_val space ["]   space "," space variable:additive_plural space ")" space ";" space {
+  /  "printf" space "(" space ["] contents:print_val ["]   space "," space variable:additive_plural space ")" space ";" space {
     if(contents.indexOf("\\") != -1){
   	contents = contents.replace(/\\/g,"\\\\");
   }
