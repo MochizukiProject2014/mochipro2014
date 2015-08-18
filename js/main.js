@@ -920,6 +920,7 @@ function startContexts(cnt){
 
 var breakflag = false;
 function foreval(){
+	console.log("ループ");
 	var tempArr="";
 	if(/.+/.test(for_contexts_array[0]))tempArr=for_contexts_array[0].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
 	var len = tempArr.length;
@@ -927,7 +928,8 @@ function foreval(){
 	for_context_finish =false;
 	var firstdone = true;
 	//var doflag = assess(for_conditions_array[0]);
-	while(assess(for_conditions_array[0])&&limit<15){//forの条件がfalseになるまで順次実行
+	while(evalue(for_conditions_array[0])&&limit<15){//forの条件がfalseになるまで順次実行
+		if(for_index_array[0]==0)assess(for_conditions_array[0])
 		firstdone = false;
 		for(var i = for_index_array[0];i < len ;i++){
 			if(tempArr[i].match(/for_next/)){
@@ -957,10 +959,6 @@ function foreval(){
 			forallfinish();//もし今のfor群の全てを実行し終えたら
 			break;
 			console.log("ここ？２");
-		}else if(for_now_cnt!=0&&!doflag){
-			//for_now_cnt-=1;
-			console.log("ここ？");
-			return 0;
 		}
 		limit++;
 		for_index_array[0]=0;//forの文郡を順次実行したら、文郡を最初からもう一度実行。
@@ -969,6 +967,7 @@ function foreval(){
 		
 	}//while文の終了
 	if(firstdone){
+		assess(for_conditions_array[0]);
 		forallfinish();
 	}
 	console.log("ここ？3"+evalue(for_conditions_array[0]));
