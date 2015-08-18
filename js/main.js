@@ -279,7 +279,7 @@ function calcArrayIndex(name){
 	return result;
 }
 
-function getVariableValue(name){
+function getVariableValue(name){console.log(name);
 	var vlen = variables.length;
 	var existFlag = false;
 	var result;
@@ -289,12 +289,12 @@ function getVariableValue(name){
 		if(/^[a-z]\w*/.test(index1)||/:/.test(index1))index1 =calc(index1);
 		if(/^[a-z]\w*/.test(index2)||/:/.test(index2))index2 =calc(index2);
 		name = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1];
-		console.log("取得する二重配列"+name+"["+index1+"]"+index2);
+		//console.log("取得する二重配列"+name+"["+index1+"]"+index2);
 	}else if(/\[.+\]/.test(name)){
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
-		console.log("マッチしてる？"+name+"["+index+"]");
+		//console.log("マッチしてる？"+name+"["+index+"]");
 	}
 	for(i = 0; i < vlen; i++){
 		if(variables[i].name == name){
@@ -569,6 +569,7 @@ if(action_frag == true&&for_flag){
 	var cvflag = false;//代入する値が計算式、または、一つの変数かか判別するフラグ
 	var str;
 	var len = variables.length;
+	console.log("だいにゅう"+name+"値" +value);
 	if(/\[.+\]\[.+\]/.test(name)){//二重配列ならnameとindex1と2(indexが変数なら数字に直す)を。なぜか条件に!(value.match(/:/)があったけどx[i][1] = 4+5;がバグるんで消す
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
@@ -576,7 +577,7 @@ if(action_frag == true&&for_flag){
 		if(/^[a-z]\w*/.test(index2)||/:/.test(index2))index2 =calc(index2);
 		name = name.match(/^([a-z]\w*)\[.+\]\[.+\]/)[1];
 		console.log("二重配列！"+name+"、"+index1+"、"+index2);
-	}else if(/\[.+\]/.test(name)&&!(value.match(/:/))){//もし配列なら、nameとindex(indexが変数の場合数字になおし)を宣言。
+	}else if(/\[.+\]/.test(name)){//もし配列なら、nameとindex(indexが変数の場合数字になおし)を宣言。
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
@@ -604,10 +605,15 @@ if(action_frag == true&&for_flag){
 			break;
 		}
 	}else{
-		if(/\[.+\]/.test(value)&&!(value.match(/:/))){
+		if(/\[.+\]/.test(value)&&value.match(/:/)){
+		var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
+		var valuename = value.match(/([a-z]\w*)\[.+\]/)[1];
+		valueindex = calc(valueindex);
+		value = getVariableValue(valuename+"["+valueindex+"]");
+		}else if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
 			valueindex = calc(valueindex);
-			value = getVariableValue(value);
+			console.log("値3"+valueindex);
 		}else if(value.match(/:/)){//代入する値が計算式の場合
 			cvflag = true;
 			str = getArrStr(value.split(":"),true);//'"'+value.replace(/:/g,"")+'"';
