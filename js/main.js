@@ -58,7 +58,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	if(htmlversion=="debug")SPEED=0.25;
+	if(htmlversion=="debug")SPEED=0.125;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -734,18 +734,18 @@ function if_js(condition){
 function else_if_js(condition){
 	if(for_flag){
 	if_conditions[if_cnt]=assess(condition);
-	console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	if(!(if_end_flag[if_cnt])&&if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
-	console.log("else_if_js内の出力：実行しようぜ！");
+		//console.log("else_if_js内の出力：実行しようぜ！");
 		if_end_flag[if_cnt]=true;
 		action_frag=true;
-		console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}else{
-	console.log("else_if_js内の出力：実行しないぜ！");
+	//console.log("else_if_js内の出力：実行しないぜ！");
 		action_frag=false;
 		if_conditions[if_cnt]=false;
 		//if_end_flag[if_cnt]=false;
-		console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
+		//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	}
 	}else if(!for_flag){add_forcontext('else_if_js("'+condition+'");');}
 }
@@ -753,7 +753,7 @@ function else_if_js(condition){
 function else_js(){
 	if(for_flag){
 	if_conditions[if_cnt] = true;
-	console.log("else_js内での出力：第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
+	//console.log("else_js内での出力：第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
 	if(!(if_end_flag[if_cnt])&&if_conditions[if_cnt-1]){
 		if_end_flag[if_cnt]=true;
 		action_frag=true
@@ -786,6 +786,9 @@ function end_of_if(){
 }
 
 function assess(condition){
+	/*if(/true/.test(condition)){return true;}
+	if(/false/.test(condition)){return false;}
+	if(/undefined/.test(condition)){return 0;}*/
 	console.log(condition+"のassessを開始するよ！");
 	var tempStr = condition;
 	var animeExp = [];
@@ -947,7 +950,9 @@ function foreval(){
 		jsOfAnimes.push(for_line_array[0]);
 		eval(for_alt_array[0]);
 		if(for_now_cnt==0&&for_index_array[0]>=len-1&&!evalue(for_conditions_array[0])){
+			assess(for_conditions_array[0]);
 			forallfinish();//もし今のfor群の全てを実行し終えたら
+			break;
 			console.log("ここ？２");
 		}else if(for_now_cnt!=0&&!doflag){
 			//for_now_cnt-=1;
@@ -958,6 +963,7 @@ function foreval(){
 		for_index_array[0]=0;//forの文郡を順次実行したら、文郡を最初からもう一度実行。
 		if(limit >=15)return createSyntaxError("繰り返しの回数が多すぎるよ！");
 		if(for_context_finish){console.log("？");return 0;}
+		
 	}//while文の終了
 	if(firstdone){
 		forallfinish();
