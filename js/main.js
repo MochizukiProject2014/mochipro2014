@@ -704,7 +704,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"||){answer_check(222);}
+	if(htmlversion=="debug"||htmlversion=="free"){}
 	else{answer_check(htmlversion);}
 }
 
@@ -956,7 +956,7 @@ function foreval(){
 		}
 		limit++;
 		for_index_array[0]=0;//forの文郡を順次実行したら、文郡を最初からもう一度実行。
-		if(limit >=15)return createSyntaxError("for文の回数が多すぎるよ！");
+		if(limit >=15)return createSyntaxError("繰り返しの回数が多すぎるよ！");
 		if(for_context_finish){console.log("？");return 0;}
 	}//while文の終了
 	if(firstdone){
@@ -984,7 +984,7 @@ function fordeval(){
 				if(syntaxErrorFlag){eval(tempArr[i]);}else{breakflag=true;ANIME_reset();ANIME_error(syntaxStr);}
 				for_index_array[1]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
-				if(tempArr[i].match(/^scanf_js./)&&action_frag){console.log("scanfの実行です。2");breakflag = true;break;}
+				if(tempArr[i].match(/^scanf_js./)&&action_frag){return createSyntaxError("ごめんね！このアプリでは二重ループ内でscanfはできないよ！");console.log("scanfの実行です。2");breakflag = true;break;}
 				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[1]=len;break;}
 			}
 		}
@@ -1002,7 +1002,7 @@ function fordeval(){
 		}else if(for_now_cnt!=0&&!endflag){return 0;}
 		forlimit++;
 		for_index_array[1]=0;
-		if(forlimit >=15)return createSyntaxError("for文の回数が多すぎるよ！");
+		if(forlimit >=15)return createSyntaxError("繰り返しの回数が多すぎるよ！");
 	}
 }
 /*--------------------------------------------------------ここから------------------------------------------*/
@@ -1132,9 +1132,10 @@ function forallfinish(){
 	arr_init("",for_conditions_array);arr_init("",for_alt_array);
 	arr_init("",for_line_array);arr_init("",for_init_array);
 	for_rindex = 0;
-	for_context_finish =true;
+	for_context_finish =false;
 	evalfunction(rindex+1,result2);
 }
+
 function add_forcontext(str){
 	//console.log(str+"をfor実行群に追加します。");
 	for_contexts_array[for_cnt-1]+=str;
