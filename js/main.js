@@ -12,7 +12,6 @@ var consoleStatus = "";			//コンソールの現在の状態を保持
 var htmlversion;				//どのhtmlを読み込んでいるかの情報を保持
 var syntaxErrorFlag = true,codeFinishFlag = false,scanf_flag=false;	
 var syntaxStr ="";				//エラー文の保存用配列
-var scopeLevel = 1;				//変数のスコープの管理用
 function disTexetarea(){
 	cEditor.markText({line: 0 , ch: 0}, {line: 100, ch: 100}, {className: "styled-background-null"});
 	cEditor.save();
@@ -201,7 +200,7 @@ function codeArrayInit(){
 		ANIME_reset();codeOfUser ="";
 		consoleStatus="";action_frag = true;
 		if_cnt = 0;syntaxErrorFlag = true;
-		animeStartIndex=0;scopeLevel = 1;
+		animeStartIndex=0;
 		for_flag = true;for_cnt = 0;rindex=0;
 		scanf_flag=false;for_rindex = 0
 		document.getElementById("console").value="";
@@ -720,7 +719,7 @@ var if_cnt = 0;
 var if_end_flag = new Array();if_end_flag.push(true);
 function if_js(condition){
 	if(for_flag){
-	if_cnt++;scopeLevel++;
+	if_cnt++;
 	if_conditions.push(assess(condition));
 	//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
 	if(if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
@@ -739,7 +738,7 @@ function if_js(condition){
 
 function else_if_js(condition){
 	if(for_flag){
-	if_conditions[if_cnt]=assess(condition);
+	if(!(if_end_flag[if_cnt]))if_conditions[if_cnt]=assess(condition);
 		//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"、"+if_end_flag[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]+"、"+if_end_flag[if_cnt-1]);
 	if(!(if_end_flag[if_cnt])&&if_conditions[if_cnt]&&if_conditions[if_cnt-1]){
 		//console.log("else_if_js内の出力：実行しようぜ！");
@@ -777,7 +776,6 @@ function else_js(){
 function end_of_if(){
 	if(for_flag){
 	if_cnt=if_cnt-1;
-	scopeLevel=scopeLevel-1;
 	if_end_flag.splice((if_end_flag.length-1),1);
 	if_conditions.splice((if_conditions.length-1),1);
 	//console.log("第"+if_cnt+"階層のif条件結果："+if_conditions[if_cnt]+"第"+(if_cnt-1)+"階層のif条件結果："+if_conditions[if_cnt-1]);
@@ -795,7 +793,7 @@ function assess(condition){
 	/*if(/true/.test(condition)){return true;}
 	if(/false/.test(condition)){return false;}
 	if(/undefined/.test(condition)){return 0;}*/
-	console.log(condition+"のassessを開始するよ！");
+	//console.log(condition+"のassessを開始するよ！");
 	var tempStr = condition;
 	var animeExp = [];
 	var animeRes = [];
@@ -888,7 +886,6 @@ if(action_frag == true){
 	}
 	for_contexts_array.push("");
 	for_init_array.push(init);
-	scopeLevel++;
 	for_line_array.push('line('+line_num+')');
 	for_flag = false;
 	for_cnt++;
@@ -903,7 +900,6 @@ if(action_frag == true){
 function end_of_for(){
 if(action_frag == true){
 	for_cnt=for_cnt - 1;
-	scopeLevel-=1;
 	}
 }
 
