@@ -920,6 +920,8 @@ function startContexts(cnt){
 
 var breakflag = false;
 function foreval(){
+	console.log(/.+/.test(for_contexts_array[0]))
+	var tempArr="";
 	if(/.+/.test(for_contexts_array[0]))tempArr=for_contexts_array[0].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
 	var len = tempArr.length;
 	var limit = 0;
