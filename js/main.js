@@ -945,7 +945,7 @@ function foreval(){
 				for_index_array[0]++;
 				if(!(tempArr[i].match(/(push)|(plural)|(return)/)))user_pattern_array.push(tempArr[i]);
 				if(tempArr[i].match(/^scanf_js./)&&action_frag){console.log("scanfの実行です。");breakflag = true;break;}
-				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[0]=len;break;}
+				if(tempArr[i].match(/^break_js./)&&action_frag){for_index_array[0]=len;breakflag = true;forallfinish();break;}
 			}
 		}//for文の終了
 		console.log("ここまではきてる"+breakflag+"："+for_context_finish+"："+for_alt_array[0]+"："+for_index_array[0]+"："+evalue(for_conditions_array[0]));
