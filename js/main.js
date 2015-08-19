@@ -57,7 +57,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	if(htmlversion=="debug")SPEED=0.125;
+	if(htmlversion=="debug")SPEED=0.00125;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -709,7 +709,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"){}
+	if(htmlversion=="debug"||htmlversion=="free"){answer_check("431")}
 	else{answer_check(htmlversion);}
 }
 
@@ -793,7 +793,7 @@ function assess(condition){
 	/*if(/true/.test(condition)){return true;}
 	if(/false/.test(condition)){return false;}
 	if(/undefined/.test(condition)){return 0;}*/
-	//console.log(condition+"のassessを開始するよ！");
+	console.log(condition+"のassessを開始するよ！");
 	var tempStr = condition;
 	var animeExp = [];
 	var animeRes = [];
@@ -835,7 +835,7 @@ function assess(condition){
 }
 
 function evalue(condition){
-	//console.log(condition+"のevalueを開始するよ！");
+	console.log(condition+"のevalueを開始するよ！");
 	if(/true/.test(condition)){return true;}
 	if(/false/.test(condition)){return false;}
 	if(/undefined/.test(condition)){return 0;}
@@ -854,7 +854,8 @@ function evalue(condition){
 			errorFlag =false;
 			for(var aii = 0;aii < variables.length;aii++){
 				if(changeVariables[ai] == variables[aii].name){
-					tempStr = tempStr.replace(changeVariables[ai],variables[aii].value);
+					if(variables[aii].value=="?")return createSyntaxError("条件式に中身が入っていない変数が入っているよ！");
+					tempStr = tempStr.replace(changeVariables[ai],variables[aii].value);;
 					errorFlag = true;
 				}
 			}
@@ -915,19 +916,17 @@ function startContexts(cnt){
 	}
 	for_index_array.push(0);
 	for_index_array[for_now_cnt]=0;
-	foreval()
+	foreval();
 }
 var scanfroopflag = false;//scanfで入力する変数が、ループ終了条件と関わっており、その入力によってループが終了してしまう時にforevalのwhile文内に入れない時対策
 var breakflag = false;
 function foreval(){
-	console.log("ループ");
 	var tempArr="";
 	if(/.+/.test(for_contexts_array[0]))tempArr=for_contexts_array[0].match(/(.*);$/)[1].split(";");//実行する階層のパーサ配列
 	var len = tempArr.length;
 	var limit = 0;
 	for_context_finish =false;
 	var firstdone = true;
-	console.log(evalue(for_conditions_array[0]))
 	//var doflag = assess(for_conditions_array[0]);
 	while((evalue(for_conditions_array[0])&&limit<15)||scanfroopflag){//forの条件がfalseになるまで順次実行
 		if(for_index_array[0]==0)assess(for_conditions_array[0])
@@ -960,19 +959,17 @@ function foreval(){
 			assess(for_conditions_array[0]);
 			forallfinish();//もし今のfor群の全てを実行し終えたら
 			break;
-			console.log("ここ？２");
 		}
 		limit++;
 		for_index_array[0]=0;//forの文郡を順次実行したら、文郡を最初からもう一度実行。
 		if(limit >=15)return createSyntaxError("繰り返しの回数が多すぎるよ！");
-		if(for_context_finish){console.log("？");return 0;}
+		if(for_context_finish){return 0;}
 		
 	}//while文の終了
 	if(firstdone){
 		assess(for_conditions_array[0]);
 		forallfinish();
 	}
-	console.log("ここ？3"+evalue(for_conditions_array[0]));
 }
 
 function fordeval(){
