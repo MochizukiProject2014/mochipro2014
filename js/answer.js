@@ -462,8 +462,8 @@ function answer_check(num){
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("int","i",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("int","k",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/for.+i.+7.+8/);answer_pattern_array.push(re);
-			re = new RegExp(/for.+k.+1.+9/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,i,7","i<(=8)|(9)","i:\+:1".+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,k,1","k<(=9)|(10)","k:\+:1".+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("x","(i:\*:k)|(k:\*:i)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs\(".+"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
