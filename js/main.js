@@ -57,7 +57,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	if(htmlversion=="debug")SPEED=0.00125;
+	if(htmlversion=="debug")SPEED=0.25;//SPEED=0.00125;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -569,6 +569,7 @@ if(action_frag == true&&for_flag){
 	var str;
 	var len = variables.length;
 	if(!getVariableExist(name))return createSyntaxError("代入先の変数が存在してないよ！");
+	console.log("名前" +name+"値"+value);
 	if(/\[.+\]\[.+\]/.test(name)){//二重配列ならnameとindex1と2(indexが変数なら数字に直す)を。なぜか条件に!(value.match(/:/)があったけどx[i][1] = 4+5;がバグるんで消す
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
@@ -605,16 +606,26 @@ if(action_frag == true&&for_flag){
 		}
 	}else{
 		if(/\[.+\]/.test(value)&&value.match(/:/)){
-		var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
-		var valuename = value.match(/([a-z]\w*)\[.+\]/)[1];
-		valueindex = calc(valueindex);
-		value = getVariableValue(valuename+"["+valueindex+"]");
+			cvflag = true;
+			var arrarrlen = value.split(":").length;
+			var arrarr = value.split(":");
+			for(var i = 0;i < arrarrlen;i++){
+				if(/\[.+\]/.test(arrarr[i])){
+					var index = arrarr[i].match(/[a-z]\w*\[(.+)\]/)[1];
+					var calcindex =calc(index);
+					arrarr[i] = arrarr[i].replace(index,calcindex);
+				}
+			}
+			str = getArrStr(arrarr,true);
+			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
+			var valuename = value.match(/([a-z]\w*)\[.+\]/)[1];
+			valueindex = calc(valueindex);
+			value = getVariableValue(valuename+"["+valueindex+"]");
 		}else if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
 			valueindex = calc(valueindex);
 			console.log("値3"+valueindex);
 		}else if(value.match(/:/)){//代入する値が計算式の場合
-			console.log(value);
 			cvflag = true;
 			str = getArrStr(value.split(":"),true);//'"'+value.replace(/:/g,"")+'"';
 			var fArray = value.split(":");
@@ -709,7 +720,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"){answer_check("431");}
+	if(htmlversion=="debug"||htmlversion=="free"){}
 	else{answer_check(htmlversion);}
 }
 
