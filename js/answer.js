@@ -532,9 +532,9 @@ function answer_check(num){
 		case 512:
 			re = new RegExp(/array_declare\("int","a","1@2@3@4@5",5\)/);answer_pattern_array.push(re);
 			re = new RegExp(/array_declare\("int","b","undefined",5\)/);answer_pattern_array.push(re);
-			re = new RegExp(/for_js\("false,i,0","i < 5","i:\+:1","."\)/);answer_pattern_array.push(re);
-			re = new RegExp(/substitute\("b\[i\]","a\[(4:-:i:-1)|(4:-:1:-i)|(3:-:i)\]"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/for_js\("false,i,0","i < 5","i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,i,0","i<5","i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/substitute\("b\[i\]","a\[(4:-:i)\]"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\("false,i,0","i<5","i:\+:1","."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("i,b\[i\]".+\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;

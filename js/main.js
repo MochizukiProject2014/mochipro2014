@@ -57,7 +57,7 @@ window.onload = function() {
 	document.getElementById("console").value="";
 	htmlversion = document.getElementById("ver").getAttribute("version");
 	if(htmlversion=="211")document.getElementById("click_data").click();
-	if(htmlversion=="debug")SPEED=0.25;//SPEED=0.00125;
+	if(htmlversion=="debug")SPEED=0.00125;
 }
 
 var scanfSetStr ="<b>コンソールに値を入力するにゃ！<BR>";
@@ -581,6 +581,7 @@ if(action_frag == true&&for_flag){
 		var index = name.match(/[a-z]\w*\[(.+)\]/)[1];
 		if(/^[a-z]\w*/.test(index)||/:/.test(index))index =calc(index);
 		name = name.match(/^([a-z]\w*)\[.+\]/)[1];
+			console.log(name,index);
 	}
 	var vtype = getVariableType(name);
 	if(vtype=="char"){
@@ -605,15 +606,15 @@ if(action_frag == true&&for_flag){
 			break;
 		}
 	}else{
-		if(/\[.+\]/.test(value)&&value.match(/:/)){
+		if(/\[.+\]/.test(value)&&/(:)|(\[.*[a-z].*\])/.test(value)){
 			cvflag = true;
 			var arrarrlen = value.split(":").length;
 			var arrarr = value.split(":");
 			for(var i = 0;i < arrarrlen;i++){
 				if(/\[.+\]/.test(arrarr[i])){
-					var index = arrarr[i].match(/[a-z]\w*\[(.+)\]/)[1];
-					var calcindex =calc(index);
-					arrarr[i] = arrarr[i].replace(index,calcindex);
+					var tempindex = arrarr[i].match(/[a-z]\w*\[(.+)\]/)[1];
+					var calcindex =calc(tempindex);
+					arrarr[i] = arrarr[i].replace(tempindex,calcindex);
 				}
 			}
 			str = getArrStr(arrarr,true);
@@ -624,7 +625,7 @@ if(action_frag == true&&for_flag){
 		}else if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
 			valueindex = calc(valueindex);
-			console.log("値3"+valueindex);
+			console.log("値3："+valueindex);
 		}else if(value.match(/:/)){//代入する値が計算式の場合
 			cvflag = true;
 			str = getArrStr(value.split(":"),true);//'"'+value.replace(/:/g,"")+'"';
@@ -720,7 +721,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"){}
+	if(htmlversion=="debug"||htmlversion=="free"){answer_check("512");}
 	else{answer_check(htmlversion);}
 }
 
