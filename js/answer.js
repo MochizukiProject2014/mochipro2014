@@ -502,11 +502,15 @@ function answer_check(num){
 			else { flagArr.push(true); } 
 		break;
 		case 42:
+			var dedicateNum = -1;
+			for(var i = 0;i < apalen;i++){
+				if(/newscanfnext\([a-z].*,([0-9])\)/.test(user_pattern_array[i]))dedicateNum = user_pattern_array[i].match(/newscanfnext\([a-z].*,([0-9])\)/)[1]
+			}
 			var temparr = document.getElementById("console").value.split("\n");
 			var str = "*";
 			var len = temparr.length;
 			for(var i = 0;i < len;i++)if(temparr.indexOf(str)>=0)str+="*";
-			if(str.length>1)flagArr.push(true);
+			if(str.length>1&&str.length-1==dedicateNum)flagArr.push(true);
 			re = new RegExp(/for.+/);answer_pattern_array.push(re);
 			re = new RegExp(/for.+/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs\("\*"\)/);answer_pattern_array.push(re);

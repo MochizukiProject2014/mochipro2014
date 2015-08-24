@@ -509,7 +509,7 @@ if(action_frag){
 			arr_check("@",value2arr);
 			var value2arrlen = value2arr.length;
 			for(var j=0;j<value2arrlen;j++){
-				altvalue += value2arr[j];
+				altvalue += regulate_js(data_type,value2arr[j]);
 				if(value2arr[j]=="")altvalue+=addStr;
 				if(j<value2arrlen-1){altvalue += '@';}
 			}
@@ -531,7 +531,7 @@ if(action_frag){
 				if(/:/.test(value2arr[k]))calc_flag = true;
 				if(value2arr[k]!="?"&&data_type!="char"){
 					animeEx+='"'+value2arr[k]+'"';
-					animeValue+='"'+calc(value2arr[k])+'"';
+					animeValue+='"'+regulate_js(data_type,calc(value2arr[k]))+'"';
 					objValue += calc(value2arr[k]);
 				}else if(data_type=="char"){
 					animeEx+='"'+value2arr[k]+'"';
@@ -721,7 +721,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"){answer_check("512");}
+	if(htmlversion=="debug"||htmlversion=="free"){}
 	else{answer_check(htmlversion);}
 }
 

@@ -391,7 +391,7 @@ print_type
 
 //なんでもいい文字列
 letter
- =letter:[^"%,+]* { return letter.join("").replace(/,/g,""); }
+ =letter:[^"%+]* { return letter.join(""); }
  
 letter_2
  =letter:[^"]* { return letter.join("").replace(/,/g,""); }
