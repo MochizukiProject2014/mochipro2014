@@ -425,12 +425,22 @@ if(action_frag == true&&for_flag){
 	var init_flag = false;
 	var calc_flag = false;
 	var valuelen = length;
+	var addStr = "0";
 	if(data_type=="char")length--;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)
 		return createSyntaxError("同じ名前の変数か配列を２回以上宣言しているよ！");
 	if(value=="undefined"&&length=="undefined")return createSyntaxError("配列を初期化しないときは、大きさを指定してね！");
 	if(value!="undefined"){
 		var valuearr = value.split("@");
+		valuelen = valuearr.length;
+		if(valuelen<length){
+			for(var i=0;i<length;i++){
+				if(!valuearr[i])value+=addStr;
+				if(i<length-1){value += '@';}
+			}
+		}
+		if(length == "undefined")length = valuelen;
+		valuearr = value.split("@");
 		valuelen = valuearr.length;
 		if(length < valuelen)return createSyntaxError("配列の大きさより多く要素が入っているよ！") ;
 		init_flag = true;
@@ -494,7 +504,7 @@ if(action_frag){
 	if(length2=="undefined"||length1=="undefined")return createSyntaxError("二次元配列の大きさは両方決めてね！") ;//配列の長さは絶対指定;
 	for(var i =0;i <alen;i++)if(variables[i].name == name)return createSyntaxError("同じ名前の変数か配列が２回以上宣言されているよ！");
 	if(value!="undefined"){//初期化されている時
-		addStr = "0";
+		//addStr = "0";
 		var altvalue="";
 		if(value==""){//{{}...}の時
 			for(var i = 0;i < length1-1;i++)value+="^";
@@ -503,10 +513,10 @@ if(action_frag){
 		var len1 = value1arr.length;
 		var len2 = length2;
 		if(data_type=="char")len2=len2-1;
-		arr_check("^",value1arr);
+		//arr_check("^",value1arr);
 		for(var i = 0;i< len1;i++){
 			var value2arr = value1arr[i].split("@");
-			arr_check("@",value2arr);
+			//arr_check("@",value2arr);
 			var value2arrlen = value2arr.length;
 			for(var j=0;j<value2arrlen;j++){
 				altvalue += regulate_js(data_type,value2arr[j]);
@@ -569,7 +579,7 @@ if(action_frag == true&&for_flag){
 	var str;
 	var len = variables.length;
 	if(!getVariableExist(name))return createSyntaxError("代入先の変数が存在してないよ！");
-	console.log("名前" +name+"値"+value);
+	//console.log("名前" +name+"値"+value);
 	if(/\[.+\]\[.+\]/.test(name)){//二重配列ならnameとindex1と2(indexが変数なら数字に直す)を。なぜか条件に!(value.match(/:/)があったけどx[i][1] = 4+5;がバグるんで消す
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
@@ -610,18 +620,25 @@ if(action_frag == true&&for_flag){
 			cvflag = true;
 			var arrarrlen = value.split(":").length;
 			var arrarr = value.split(":");
+			var calcstr = "";
 			for(var i = 0;i < arrarrlen;i++){
-				if(/\[.+\]/.test(arrarr[i])){
+				if(/\[.+\]\[.+\]/.test(arrarr[i])){
+					var tempindex1 = arrarr[i].match(/[a-z]*\[(.+)\]\[.+\]/)[1];
+					var tempindex2 = arrarr[i].match(/[a-z]*\[.+\]\[(.+)\]/)[1];
+					var calcindex1 = calc(tempindex1);
+					var calcindex2 = calc(tempindex2);
+					arrarr[i] = arrarr[i].replace(tempindex1,calcindex1);
+					arrarr[i] = arrarr[i].replace(tempindex2,calcindex2);
+				}else if(/\[.+\]/.test(arrarr[i])){
 					var tempindex = arrarr[i].match(/[a-z]\w*\[(.+)\]/)[1];
 					var calcindex =calc(tempindex);
 					arrarr[i] = arrarr[i].replace(tempindex,calcindex);
 				}
+				calcstr+=arrarr[i];
+				if(i<arrarrlen-1){calcstr+=":"}
 			}
 			str = getArrStr(arrarr,true);
-			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
-			var valuename = value.match(/([a-z]\w*)\[.+\]/)[1];
-			valueindex = calc(valueindex);
-			value = getVariableValue(valuename+"["+valueindex+"]");
+			value = calc(calcstr);
 		}else if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
 			valueindex = calc(valueindex);
