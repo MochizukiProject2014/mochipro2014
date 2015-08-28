@@ -519,7 +519,7 @@ function answer_check(num){
 		case 511:
 			re = new RegExp(/array_declare\("int","a","1@2@3@4@5",5\)/);answer_pattern_array.push(re);
 			re = new RegExp(/plural_declaration\("int","i,sum=0"\)/);answer_pattern_array.push(re);
-			re = new RegExp(/for_js\(("false,i,0","i < 5")||("false,i,1","i <= 5"),"i:\+:1","."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js\(("false,i,0","i<5")|("false,i,1","i<=5"),"i:\+:1","."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("sum","sum:\+:a.i."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_js\("sum","%d"\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
