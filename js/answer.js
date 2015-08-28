@@ -1,5 +1,10 @@
 function answer_check(num){
 	console.log(num+"の正誤判定に入ります。");
+	if(getVariableExist("SystemCodeTrueAnswerPattern")){
+		correct_answer();
+		ajaxPostFunc(document.getElementById("state").innerHTML,"1",codeOfUser);
+		movenext();
+	}
 	var version = Number(num),re;
 	var answer_pattern_array = [];
 	var flagArr = [];
