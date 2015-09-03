@@ -632,10 +632,12 @@ if(action_frag == true&&for_flag){
 					var calcindex2 = calc(tempindex2);
 					arrarr[i] = arrarr[i].replace(tempindex1,calcindex1);
 					arrarr[i] = arrarr[i].replace(tempindex2,calcindex2);
+					calcstr+=arrarr[i];
 				}else if(/\[.+\]/.test(arrarr[i])){
 					var tempindex = arrarr[i].match(/[a-z]\w*\[(.+)\]/)[1];
 					var calcindex =calc(tempindex);
 					arrarr[i] = arrarr[i].replace(tempindex,calcindex);
+					calcstr+=arrarr[i];
 				}
 				if(/\]/.test(arrarr[i])&&indexcalcflag){
 					indexcalcflag = false;
