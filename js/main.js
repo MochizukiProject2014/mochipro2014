@@ -282,6 +282,7 @@ function getVariableValue(name){
 	var vlen = variables.length;
 	var existFlag = false;
 	var result;
+	console.log(name+"の値を取得します。");
 	if(/\[.+\]\[.+\]/.test(name)){
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
@@ -579,7 +580,7 @@ if(action_frag == true&&for_flag){
 	var str;
 	var len = variables.length;
 	if(!getVariableExist(name))return createSyntaxError("代入先の変数が存在してないよ！");
-	//console.log("名前" +name+"値"+value);
+	console.log("名前" +name+"値"+value);
 	if(/\[.+\]\[.+\]/.test(name)){//二重配列ならnameとindex1と2(indexが変数なら数字に直す)を。なぜか条件に!(value.match(/:/)があったけどx[i][1] = 4+5;がバグるんで消す
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
@@ -616,12 +617,15 @@ if(action_frag == true&&for_flag){
 			break;
 		}
 	}else{
-		if(/\[.+\]/.test(value)&&/(:)|(\[.*[a-z].*\])/.test(value)){
+		if(/\[.+\]/.test(value)&&/(:)|(\[.*[a-z].*\])/.test(value)){//代入する値の配列のインデックスが演算のものが式の中に入っている場合
 			cvflag = true;
-			var arrarrlen = value.split(":").length;
 			var arrarr = value.split(":");
+			var arrarrlen = arrarr.length;
 			var calcstr = "";
+			var indexcalcstr="";
+			var indexcalcflag=false;
 			for(var i = 0;i < arrarrlen;i++){
+				console.log("今のチェク："+arrarr[i]);
 				if(/\[.+\]\[.+\]/.test(arrarr[i])){
 					var tempindex1 = arrarr[i].match(/[a-z]*\[(.+)\]\[.+\]/)[1];
 					var tempindex2 = arrarr[i].match(/[a-z]*\[.+\]\[(.+)\]/)[1];
@@ -634,11 +638,35 @@ if(action_frag == true&&for_flag){
 					var calcindex =calc(tempindex);
 					arrarr[i] = arrarr[i].replace(tempindex,calcindex);
 				}
-				calcstr+=arrarr[i];
-				if(i<arrarrlen-1){calcstr+=":"}
+				if(/\]/.test(arrarr[i])&&indexcalcflag){
+					indexcalcflag = false;
+					indexcalcstr+=arrarr[i];
+					console.log("これでどうよ",indexcalcstr);
+					if(/\[.+\]\[.+\]/.test(indexcalcstr)){
+						var tempindex1 = indexcalcstr.match(/[a-z]*\[(.+)\]\[.+\]/)[1];
+						var tempindex2 = indexcalcstr.match(/[a-z]*\[.+\]\[(.+)\]/)[1];
+						var calcindex1 = calc(tempindex1);
+						var calcindex2 = calc(tempindex2);
+						indexcalcstr = indexcalcstr.replace(tempindex1,calcindex1);
+						indexcalcstr = indexcalcstr.replace(tempindex2,calcindex2);
+					}else if(/\[.+\]/.test(indexcalcstr)){
+						var tempindex = indexcalcstr.match(/[a-z]\w*\[(.+)\]/)[1];
+						var calcindex =calc(tempindex);
+						indexcalcstr = indexcalcstr.replace(tempindex,calcindex);
+					}
+					console.log("これでどうよ",indexcalcstr);
+					calcstr+=indexcalcstr;
+				}else if(/\[/.test(arrarr[i])||indexcalcflag){
+					indexcalcflag = true;
+					indexcalcstr+=(arrarr[i]+":");
+				}else{
+					calcstr+=arrarr[i];
+					if(i<arrarrlen-1){calcstr+=":"}
+				}
 			}
-			str = getArrStr(arrarr,true);
 			value = calc(calcstr);
+			console.log(value,calcstr,getArrStr(calcstr.split(":"),true));
+			str = getArrStr(calcstr.split(":"),true);
 		}else if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
 			valueindex = calc(valueindex);
@@ -738,7 +766,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"){answer_check("522");}
+	if(htmlversion=="debug"||htmlversion=="free"){}
 	else{answer_check(htmlversion);}
 }
 
@@ -1280,6 +1308,7 @@ if(scanf_flag){
 	var typeArray = new Array();
 	var tempArr = getNewInput().split(/\x20+/);
 	for(var i = 0;i < tempArr.length;i++){
+		if(!(/(^[0-9]+$)|(^[0-9]+\.[0-9]+$)|(^[a-zA-Z0-9]$)/.test(tempArr[i])))createSyntaxError("入力した文字がおかしいよ！");
 		inputValueArray.push(tempArr[i]);
 	}
 	var namelen = nameArray.length;
@@ -1301,8 +1330,7 @@ if(scanf_flag){
 		scanfroopflag = true;
 		foreval();
 		//if(doubleroop){for_deval();}else{for_eval();}
-	}
-	else{evalfunction(rindex+1,result2);}
+	}else{evalfunction(rindex+1,result2);}
 	arr_check("アニメ配列",jsOfAnimes);
 	sign =1;
 	scanf_flag=false;
