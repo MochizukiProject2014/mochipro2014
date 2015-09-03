@@ -539,7 +539,7 @@ function answer_check(num){
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
 		case 512:
-			re = new RegExp(/array_declare\("int","a","1@2@3@4@5",5\)/);answer_pattern_array.push(re);
+			re = new RegExp(/array_declare\("int","a","2@1@5@3@4",5\)/);answer_pattern_array.push(re);
 			re = new RegExp(/array_declare\("int","b","undefined",5\)/);answer_pattern_array.push(re);
 			re = new RegExp(/for_js\("false,i,0","i<5","i:\+:1","."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("b\[i\]","a\[(4:-:i)\]"\)/);answer_pattern_array.push(re);

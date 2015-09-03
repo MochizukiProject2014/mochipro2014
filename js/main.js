@@ -580,7 +580,7 @@ if(action_frag == true&&for_flag){
 	var str;
 	var len = variables.length;
 	if(!getVariableExist(name))return createSyntaxError("代入先の変数が存在してないよ！");
-	console.log("名前" +name+"値"+value);
+	//console.log("名前" +name+"値"+value);
 	if(/\[.+\]\[.+\]/.test(name)){//二重配列ならnameとindex1と2(indexが変数なら数字に直す)を。なぜか条件に!(value.match(/:/)があったけどx[i][1] = 4+5;がバグるんで消す
 		var index1 = name.match(/[a-z]\w*\[(.+)\]\[.+\]/)[1];
 		var index2 = name.match(/[a-z]\w*\[.+\]\[(.+)\]/)[1];
@@ -625,7 +625,6 @@ if(action_frag == true&&for_flag){
 			var indexcalcstr="";
 			var indexcalcflag=false;
 			for(var i = 0;i < arrarrlen;i++){
-				console.log("今のチェク："+arrarr[i]);
 				if(/\[.+\]\[.+\]/.test(arrarr[i])){
 					var tempindex1 = arrarr[i].match(/[a-z]*\[(.+)\]\[.+\]/)[1];
 					var tempindex2 = arrarr[i].match(/[a-z]*\[.+\]\[(.+)\]/)[1];
@@ -641,7 +640,6 @@ if(action_frag == true&&for_flag){
 				if(/\]/.test(arrarr[i])&&indexcalcflag){
 					indexcalcflag = false;
 					indexcalcstr+=arrarr[i];
-					console.log("これでどうよ",indexcalcstr);
 					if(/\[.+\]\[.+\]/.test(indexcalcstr)){
 						var tempindex1 = indexcalcstr.match(/[a-z]*\[(.+)\]\[.+\]/)[1];
 						var tempindex2 = indexcalcstr.match(/[a-z]*\[.+\]\[(.+)\]/)[1];
@@ -654,7 +652,6 @@ if(action_frag == true&&for_flag){
 						var calcindex =calc(tempindex);
 						indexcalcstr = indexcalcstr.replace(tempindex,calcindex);
 					}
-					console.log("これでどうよ",indexcalcstr);
 					calcstr+=indexcalcstr;
 				}else if(/\[/.test(arrarr[i])||indexcalcflag){
 					indexcalcflag = true;
@@ -665,7 +662,6 @@ if(action_frag == true&&for_flag){
 				}
 			}
 			value = calc(calcstr);
-			console.log(value,calcstr,getArrStr(calcstr.split(":"),true));
 			str = getArrStr(calcstr.split(":"),true);
 		}else if(/\[.+\]/.test(value)&&!(value.match(/:/))){
 			var valueindex = value.match(/[a-z]\w*\[(.+)\]/)[1];
