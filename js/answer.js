@@ -90,19 +90,19 @@ function answer_check(num){
 		break;
 		case 231:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x",".*%d.*"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("x","(x:\+:3)|(3:\+:x)"\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 2311:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x",".*%d.*"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("x","x:\+:x"\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
 		case 2312:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x",".*%d.*"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("x","x:\+:3:\/:2"\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,true));
 		break;
@@ -239,7 +239,7 @@ function answer_check(num){
 		break;
 		case 313:
 			re = new RegExp(/duplication_judge\("int","x",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/scanf_js\("x","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/scanf_js\("x",".*%d.*"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/if_js\("(x.*!=.*0)|(0.*!=.*x)"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs\(.+xは0ではないです.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_if\(\)/);answer_pattern_array.push(re);
