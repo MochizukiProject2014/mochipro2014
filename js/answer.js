@@ -166,7 +166,7 @@ function answer_check(num){
 			re = new RegExp(/duplication_judge\("char","y",.+\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			re = new RegExp(/printf_js\("x",.*\)/);answer_pattern_array.push(re);
-			re = new RegExp(/_js_js\("y","%."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("y",.*\)/);answer_pattern_array.push(re);
 			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			re = new RegExp(/.+/);answer_pattern_array.push(re);//reオブジェクトが１つだけだとなぜかバグるので応急措置
 			re = new RegExp(/printf_js\("(x,y)|(y,x)",.*\)/);answer_pattern_array.push(re);
