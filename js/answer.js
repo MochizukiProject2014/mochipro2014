@@ -4,6 +4,7 @@ function answer_check(num){
 		correct_answer();
 		ajaxPostFunc(document.getElementById("state").innerHTML,"1",codeOfUser);
 		movenext();
+		return 0;
 	}
 	var version = Number(num),re;
 	var answer_pattern_array = [];
@@ -164,11 +165,11 @@ function answer_check(num){
 			re = new RegExp(/duplication_judge\("double","x",.+\)/);answer_pattern_array.push(re);
 			re = new RegExp(/duplication_judge\("char","y",.+\)/);answer_pattern_array.push(re);
 			flagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
-			re = new RegExp(/printf_js\("x","%."\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_js\("y","%."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("x",.*\)/);answer_pattern_array.push(re);
+			re = new RegExp(/_js_js\("y","%."\)/);answer_pattern_array.push(re);
 			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			re = new RegExp(/.+/);answer_pattern_array.push(re);//reオブジェクトが１つだけだとなぜかバグるので応急措置
-			re = new RegExp(/printf_js\("(x,y)|(y,x)","%."\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("(x,y)|(y,x)",.*\)/);answer_pattern_array.push(re);
 			tempFlagArr.push(context_check(user_pattern_array,answer_pattern_array,false));
 			flagArr.push(tempFlagArr[0]||tempFlagArr[1]);
 		break;
@@ -526,7 +527,7 @@ function answer_check(num){
 			re = new RegExp(/plural_declaration\("int","i,sum=0"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/for_js\(("false,i,0","i<5")|("false,i,1","i<=5"),"i:\+:1","."\)/);answer_pattern_array.push(re);
 			re = new RegExp(/substitute\("sum","sum:\+:a.i."\)/);answer_pattern_array.push(re);
-			re = new RegExp(/printf_js\("sum","%d"\)/);answer_pattern_array.push(re);
+			re = new RegExp(/printf_js\("sum",.*\)/);answer_pattern_array.push(re);
 			var temp = context_check(result2,answer_pattern_array,true);flagArr.push(temp);
 		break;
 		case 5111:
