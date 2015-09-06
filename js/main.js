@@ -703,7 +703,7 @@ if(action_frag == true&&for_flag){
 			var tempArr = [];
 			for(var i=0;i<len;i++){
 				if(variables[i].name==name){
-					if(variables[i].length<index)return createSyntaxError("配列の大きさより多く要素が入っているよ！");
+					if(variables[i].length<=index)return createSyntaxError("配列の長さ以上のインデックスに代入しようとしてるよ！");
 					tempArr=variables[i].value.split("@");
 				}
 			}
