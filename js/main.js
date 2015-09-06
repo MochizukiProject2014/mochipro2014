@@ -764,7 +764,7 @@ function return_js(value){
 }
 function ANIME_finish(){
 	line_reset();
-	if(htmlversion=="debug"||htmlversion=="free"){answer_check("241");}
+	if(htmlversion=="debug"||htmlversion=="free"){}
 	else{answer_check(htmlversion);}
 }
 

@@ -18,6 +18,7 @@
 <script type="text/javascript" src="js/movenext.js"></script>
 <script type="text/javascript" src="js/parser_judge.js"></script>
 <script type="text/javascript" src="js/parser_judge_func.js"></script>
+<script type="text/javascript" src="js/for_cnt_parser.js"></script>
 <script type="text/javascript"src="tmlib.js-develop/build/tmlib.js"></script>
 <script type="text/javascript" src="js/anime.js"></script>
 <link href="./stylenew.css" rel="stylesheet" type="text/css">
@@ -51,11 +52,9 @@
 				<textarea style="resize: none;" id="text" rows="20" cols="75">
 #include <stdio.h>
 int main(void){
-   int a[5] = {2,1,5,3,4};
-   int b[5];
    int i;
-   for(i=0; i<5; i++){
-  	b[5]=a[4-i];
+   for(i=3;i>0;i--){
+  	printf("わんわん");
    }
    return 0;
 }

@@ -5,6 +5,7 @@ function hantei_1(code,scan0,seikai){
 	var scan_i = 0;
 	var r_c = hantei_eval(code,scan_data,scan_i);
 	console.log( "正解：" + seikai + "　結果：" + r_c );
+	r_c = r_c.replace(/\s+/g, ""); //判定時に前後の空白文字を無視するため、空白文字を置換して削除
 	if(r_c  == seikai){ return true;}
 }
 

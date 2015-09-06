@@ -352,12 +352,12 @@ function answer_check(num){
 			else { flagArr.push(true); } 
 		break;
 		case 411:
-			//forが3回まわってるか判断する中谷さんが作ってるプログラムを使う
 			re = new RegExp(/duplication_judge\(.+,"i",.+\)/);answer_pattern_array.push(re);
-			re = new RegExp(/for_js\(("false,i,1","i <= 3")|("false,i,0","i < 3")|,"i:\+:1",.+\)/);answer_pattern_array.push(re);
+			re = new RegExp(/for_js.+/);answer_pattern_array.push(re);
 			re = new RegExp(/printf_djs\("わんわん.*"\)/);answer_pattern_array.push(re);
 			re = new RegExp(/end_of_for/);answer_pattern_array.push(re);
 			var temp = getPatternLine(user_pattern_array,answer_pattern_array,0);flagArr.push(temp);
+			if(hantei_for_eval(for_cnt_parser.parse(codeOfUser),1)==3){flagArr.push(true);}else{flagArr.push(false);}
 		break;
 		case 4111:
 			re = new RegExp(/duplication_judge\(.+,"a",.+\)/);answer_pattern_array.push(re);
